@@ -1,0 +1,49 @@
+forecast_horizon,.metric,.estimator,.estimate,region
+1,precision,binary,0.8995657356948229,Global
+1,recall,binary,0.9241165150454863,Global
+1,f_meas,binary,0.9116758715913013,Global
+1,roc_auc,binary,0.9698271608021216,Global
+1,precision,binary,0.9115755627009646,Inside MPAs
+1,precision,binary,0.8999498609781668,Outside MPAs
+1,precision,binary,0.8824163969795038,Partial MPA overlap
+1,recall,binary,0.9895287958115183,Inside MPAs
+1,recall,binary,0.9240849948516334,Outside MPAs
+1,recall,binary,0.8843243243243243,Partial MPA overlap
+1,f_meas,binary,0.9489539748953975,Inside MPAs
+1,f_meas,binary,0.911857753146288,Outside MPAs
+1,f_meas,binary,0.8833693304535637,Partial MPA overlap
+1,roc_auc,binary,0.7750302053966983,Inside MPAs
+1,roc_auc,binary,0.9706525093355097,Outside MPAs
+1,roc_auc,binary,0.9561178791769782,Partial MPA overlap
+2,precision,binary,0.888517745302714,Global
+2,recall,binary,0.9307207837648706,Global
+2,f_meas,binary,0.9091297475114282,Global
+2,roc_auc,binary,0.9671940032049958,Global
+2,precision,binary,0.9148936170212766,Inside MPAs
+2,precision,binary,0.8883980365908076,Outside MPAs
+2,precision,binary,0.8740581270182992,Partial MPA overlap
+2,recall,binary,0.994661921708185,Inside MPAs
+2,recall,binary,0.9299360082208417,Outside MPAs
+2,recall,binary,0.9092945128779395,Partial MPA overlap
+2,f_meas,binary,0.9531116794543903,Inside MPAs
+2,f_meas,binary,0.908692576279696,Outside MPAs
+2,f_meas,binary,0.8913282107574094,Partial MPA overlap
+2,roc_auc,binary,0.7642504838608974,Inside MPAs
+2,roc_auc,binary,0.9678623769274673,Outside MPAs
+2,roc_auc,binary,0.9533736140679069,Partial MPA overlap
+3,precision,binary,0.9069070373588184,Global
+3,recall,binary,0.9130948215535339,Global
+3,f_meas,binary,0.909990410600645,Global
+3,roc_auc,binary,0.9694841112988425,Global
+3,precision,binary,0.9128978224455612,Inside MPAs
+3,precision,binary,0.9074752911697833,Outside MPAs
+3,precision,binary,0.8887614678899083,Partial MPA overlap
+3,recall,binary,0.9873188405797102,Inside MPAs
+3,recall,binary,0.9125565769212822,Outside MPAs
+3,recall,binary,0.8796821793416572,Partial MPA overlap
+3,f_meas,binary,0.948651000870322,Inside MPAs
+3,f_meas,binary,0.9100088409101484,Outside MPAs
+3,f_meas,binary,0.8841985168282943,Partial MPA overlap
+3,roc_auc,binary,0.7137045512331539,Inside MPAs
+3,roc_auc,binary,0.9704768932359001,Outside MPAs
+3,roc_auc,binary,0.9494642308982814,Partial MPA overlap

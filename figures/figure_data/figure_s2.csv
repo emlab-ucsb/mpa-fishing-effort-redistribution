@@ -1,0 +1,19 @@
+forecast_horizon,name,region,n_pixel_years,n_distinct_mpas
+Forecast horizon: 1,Training,Inside MPAs,2125,23
+Forecast horizon: 1,Training,Outside MPAs,176789,331
+Forecast horizon: 1,Training,Partial MPA overlap,6002,330
+Forecast horizon: 1,Testing,Inside MPAs,638,25
+Forecast horizon: 1,Testing,Outside MPAs,43803,328
+Forecast horizon: 1,Testing,Partial MPA overlap,1788,334
+Forecast horizon: 2,Training,Inside MPAs,1506,22
+Forecast horizon: 2,Training,Outside MPAs,132891,326
+Forecast horizon: 2,Training,Partial MPA overlap,4290,325
+Forecast horizon: 2,Testing,Inside MPAs,619,23
+Forecast horizon: 2,Testing,Outside MPAs,43898,327
+Forecast horizon: 2,Testing,Partial MPA overlap,1712,328
+Forecast horizon: 3,Training,Inside MPAs,897,20
+Forecast horizon: 3,Training,Outside MPAs,88947,297
+Forecast horizon: 3,Training,Partial MPA overlap,2614,296
+Forecast horizon: 3,Testing,Inside MPAs,609,22
+Forecast horizon: 3,Testing,Outside MPAs,43944,322
+Forecast horizon: 3,Testing,Partial MPA overlap,1676,323

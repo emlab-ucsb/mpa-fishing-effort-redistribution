@@ -1,0 +1,188 @@
+---
+title: "Arnhold BWMPA Project - Data wrangling - RSS wind data"
+author: "Gavin McDonald (emLab)"
+date: '`r format(Sys.time(), "%m/%d/%Y")`'
+output: 
+  pdf_document: 
+    number_sections: yes
+    toc: true
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+params:
+     download_data: FALSE
+     spatially_aggregate_data: FALSE
+     temporally_aggregate_data: FALSE
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports",
+                         "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports")) })
+---
+
+```{r echo = FALSE}
+# This chunk sets up default settings for all chunks below
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,fig.width = 7.5,fig.height = 5,dev = 'png',dpi=300)
+```
+
+```{r include=FALSE}
+# Load all necessary packages
+library(tidyverse)
+library(sf)
+library(stars)
+library(glue)
+library(lubridate)
+library(collapse)
+library(furrr)
+library(rnaturalearth)
+source(here::here("r/data_wrangling_functions.R"))
+# Set the data directory. This specifies the folder in Team Drive where the data can be found. This code automatically detects the system type and assigns the correct directory
+# data_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data",
+#                          "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data")
+data_directory <- "/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/Projects/current-projects/arnhold-bwmpa-redistribution/data"
+
+# Set mapping projection
+map_projection <- "+proj=eqearth +datum=WGS84 +wktext"
+# Create global land sf object for mapping
+world_plotting <- ne_countries(scale = "small", returnclass = "sf")  %>%
+  dplyr::select(geometry)
+
+pixel_size <- 1
+
+# Read in data_grid, generated in data_wrangling.Rmd
+data_grid <- data.table::fread(glue("{data_directory}/clean/global_grid.csv"))%>%
+  st_as_sf(wkt = "geometry_wkt",
+           crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") %>%
+  mutate(pixel_area_m2 = st_area(geometry_wkt)%>%
+           units::drop_units())
+```
+
+# Download data
+
+Data come from the [CCMP Wind Vector Analysis Product](https://www.remss.com/measurements/ccmp/). We use V2.0 for dates from 2012-2019, and V2.1 for dates from 2020-2021. The raw data provide u- and v- vectors of wind speed. For each location, we combine these to create absolute windspeed using wind_speed_m_s = sqrt(uwnd^2 + vwnd^2).
+
+Data are downloaded from this [http server](https://data.remss.com/ccmp/).
+
+```{r eval = params$download_data}
+v20_dates <- tibble(date = seq(date("2012-01-01"),date("2019-12-31"),by="1 day")) %>%
+  mutate(file_path = glue("https://data.remss.com/ccmp/v02.0/Y{year(date)}/M{ifelse(nchar(month(date))==1,paste0(0,month(date)),month(date))}/CCMP_Wind_Analysis_{str_remove_all(date,'-')}_V02.0_L3.0_RSS.nc"))
+
+v21_dates <- tibble(date = seq(date("2020-01-01"),date("2021-12-31"),by="1 day")) %>%
+  mutate(file_path = glue("https://data.remss.com/ccmp/v02.1.NRT/Y{year(date)}/M{ifelse(nchar(month(date))==1,paste0(0,month(date)),month(date))}/CCMP_RT_Wind_Analysis_{str_remove_all(date,'-')}_V02.1_L3.0_RSS.nc"))
+
+# Download data
+# Do it in parallel?
+run_parallel <- TRUE
+
+if(run_parallel) plan(multisession) else plan(sequential)
+
+bind_rows(v20_dates,v21_dates) %>%
+  mutate(downloaded = future_map2(date,file_path,function(date,file_path){
+    # This wraps the download function and tries the download several times
+    # This is useful, since sometimes it times out
+    # Adapted from Jen Raynor's code in emLab/Projects/current-projects/arnhold-bwmpa/project-materials/programs/helper-download_erddap.R
+    tmp_file_name <- glue::glue("{data_directory}/raw/remss/wind-ccmp/wind_{date}.nc")
+    # If it's already downloaded, skip, give indication if download was successful or not
+    if(file.exists(tmp_file_name)) return()
+    r <- NULL
+    
+    attempt <- 1
+    
+    # proceed for 10 attempts
+    while(is.null(r) && attempt <= 10){
+      
+      attempt <- attempt + 1
+      
+      try(r <- download.file(file_path,
+                             tmp_file_name))
+      
+    } 
+    
+    # Give indication if download was successful or not
+    return()
+  }, .options = furrr_options(globals=c("data_directory"),
+                              seed = 101),.progress=TRUE))
+```
+
+# Spatially aggregate data
+
+```{r eval = params$spatially_aggregate_data}
+# Process data
+# Do it in parallel?
+run_parallel <- TRUE
+
+tmp_data_directory <- glue::glue("{data_directory}/clean/remss/spatially_aggregated_{pixel_size}_degree")
+if(!dir.exists(tmp_data_directory)) dir.create(tmp_data_directory)
+
+if(run_parallel) plan(multisession) else plan(sequential)
+
+list.files(glue("{data_directory}/raw/remss/wind-ccmp")) %>%
+  future_map_dfr(function(tmp_file_name){
+    date_tmp <- tmp_file_name %>%
+      # Extract date
+      stringr::str_replace(glue::glue("wind_"),"") %>% 
+      stringr::str_remove(".bc") %>%
+      lubridate::date()
+    
+    processed_file_name <- glue::glue("{tmp_data_directory}/{date_tmp}.csv")
+    
+    # If already processed, don't do it again
+    if(file.exists(processed_file_name)) return()
+    
+    glue::glue("{data_directory}/raw/remss/wind-ccmp/{tmp_file_name}")%>%
+      stars::read_ncdf() %>%
+      # Calculate wind speed from u and v components, using pythagorean theorum
+      dplyr::mutate(wind_speed_m_s = sqrt(uwnd^2 + vwnd^2)) %>%
+      # Get rid of these
+      dplyr::select(-uwnd,-vwnd,-nobs) %>% 
+      # Data are for every 6 hours, so take mean for entire day
+      aggregate(FUN = mean, by = "1 day") %>% 
+      # Convert stars to raster, so we can use exactextractr::exact_extract
+      as("Raster") %>%
+      # Need to rotate from 0-360 to -180-180, since original NC is provided in 0-360
+      raster::rotate()%>%
+      # Let's spatially aggregate by taking the mean value for each of our pixels
+      exactextractr::exact_extract(data_grid,
+                                   # From the help: "mean - the mean cell value, weighted by the fraction of each cell that is covered by the polygon"
+                                   "mean",
+                                   # Include pixel_id column so we can match on it later
+                                   append_cols = "pixel_id",
+                                   progress = FALSE)%>% 
+      # Don't save data that are just NAs
+      dplyr::filter(!dplyr::if_all(-c(pixel_id),is.na)) %>%
+      dplyr::rename(wind_speed_ms_mean = mean) %>%
+      dplyr::mutate(date = date_tmp) %>%
+      data.table::fwrite(processed_file_name)
+    return(NULL)
+  }, .options = furrr_options(globals=c("data_directory","data_grid","tmp_data_directory"),
+                              seed = 101),.progress=TRUE)
+```
+
+# Temporally aggregate data
+
+We also aggregate mean and standard deviation wind speed by month and location.
+
+```{r eval = params$temporally_aggregate_data}
+# Process data
+# Do it in parallel?
+run_parallel <- TRUE
+
+tmp_data_directory <- glue::glue("{data_directory}/clean/remss/spatially_aggregated_{pixel_size}_degree")
+
+if(run_parallel) plan(multisession) else plan(sequential)
+
+list.files(tmp_data_directory)%>% 
+    # Only want data 2016+
+    str_subset("2016|2017|2018|2019|2020|2021") %>%
+  future_map(function(file_temp){
+    data.table::fread(glue::glue("{tmp_data_directory}/{file_temp}"))
+  }, .options = furrr_options(globals=c("tmp_data_directory"),
+                              seed = 101),.progress=TRUE) %>%
+  data.table::rbindlist() %>%
+  collapse::ftransform(year = lubridate::year(date))%>%
+  dplyr::select(-date) %>%
+  # Remove mean suffix from spatial aggregation, since we will do another aggregation below
+  dplyr::rename_with(~ gsub('_mean', '', .x))%>%
+  collapse::fgroup_by(pixel_id,year) %>% {
+    collapse::add_vars(collapse::add_stub(collapse::fmean(., keep.group_vars = TRUE),"_mean",pre=FALSE,cols=-c(1,2)),
+                       collapse::add_stub(collapse::fsd(., keep.group_vars = FALSE), "_sd",pre=FALSE)) } %>%
+  data.table::fwrite(here::here("data/model_features/remss_wind.csv"))
+```

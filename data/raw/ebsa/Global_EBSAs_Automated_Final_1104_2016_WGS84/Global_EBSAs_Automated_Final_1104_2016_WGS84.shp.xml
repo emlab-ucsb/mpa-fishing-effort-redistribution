@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<idinfo>
+		<citation>
+			<citeinfo>
+				<origin>Protected Areas Programme, UNEP-WCMC</origin>
+				<pubdate>February 2009</pubdate>
+				<title>World Database on Protected Areas Annual Release 2009 - Global dataset (polygons)</title>
+				<edition>WDPA Annual Release Dataset 2009</edition>
+				<geoform Sync="TRUE">vector digital data</geoform>
+				<serinfo>
+					<sername>WDPA Annual Release</sername>
+					<issue>2009 Web-download version</issue>
+				</serinfo>
+				<pubinfo>
+					<pubplace>UNEP-WCMC</pubplace>
+					<publish>UNEP-WCMC</publish>
+				</pubinfo>
+				<othercit>Dataset citation: World Database on Protected Areas (WDPA) Annual Release 2009 (web download version), February 2009.  The WDPA is a joint product of UNEP and IUCN, prepared by UNEP-WCMC, supported by IUCN WCPA and working with Governments, the Secretariats of MEAs and collaborating NGOs. For further information: protectedareas@unep-wcmc.org</othercit>
+				<onlink>\\wcmc-data-01.internal.wcmc\gis\simonb\wdpa_export\WDPA_011208\WDPA_POL_011208.shp</onlink>
+				<ftname Sync="TRUE">WDPApol2009</ftname></citeinfo>
+		</citation>
+		<descript>
+			<abstract>The Annual Release includes all nationally designated (e.g. National Parks, Nature Reserves) and internationally recognized protected areas (e.g. UNESCO World Heritage Sites, Wetlands of International Importance) currently held in the WDPA, up to end of February 2009.  This static version contains all data improvements made to the WDPA since the previous annual release in December 2007. This dataset contains protected area boundaries (delineated) in shapefile (polygon) format. </abstract>
+			<purpose>The annual release serves the global conservation community by providing a standard dataset of our current knowledge of protected areas globally. This dataset acts as a resource for NGOs, researchers, universities and government agencies through supporting and strengthening conservation studies, research and decision making.  It is also widely utilised by the private sector.</purpose>
+			<supplinf>The World Database on Protected Areas (WDPA) is the most comprehensive global spatial dataset on marine and terrestrial protected areas available. Protected areas are internationally recognised as major tools in conserving species and ecosystems. Up to date information on protected areas is essential to enable a wide range of conservation and development activities.
+Since 1981 UNEP World Conservation Monitoring Centre (UNEP-WCMC), through its Protected Areas Programme, has been compiling this information and making it available to the global community. The WDPA is a joint project of UNEP and IUCN, prepared by UNEP-WCMC, working with IUCN World Commission on Protected Areas, governments and collaborating NGOs.</supplinf>
+			<langdata Sync="TRUE">en</langdata></descript>
+		<timeperd>
+			<timeinfo>
+				<rngdates>
+					<begdate>December 2007</begdate>
+					<enddate>February 2009</enddate>
+				</rngdates>
+			</timeinfo>
+			<current>publication date</current>
+		</timeperd>
+		<status>
+			<progress>Complete</progress>
+			<update>Annually</update>
+		</status>
+		<spdom>
+			<bounding>
+				<westbc Sync="TRUE">-180.000000</westbc>
+				<eastbc Sync="TRUE">179.999540</eastbc>
+				<northbc Sync="TRUE">83.730000</northbc>
+				<southbc Sync="TRUE">-68.652558</southbc>
+			</bounding>
+			<lboundng><leftbc Sync="TRUE">-180.000000</leftbc><rightbc Sync="TRUE">179.999540</rightbc><bottombc Sync="TRUE">-68.652558</bottombc><topbc Sync="TRUE">83.730000</topbc></lboundng></spdom>
+		<keywords>
+			<theme>
+				<themekt>REQUIRED: Reference to a formally registered thesaurus or a similar authoritative source of theme keywords.</themekt>
+				<themekey>WDPA</themekey>
+				<themekey>Protected Areas</themekey>
+			</theme>
+		</keywords>
+		<accconst>You need to be a registered non-commercial user and agree to the Terms and Conditions of the WDPA to download this dataset. If you wish to use this dataset for any commercial use/purpose then please contact wdpacommerical@unep-wcmc.org to discuss access.</accconst>
+		<useconst>By downloading this dataset you have agreed to abide by the Terms and Conditions of Use of the World Database on Protected Areas: 
+
+Access to all WDPA data (or the "WDPA materials") is provided on the understanding that the end-user read and consents to be bound to the terms outlined in these Terms and Conditions of Use.
+
+PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY. IF YOU DO NOT AGREE TO ANY OF THE TERMS AND CONDITIONS DO NOT DOWNLOAD
+
+NO COMMERCIAL USE
+The WDPA and any derivatives must not be used or made available for any Commercial Purpose without permission. Any use of WDPA content by an individual or entity operating within or on behalf of or to the benefit of any organisation other than a not-for-profit organisation will be deemed to be for a Commercial Purpose and will constitute a breach of the Terms and Conditions. To apply for permission for commercial use please send an email to wdpacommercial@unep-wcmc.org outlining your needs.
+
+NO SUB-LICENSING OR REDISTRIBUTING OF WDPA DATA
+The WDPA may not be sub-licensed in whole or in part without permission. You may not redistribute the attributes or spatial data contained in the WDPA in whole or in part by any means including (but not limited to) digitally, via web downloads, through web services, interactive web maps or file transfer protocols. If you know of others who wish to use the WDPA we suggest you refer them to this website. If you wish to provide a service though which the attributes and/or spatial data of the WDPA are downloadable or otherwise made available for redistribution, please contact protectedareas@unep-wcmc.org for further guidance.
+
+PUBLISHING THE WDPA
+You may publish the WDPA in whole or in part, including on-line, providing the attributes and spatial data are not downloadable. You must ensure that the latest released version of the WDPA Materials is being used and the year of release is visible. Material published online must provide a clear link to the original WDPA and the attribution below must be clearly visible in all publications. We recommend that you have the material reviewed by UNEP-WCMC and/or the IUCN-WCPA prior to publication and we require two copies of all published materials be lodged free of charge with the supplier of the dataset, preferably in electronic format via: protectedareas@unep-wcmc.org
+
+ATTRIBUTION
+You must ensure that the attribution set out below is always clearly reproduced in the use of any part of the WDPA in any format, so that individual users are made aware of it:
+World Database on Protected Areas (WDPA) Annual Release 2009 (web download version), February 2009.  The WDPA is a joint product of UNEP and IUCN, prepared by UNEP-WCMC, supported by IUCN WCPA and working with Governments, the Secretariats of MEAs and collaborating NGOs. For further information: protectedareas@unep-wcmc.org' 
+
+WDPA UPDATES
+Unless required to do so for specific analyses, you should not use any version of the WDPA after it has been superseded by a subsequent version. It is your responsibility to check if an update of the WDPA is available. 
+
+NO WARRANTY AND WAIVER OF LIABILITY
+The WDPA is provided to you 'as is', and no warranty of any kind is given. In consideration of the rights granted in this download, you hereby waive and release UNEP, IUCN and WCMC 2000 from any liability whatsoever and howsoever arising in connection with use of the WDPA. You agree that this waiver and release is effective in any and every jurisdiction in the world. UNEP, IUCN and WCMC 2000 will not be responsible for negligence, strict liability or otherness in the use of WDPA data by you or other users as a result of WDPA data being posted on any website following this download. You download the WDPA at your own discretion and risk and are solely responsible in the event of any damage occurring to computer systems as a result of attempts to download WDPA data.
+
+FEEDBACK AND REVISED INFORMATION
+In order to keep the WDPA up to date, UNEP and IUCN would like you to provide feedback on the quality, reliability and accuracy of the WDPA. We also welcome revised information on the WDPA in the form of GIS data, electronic images, paper maps, tables, GPS coordinates, and/or in any other useable format. Such contributions should be free of restrictions. The objective is to improve the WDPA for the benefit of the global conservation community. You can register to submit electronic protected area data via the WDPA website.
+
+LAW AND JURISDICTION
+Any dispute arising out of or in connection with this download and the subsequent use of the WDPA shall be settled by amicable negotiation between you and the supplier of the dataset. Should attempts at amicable negotiation fail, any such dispute shall, upon request by either you or the supplier of the WDPA, be referred to arbitration in accordance with the UNCITRAL arbitration rules then prevailing.
+
+COMMUNICATION
+Any communication with respect to these Terms and Conditions and any issue arising from them shall be in writing, in English, and sent by email. The address for communication with the WDPA supplier is:protectedareas@unep-wcmc.org
+</useconst>
+		<ptcontac>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>UNEP World Conservation Monitoring Centre (UNEP-WCMC)</cntorg>
+					<cntper>WDPA Team</cntper>
+				</cntorgp>
+				<cntpos>Protected Areas Programme</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical address</addrtype>
+					<address>219 Huntingdon Road</address>
+					<city>Cambridge</city>
+					<state>Cambridgeshire</state>
+					<postal>CB3 0DL</postal>
+					<country>United Kingdom</country>
+				</cntaddr>
+				<cntvoice>+ 44 (0) 1223 277314</cntvoice>
+				<cntfax>+ 44 (0) 1223 2773136</cntfax>
+				<cntemail>protectedareas@unep-wcmc.org</cntemail>
+				<cntemail>wdpacommercial@unep-wcmc.org</cntemail>
+				<hours>Monday - Friday (9 am - 5:30pm GMT)</hours>
+				<cntinst>Email protectedareas@unep-wcmc.org if you have any questions about this dataset. If you wish to use the WDPA dataset for commercial use/purpose please email wdpacommercial@unep-wcmc.org. 
+Please include 'WDPA 2009 Annual Dataset enquiry' in the subject line of your email.</cntinst>
+			</cntinfo>
+		</ptcontac>
+		<native Sync="TRUE">Microsoft Windows XP Version 5.1 (Build 2600) Service Pack 3; ESRI ArcCatalog 9.3.1.1850</native>
+		<crossref>
+			<citeinfo>
+				<origin>Protected Areas Programme, UNEP-WCMC</origin>
+				<pubdate>February 2009</pubdate>
+				<title>World Database on Protected Areas (WDPA) Annual Release 2009 (Web download version) - Global dataset (polygons)</title>
+				<edition>2009 Annual Release (Web download version)</edition>
+				<serinfo>
+					<sername>WDPA Annual Release</sername>
+					<issue>2009 Annual Release (Web download version)</issue>
+				</serinfo>
+				<pubinfo>
+					<pubplace>UNEP-WCMC</pubplace>
+					<publish>UNEP-WCMC</publish>
+				</pubinfo>
+				<othercit>Dataset citation: World Database on Protected Areas (WDPA) Annual Release 2009 (web download version), February 2009.  The WDPA is a joint product of UNEP and IUCN, prepared by UNEP-WCMC, supported by IUCN WCPA and working with Governments, the Secretariats of MEAs and collaborating NGOs. For further information: protectedareas@unep-wcmc.org</othercit>
+				<onlink>www.wdpa.org</onlink>
+			</citeinfo>
+		</crossref>
+		<natvform Sync="TRUE">Shapefile</natvform></idinfo>
+	<dataqual>
+		<logic>The WDPA is provided to you 'as is', and no warranty of any kind is given. In consideration of the rights granted in this download, you hereby waive and release UNEP, IUCN and WCMC 2000 from any liability whatsoever and howsoever arising in connection with use of the WDPA. You agree that this waiver and release is effective in any and every jurisdiction in the world. UNEP, IUCN and WCMC 2000 will not be responsible for negligence, strict liability or otherness in the use of WDPA data by you or other users as a result of WDPA data being posted on any website following this download. You download the WDPA at your own discretion and risk and are solely responsible in the event of any damage occurring to computer systems as a result of attempts to download WDPA data.</logic>
+		<complete>The WDPA is a work in progress, continually being updated once new information becomes available. The Annual Release includes all nationally designated (e.g. National Parks, Nature Reserves) and internationally recognized protected areas (e.g. UNESCO World Heritage Sites, Wetlands of International Importance) currently held in the WDPA, up to end of February 2009.  This static version contains all data improvements made to the WDPA since the previous annual release in December 2007
+
+During 2008, data improvement work was ongoing as well as transfer of legacy data from the old system into the new WDPA Portal (v1.0 launched in October 2008). By February 2009, 100% of all legacy data has been transferred and internal data validation processes (geography, geometry, topology and attributes) have been performed.  From March 2009 work will continue on the crosschecking the results of the internal data validation processes and making corrections where possible. 
+
+In order to keep the WDPA up to date, UNEP and IUCN would like you to provide feedback on the quality, reliability and accuracy of the WDPA. We also welcome revised information on the WDPA in the form of GIS data, electronic images, paper maps, tables, GPS coordinates, and/or in any other useable format. Such contributions should be free of restrictions. The objective is to improve the WDPA for the benefit of the global conservation community. You can register to submit electronic protected area data via the WDPA website or contact protectedareas@unep-wcmc.org directly for more information.</complete>
+		<lineage>
+			<procstep>
+				<procdesc>Dataset copied.</procdesc>
+				<procdate>20081205</procdate>
+				<proctime>11195400</proctime>
+			</procstep>
+			<procstep>
+				<procdesc>Dataset copied.</procdesc>
+				<srcused></srcused>
+				<procdate>20081205</procdate>
+				<proctime>13315200</proctime>
+			</procstep>
+			<procstep>
+				<procdesc>Dataset copied.</procdesc>
+				<srcused></srcused>
+				<procdate>20081205</procdate>
+				<proctime>18423300</proctime>
+			</procstep>
+			<procstep>
+				<procdesc>Dataset copied.</procdesc>
+				<srcused></srcused>
+				<procdate>20081205</procdate>
+				<proctime>18560800</proctime>
+			</procstep>
+			<procstep>
+				<procdesc>Dataset copied.</procdesc>
+				<srcused>T:\simonb\wdpa_export\wdpa_pol3</srcused>
+				<procdate>20081205</procdate>
+				<proctime>20270400</proctime>
+			</procstep>
+			<procstep><procdesc Sync="TRUE">Metadata imported.</procdesc><srcused Sync="TRUE">C:\UNEP-WCMC\Other_Projects\Proteus\WDPA_Annual_Release_2008\WDPA_AR_2008_pol_draft_global.xml</srcused><procdate Sync="TRUE">20090310</procdate><proctime Sync="TRUE">16225200</proctime></procstep><procstep><procdesc Sync="TRUE">Metadata imported.</procdesc><srcused Sync="TRUE">C:\UNEP-WCMC\Other_Projects\Proteus\WDPA_Annual_Release_2008\WDPA_POL_130209_ORIG.shp.xml</srcused><procdate Sync="TRUE">20090310</procdate><proctime Sync="TRUE">16413800</proctime></procstep><procstep><procdesc Sync="TRUE">Dataset copied.</procdesc><srcused Sync="TRUE"></srcused><procdate Sync="TRUE">20090310</procdate><proctime Sync="TRUE">16501300</proctime></procstep><procstep><procdesc Sync="TRUE">Dataset moved.</procdesc><srcused Sync="TRUE">C:\UNEP-WCMC\Other_Projects\Proteus\WDPA_Annual_Release_2008\FINAL_DATASET\WDPA_Global_AR2009\WDPApol2009</srcused><procdate Sync="TRUE">20090310</procdate><proctime Sync="TRUE">19494200</proctime></procstep><procstep><procdesc Sync="TRUE">Dataset copied.</procdesc><srcused Sync="TRUE">C:\UNEP-WCMC\Other_Projects\Proteus\WDPA_Annual_Release_2008\FINAL_DATASET\WDPA_Global_AR2009\WDPApol2009_1\WDPApol2009</srcused><procdate Sync="TRUE">20090312</procdate><proctime Sync="TRUE">12414700</proctime></procstep><procstep><procdesc Sync="TRUE">Dataset copied.</procdesc><srcused Sync="TRUE">T:\LUCY_WDPA\WDPA_Global_AR2009\WDPApol2009_1\WDPApol2009</srcused><procdate Sync="TRUE">20090312</procdate><proctime Sync="TRUE">12442100</proctime></procstep><procstep><procdesc Sync="TRUE">Dataset copied.</procdesc><srcused Sync="TRUE">C:\Parks\wdpa_new\guinea\WDPApol2009</srcused><procdate Sync="TRUE">20090312</procdate><proctime Sync="TRUE">12551000</proctime></procstep><procstep><procdesc Sync="TRUE">Dataset copied.</procdesc><srcused Sync="TRUE">T:\LUCY_WDPA\WDPA_Global_AR2009\WDPApol2009_1\WDPApol2009</srcused><procdate Sync="TRUE">20090312</procdate><proctime Sync="TRUE">13560200</proctime></procstep><procstep><procdesc Sync="TRUE">Dataset copied.</procdesc><srcused Sync="TRUE">C:\Parks\wdpa_new\download\WDPApol2009</srcused><procdate Sync="TRUE">20090313</procdate><proctime Sync="TRUE">13343500</proctime></procstep><procstep><procdesc Sync="TRUE">Dataset copied.</procdesc><srcused Sync="TRUE">T:\LUCY_WDPA\WDPA_Global_AR2009\WDPApol2009</srcused><procdate Sync="TRUE">20090313</procdate><proctime Sync="TRUE">13575200</proctime></procstep></lineage>
+	</dataqual>
+	<spdoinfo>
+		<direct Sync="TRUE">Vector</direct>
+		<ptvctinf><esriterm Name="Global_EBSAs_automated_final_1104_2016"><efeatyp Sync="TRUE">Simple</efeatyp><efeageom code="4" Sync="TRUE"></efeageom><esritopo Sync="TRUE">FALSE</esritopo><efeacnt Sync="TRUE">0</efeacnt><spindex Sync="TRUE">FALSE</spindex><linrefer Sync="TRUE">FALSE</linrefer></esriterm></ptvctinf></spdoinfo>
+	<spref>
+		<horizsys>
+			<geodetic>
+				<horizdn Sync="TRUE">D_WGS_1984</horizdn>
+				<ellips Sync="TRUE">WGS_1984</ellips>
+				<semiaxis Sync="TRUE">6378137.000000</semiaxis>
+				<denflat Sync="TRUE">298.257224</denflat>
+			</geodetic>
+			<cordsysn><geogcsn Sync="TRUE">GCS_WGS_1984</geogcsn></cordsysn></horizsys>
+	</spref>
+	<eainfo>
+		<detailed Name="Global_EBSAs_automated_final_1104_2016">
+			<enttyp>
+				<enttypl Sync="TRUE">Global_EBSAs_automated_final_1104_2016</enttypl>
+				<enttypt Sync="TRUE">Feature Class</enttypt><enttypc Sync="TRUE">0</enttypc><enttypd>Global dataset of protected areas (marine and terrestrial)</enttypd><enttypds>World Database on Protected Areas Annual Release 2009 - Global dataset (polygons)</enttypds></enttyp>
+			<attr><attrlabl Sync="TRUE">FID</attrlabl><attalias Sync="TRUE">FID</attalias><attrtype Sync="TRUE">OID</attrtype><attwidth Sync="TRUE">4</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale><attrdef Sync="TRUE">Internal feature number.</attrdef><attrdefs Sync="TRUE">Esri</attrdefs><attrdomv><udom Sync="TRUE">Sequential unique whole numbers that are automatically generated.</udom></attrdomv></attr><attr>
+				<attrlabl>Shape</attrlabl>
+				<attrdef>Feature geometry.</attrdef>
+				<attrdefs>ESRI</attrdefs>
+				<attrdomv>
+					<udom>Coordinates defining the features.</udom>
+				</attrdomv>
+				<attalias Sync="TRUE">Shape</attalias><attrtype Sync="TRUE">Geometry</attrtype><attwidth Sync="TRUE">0</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr>
+			<attr><attrlabl Sync="TRUE">NAME</attrlabl><attalias Sync="TRUE">NAME</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">150</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl Sync="TRUE">Workshop</attrlabl><attalias Sync="TRUE">Workshop</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">50</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl Sync="TRUE">EBSA_ID</attrlabl><attalias Sync="TRUE">EBSA_ID</attalias><attrtype Sync="TRUE">Integer</attrtype><attwidth Sync="TRUE">10</attwidth><atprecis Sync="TRUE">10</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl Sync="TRUE">AREA_MW_KM</attrlabl><attalias Sync="TRUE">AREA_MW_KM</attalias><attrtype Sync="TRUE">Single</attrtype><attwidth Sync="TRUE">13</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr><attr><attrlabl Sync="TRUE">GLOBAL_ID</attrlabl><attalias Sync="TRUE">GLOBAL_ID</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">10</attwidth><atprecis Sync="TRUE">0</atprecis><attscale Sync="TRUE">0</attscale></attr></detailed>
+	</eainfo>
+	<distinfo>
+		<distrib>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>UNEP World Conservation Monitoring Centre (UNEP-WCMC)</cntorg>
+					<cntper>WDPA Team</cntper>
+				</cntorgp>
+				<cntpos>Protected Areas Programme</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical address</addrtype>
+					<address>219 Huntingdon Road</address>
+					<city>Cambridge</city>
+					<state>Cambridgeshire</state>
+					<postal>CB3 0DL</postal>
+					<country>United Kingdom</country>
+				</cntaddr>
+				<cntvoice>+44(0) 1223 277314</cntvoice>
+				<cntfax>+44(0) 1223 277136</cntfax>
+				<cntemail>protectedareas@unep-wcmc.org</cntemail>
+				<cntemail>wdpacommercial@unep-wcmc.org</cntemail>
+				<hours>Monday to Friday (9 am - 5:30 pm GMT)</hours>
+			</cntinfo>
+		</distrib>
+		<resdesc>Web Downloadable Data from WDPA.org</resdesc>
+		<stdorder>
+			<digform>
+				<digtinfo>
+					<transize>637.633</transize>
+					<dssize Sync="TRUE">601.836</dssize></digtinfo>
+			</digform>
+		</stdorder>
+	</distinfo>
+	<metainfo>
+		<metd Sync="TRUE">20090512</metd>
+		<metrd>20100127</metrd>
+		<metc>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>UNEP World Conservation Monitoring Centre (UNEP-WCMC)</cntorg>
+					<cntper>WDPA Team</cntper>
+				</cntorgp>
+				<cntpos>Protected Areas Programme</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical address</addrtype>
+					<address>219 Huntingdon Road</address>
+					<city>Cambridge</city>
+					<state>Cambridgeshire</state>
+					<postal>CB3 0DL</postal>
+					<country>United Kingdom</country>
+				</cntaddr>
+				<cntvoice>+44(0)1223 277314</cntvoice>
+				<cntfax>+44(0)1223 277136</cntfax>
+				<cntemail>protectedareas@unep-wcmc.org</cntemail>
+				<cntemail>wdpacommerical@unep-wcmc.org</cntemail>
+				<hours>Monday - Friday (9 am - 5 pm GMT)</hours>
+			</cntinfo>
+		</metc>
+		<metstdn Sync="TRUE">FGDC Content Standards for Digital Geospatial Metadata</metstdn>
+		<metstdv Sync="TRUE">FGDC-STD-001-1998</metstdv>
+		<mettc Sync="TRUE">local time</mettc>
+		<metextns>
+			<onlink>http://www.esri.com/metadata/esriprof80.html</onlink>
+			<metprof>ESRI Metadata Profile</metprof>
+		</metextns>
+		<langmeta Sync="TRUE">en</langmeta></metainfo>
+	<Esri><CreaDate>20170530</CreaDate><CreaTime>11141800</CreaTime><SyncOnce>FALSE</SyncOnce><SyncDate>20170530</SyncDate><SyncTime>11131500</SyncTime><ModDate>20170530</ModDate><ModTime>11131500</ModTime><ArcGISFormat>1.0</ArcGISFormat><ArcGISstyle>INSPIRE Metadata Directive</ArcGISstyle><DataProperties><itemProps><itemLocation><linkage Sync="TRUE">file://\\mgelnet.env.duke.edu\data\cmc\projects\CBD_EBSA_global_map\GIS\Version_1104_2016\Global_EBSAs_automated_final_1104_2016.shp</linkage><protocol Sync="TRUE">Local Area Network</protocol></itemLocation><itemName Sync="TRUE">Global_EBSAs_automated_final_1104_2016</itemName><imsContentType Sync="TRUE">002</imsContentType><itemSize Sync="TRUE">0.000</itemSize></itemProps><coordRef><type Sync="TRUE">Projected</type><geogcsn Sync="TRUE">GCS_WGS_1984</geogcsn><csUnits Sync="TRUE">Linear Unit: Meter (1.000000)</csUnits><peXml Sync="TRUE">&lt;ProjectedCoordinateSystem xsi:type='typens:ProjectedCoordinateSystem' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:typens='http://www.esri.com/schemas/ArcGIS/10.4'&gt;&lt;WKT&gt;PROJCS[&amp;quot;World_Mollweide&amp;quot;,GEOGCS[&amp;quot;GCS_WGS_1984&amp;quot;,DATUM[&amp;quot;D_WGS_1984&amp;quot;,SPHEROID[&amp;quot;WGS_1984&amp;quot;,6378137.0,298.257223563]],PRIMEM[&amp;quot;Greenwich&amp;quot;,0.0],UNIT[&amp;quot;Degree&amp;quot;,0.0174532925199433]],PROJECTION[&amp;quot;Mollweide&amp;quot;],PARAMETER[&amp;quot;False_Easting&amp;quot;,0.0],PARAMETER[&amp;quot;False_Northing&amp;quot;,0.0],PARAMETER[&amp;quot;Central_Meridian&amp;quot;,-160.0],UNIT[&amp;quot;Meter&amp;quot;,1.0]]&lt;/WKT&gt;&lt;XOrigin&gt;-18040200&lt;/XOrigin&gt;&lt;YOrigin&gt;-9020200&lt;/YOrigin&gt;&lt;XYScale&gt;249642444.5056316&lt;/XYScale&gt;&lt;ZOrigin&gt;-100000&lt;/ZOrigin&gt;&lt;ZScale&gt;10000&lt;/ZScale&gt;&lt;MOrigin&gt;-100000&lt;/MOrigin&gt;&lt;MScale&gt;10000&lt;/MScale&gt;&lt;XYTolerance&gt;0.001&lt;/XYTolerance&gt;&lt;ZTolerance&gt;0.001&lt;/ZTolerance&gt;&lt;MTolerance&gt;0.001&lt;/MTolerance&gt;&lt;HighPrecision&gt;true&lt;/HighPrecision&gt;&lt;/ProjectedCoordinateSystem&gt;</peXml><projcsn Sync="TRUE">World_Mollweide</projcsn></coordRef><lineage><Process ToolSource="c:\program files (x86)\arcgis\desktop10.0\ArcToolbox\Toolboxes\Data Management Tools.tbx\Merge" Date="20120228" Time="080252">Merge EBSAs\Buccoo_Reef;EBSAs\Jamaica\Pedro_Bank;EBSAs\US\Bloody_Bay;'EBSAs\St Lucia\St_Lucia';EBSAs\Nicaragua\Cayos_Miskitos;EBSAs\Guatemala\Manabique;'EBSAs\Saba Bank';EBSAs\Sea_Flower_MPA;EBSAs\Brazil\Brazil_EBSA;EBSAs\SargassoSea E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\EBSAs\EBSAs_merged "Shape_Length "Shape_Length" false true true 8 Double 0 0 ,First,#,EBSAs\Buccoo_Reef,Shape_Length,-1,-1,EBSAs\Jamaica\Pedro_Bank,SHAPE_Length,-1,-1,EBSAs\US\Bloody_Bay,Shape_Length,-1,-1,EBSAs\St Lucia\St_Lucia,SHAPE_Length,-1,-1,EBSAs\Nicaragua\Cayos_Miskitos,SHAPE_Length,-1,-1,EBSAs\Guatemala\Manabique,SHAPE_Length,-1,-1,EBSAs\Saba Bank,SHAPE_Length,-1,-1,EBSAs\Sea_Flower_MPA,Shape_Length,-1,-1,EBSAs\Brazil\Brazil_EBSA,Shape_Length,-1,-1,EBSAs\SargassoSea,Shape_Length,-1,-1;Shape_Area "Shape_Area" false true true 8 Double 0 0 ,First,#,EBSAs\Buccoo_Reef,Shape_Area,-1,-1,EBSAs\Jamaica\Pedro_Bank,SHAPE_Area,-1,-1,EBSAs\US\Bloody_Bay,Shape_Area,-1,-1,EBSAs\St Lucia\St_Lucia,SHAPE_Area,-1,-1,EBSAs\Nicaragua\Cayos_Miskitos,SHAPE_Area,-1,-1,EBSAs\Guatemala\Manabique,SHAPE_Area,-1,-1,EBSAs\Saba Bank,SHAPE_Area,-1,-1,EBSAs\Sea_Flower_MPA,Shape_Area,-1,-1,EBSAs\Brazil\Brazil_EBSA,Shape_Area,-1,-1,EBSAs\SargassoSea,Shape_Area,-1,-1;NAME "NAME" true true false 50 Text 0 0 ,First,#,EBSAs\Buccoo_Reef,NAME,-1,-1,EBSAs\Jamaica\Pedro_Bank,NAME,-1,-1,EBSAs\US\Bloody_Bay,NAME,-1,-1,EBSAs\St Lucia\St_Lucia,NAME,-1,-1,EBSAs\Nicaragua\Cayos_Miskitos,NAME,-1,-1,EBSAs\Guatemala\Manabique,NAME,-1,-1,EBSAs\Saba Bank,NAME,-1,-1,EBSAs\Sea_Flower_MPA,NAME,-1,-1,EBSAs\Brazil\Brazil_EBSA,NAME,-1,-1,EBSAs\SargassoSea,Name,-1,-1;SUBMITTED_BY "SUBMITTED_BY" true true false 30 Text 0 0 ,First,#,EBSAs\Buccoo_Reef,SUBMITTED_BY,-1,-1,EBSAs\Jamaica\Pedro_Bank,SUBMITTED_BY,-1,-1,EBSAs\US\Bloody_Bay,SUBMITTED_BY,-1,-1,EBSAs\St Lucia\St_Lucia,SUBMITTED_BY,-1,-1,EBSAs\Nicaragua\Cayos_Miskitos,SUBMITTED_BY,-1,-1,EBSAs\Guatemala\Manabique,SUBMITTED_BY,-1,-1,EBSAs\Saba Bank,SUBMITTED_BY,-1,-1,EBSAs\Sea_Flower_MPA,SUBMITTED_BY,-1,-1,EBSAs\Brazil\Brazil_EBSA,SUBMITTED_BY,-1,-1,EBSAs\SargassoSea,SUBMITTED_BY,-1,-1;SITE_ID "SITE_ID" true true false 4 Long 0 0 ,First,#,EBSAs\US\Bloody_Bay,SITE_ID,-1,-1"</Process><Process ToolSource="c:\program files (x86)\arcgis\desktop10.0\ArcToolbox\Toolboxes\Data Management Tools.tbx\Append" Date="20120301" Time="041456">Append buffer_temp_2 EBSAs_merged_edit NO_TEST "NAME "NAME" true true false 50 Text 0 0 ,First,#;SUBMITTED_BY "SUBMITTED_BY" true true false 30 Text 0 0 ,First,#;AREA_KM2 "AREA_KM2" true true false 4 Float 0 0 ,First,#;Shape_Length "Shape_Length" false true true 8 Double 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\buffer_temp_2,Shape_Length,-1,-1;Shape_Area "Shape_Area" false true true 8 Double 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\buffer_temp_2,Shape_Area,-1,-1" #</Process><Process ToolSource="c:\program files (x86)\arcgis\desktop10.0\ArcToolbox\Toolboxes\Data Management Tools.tbx\Append" Date="20120301" Time="042248">Append SargassoSea_v2 EBSAs_merged_edit NO_TEST "NAME "NAME" true true false 50 Text 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\SargassoSea\SargassoSea_v2,NAME,-1,-1;SUBMITTED_BY "SUBMITTED_BY" true true false 30 Text 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\SargassoSea\SargassoSea_v2,SUBMITTED_BY,-1,-1;AREA_KM2 "AREA_KM2" true true false 4 Float 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\SargassoSea\SargassoSea_v2,AREA_KM2,-1,-1;Shape_Length "Shape_Length" false true true 8 Double 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\SargassoSea\SargassoSea_v2,Shape_Length,-1,-1;Shape_Area "Shape_Area" false true true 8 Double 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\SargassoSea\SargassoSea_v2,Shape_Area,-1,-1" #</Process><Process ToolSource="c:\program files (x86)\arcgis\desktop10.0\ArcToolbox\Toolboxes\Data Management Tools.tbx\Append" Date="20120301" Time="062029">Append SECUA;areas_prueba EBSAs_merged_edit NO_TEST "NAME "NAME" true true false 50 Text 0 0 ,First,#;SUBMITTED_BY "SUBMITTED_BY" true true false 30 Text 0 0 ,First,#;AREA_KM2 "AREA_KM2" true true false 4 Float 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\Data\_at_Meeting\shape EBSA_Colombia_Offshore\shape EBSA_Colombia_Offshore\areas_prueba2.shp,Area_Km2,-1,-1;Shape_Length "Shape_Length" false true true 8 Double 0 0 ,First,#;Shape_Area "Shape_Area" false true true 8 Double 0 0 ,First,#" #</Process><Process ToolSource="C:\Program Files (x86)\ArcGIS\Desktop10.0\ArcToolbox\Toolboxes\Data Management Tools.tbx\Append" Date="20120301" Time="111449">Append SECUA_clipped EBSAs_merged_edit NO_TEST "NAME "NAME" true true false 50 Text 0 0 ,First,#;SUBMITTED_BY "SUBMITTED_BY" true true false 30 Text 0 0 ,First,#;AREA_KM2 "AREA_KM2" true true false 4 Float 0 0 ,First,#;Shape_Length "Shape_Length" false true true 8 Double 0 0 ,First,#;Shape_Area "Shape_Area" false true true 8 Double 0 0 ,First,#" #</Process><Process ToolSource="C:\Program Files (x86)\ArcGIS\Desktop10.0\ArcToolbox\Toolboxes\Data Management Tools.tbx\Append" Date="20120301" Time="140716">Append areas_prueba2 EBSAs_merged_edit NO_TEST "NAME "NAME" true true false 50 Text 0 0 ,First,#;SUBMITTED_BY "SUBMITTED_BY" true true false 30 Text 0 0 ,First,#;AREA_KM2 "AREA_KM2" true true false 4 Float 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAS COLOMBIA\EBSAS COLOMBIA\areas_prueba2.shp,Area_Km2,-1,-1;Shape_Length "Shape_Length" false true true 8 Double 0 0 ,First,#;Shape_Area "Shape_Area" false true true 8 Double 0 0 ,First,#" #</Process><Process ToolSource="c:\program files (x86)\arcgis\desktop10.0\ArcToolbox\Toolboxes\Data Management Tools.tbx\Append" Date="20120315" Time="145433">Append Western_Caribbean_EBSAs\Silver_Banks_edit;Western_Caribbean_EBSAs\Saba_Bank_modified;Western_Caribbean_EBSAs\Eastern_Caribbean_edit;Western_Caribbean_EBSAs\Haiti_Dominican_Trans;Western_Caribbean_EBSAs\Navassa_Island;Western_Caribbean_EBSAs\Costa_Rica_North;Western_Caribbean_EBSAs\Costa_Rica_South;Western_Caribbean_EBSAs\Cayos_Miskitos_edit;Western_Caribbean_EBSAs\Corn_Island_edit;Western_Caribbean_EBSAs\Common_Banks_union_Dissolve;Western_Caribbean_EBSAs\Sea_Flower;Western_Caribbean_EBSAs\Mesoamerican_BRS_v2 EBSAs_Final NO_TEST "NAME "NAME" true true false 50 Text 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Silver_Banks_edit,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Saba_Bank_modified,Name,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Eastern_Caribbean_edit,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Haiti_Dominican_Trans,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Navassa_Island,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_North,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_South,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Cayos_Miskitos_edit,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Corn_Island_edit,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Common_Banks_union_Dissolve,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Sea_Flower,NAME,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Mesoamerican_BRS_v2,NAME,-1,-1;SUBMITTED_BY "SUBMITTED_BY" true true false 30 Text 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Silver_Banks_edit,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Saba_Bank_modified,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Eastern_Caribbean_edit,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Haiti_Dominican_Trans,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Navassa_Island,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_North,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_South,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Cayos_Miskitos_edit,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Corn_Island_edit,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Common_Banks_union_Dissolve,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Sea_Flower,SUBMITTED_BY,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Mesoamerican_BRS_v2,SUBMITTED_BY,-1,-1;AREA_KM2 "AREA_KM2" true true false 4 Float 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Silver_Banks_edit,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Saba_Bank_modified,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Eastern_Caribbean_edit,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Haiti_Dominican_Trans,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Navassa_Island,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_North,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_South,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Cayos_Miskitos_edit,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Corn_Island_edit,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Common_Banks_union_Dissolve,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Sea_Flower,AREA_KM2,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Mesoamerican_BRS_v2,AREA_KM2,-1,-1;Shape_Length "Shape_Length" false true true 8 Double 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Silver_Banks_edit,Shape_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Saba_Bank_modified,Shape_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Eastern_Caribbean_edit,SHAPE_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Haiti_Dominican_Trans,SHAPE_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Navassa_Island,Shape_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_North,Shape_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_South,Shape_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Cayos_Miskitos_edit,Shape_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Corn_Island_edit,SHAPE_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Common_Banks_union_Dissolve,SHAPE_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Sea_Flower,Shape_Length,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Mesoamerican_BRS_v2,Shape_Length,-1,-1;Shape_Area "Shape_Area" false true true 8 Double 0 0 ,First,#,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Silver_Banks_edit,Shape_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Saba_Bank_modified,Shape_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Eastern_Caribbean_edit,SHAPE_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Haiti_Dominican_Trans,SHAPE_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Navassa_Island,Shape_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_North,Shape_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Costa_Rica_South,Shape_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Cayos_Miskitos_edit,Shape_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Corn_Island_edit,SHAPE_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Common_Banks_union_Dissolve,SHAPE_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Sea_Flower,Shape_Area,-1,-1,E:\CAR_WTA_EBSA\GIS\EBSA\EBSAs.gdb\WesternCaribbean\Mesoamerican_BRS_v2,Shape_Area,-1,-1" #</Process><Process ToolSource="C:\Program Files\ArcGIS\Desktop10.0\ArcToolbox\Toolboxes\Data Management Tools.tbx\RepairGeometry" Date="20130617" Time="150110">RepairGeometry EBSAs\EBSAs_Final KEEP_NULL</Process><Process ToolSource="c:\program files (x86)\arcgis\desktop10.1\ArcToolbox\Toolboxes\Data Management Tools.tbx\CalculateField" Date="20130805" Time="103134">CalculateField CAR_WTA\EBSAs_Final Workshop "Wider Caribbean and Western Mid-Atlantic" VB #</Process><Process ToolSource="c:\program files (x86)\arcgis\desktop10.2\ArcToolbox\Toolboxes\Data Management Tools.tbx\CalculateField" Date="20150311" Time="120539">CalculateField CAR_WTA\EBSAs_Final Workshop "Wider Caribbean and Western MidAtlantic" VB #</Process><Process Name="Merge" ToolSource="c:\program files (x86)\arcgis\desktop10.4\ArcToolbox\Toolboxes\Data Management Tools.tbx\Merge" Date="20170530" Time="110957">Merge CAR_WTA\EBSAs_Final;ETTP\EBSA_final_v2;NP\EBSA_ALL_v2;CSIRO\EBSA_SIO_20130815_JC_final;CSIRO\EBSA_ebsabnds_SP_only_final;CSIRO\ebsa_seatlantic_20130814_newids__JC_final;Arctic\EBSA_ALL;MED\EBSA_ALL;NW_ATL\EBSA_ALL;CSIRO\nwio_ebsaboundary20161103163401_DIS_FINAL;CSIRO\NorthEastIndianOcean_EBSABND_20160825_DIS_FINAL;CSIRO\EBSA_ebsabnds_EastAsia_20161104110155_DIS_FINAL V:\cmc\projects\CBD_EBSA_global_map\GIS\Working\Global_EBSAs_automated_temp1.shp "NAME "NAME" true true false 150 Text 0 0 ,First,#,CAR_WTA\EBSAs_Final,NAME,-1,-1,ETTP\EBSA_final_v2,Name,-1,-1,NP\EBSA_ALL_v2,NAME,-1,-1,Arctic\EBSA_ALL,NAME,-1,-1,MED\EBSA_ALL,NAME,-1,-1,NW_ATL\EBSA_ALL,Name,-1,-1,CSIRO\nwio_ebsaboundary20161103163401_DIS_FINAL,NAME,-1,-1,CSIRO\NorthEastIndianOcean_EBSABND_20160825_DIS_FINAL,NAME,-1,-1,CSIRO\EBSA_ebsabnds_EastAsia_20161104110155_DIS_FINAL,NAME_REPT,-1,-1,CSIRO\EBSA_ebsabnds_SP_only_final,NAMEFINAL,-1,-1,CSIRO\EBSA_SIO_20130815_JC_final,EBSANAME,-1,-1,CSIRO\ebsa_seatlantic_20130814_newids__JC_final,AREA_NAME,-1,-1;Workshop "Workshop" true true false 50 Text 0 0 ,First,#,CAR_WTA\EBSAs_Final,Workshop,-1,-1,ETTP\EBSA_final_v2,Workshop,-1,-1,NP\EBSA_ALL_v2,Workshop,-1,-1,CSIRO\EBSA_SIO_20130815_JC_final,Workshop,-1,-1,Arctic\EBSA_ALL,WORKSHOP,-1,-1,MED\EBSA_ALL,WORKSHOP,-1,-1,NW_ATL\EBSA_ALL,Workshop,-1,-1,CSIRO\nwio_ebsaboundary20161103163401_DIS_FINAL,Workshop,-1,-1,CSIRO\NorthEastIndianOcean_EBSABND_20160825_DIS_FINAL,Workshop,-1,-1,CSIRO\EBSA_ebsabnds_EastAsia_20161104110155_DIS_FINAL,Workshop,-1,-1,CSIRO\EBSA_ebsabnds_SP_only_final,EBSAREGION,-1,-1,CSIRO\ebsa_seatlantic_20130814_newids__JC_final,EBSAREGION,-1,-1;EBSA_ID "NewFieldName" true true false 50 Short 0 0 ,First,#,CAR_WTA\EBSAs_Final,EBSA_ID,-1,-1,ETTP\EBSA_final_v2,Id,-1,-1,NP\EBSA_ALL_v2,EBSA_ID,-1,-1,CSIRO\EBSA_SIO_20130815_JC_final,ID20130815,-1,-1,CSIRO\EBSA_ebsabnds_SP_only_final,EBSAFINAL,-1,-1,CSIRO\ebsa_seatlantic_20130814_newids__JC_final,ID20130814,-1,-1,Arctic\EBSA_ALL,EBSA_ID,-1,-1,MED\EBSA_ALL,EBSA_ID,-1,-1,NW_ATL\EBSA_ALL,EBSA_ID,-1,-1,CSIRO\nwio_ebsaboundary20161103163401_DIS_FINAL,EBSAFINAL,-1,-1,CSIRO\NorthEastIndianOcean_EBSABND_20160825_DIS_FINAL,EBSAFINAL,-1,-1,CSIRO\EBSA_ebsabnds_EastAsia_20161104110155_DIS_FINAL,EBSAID,-1,-1"</Process><Process Name="Dissolve" ToolSource="c:\program files (x86)\arcgis\desktop10.4\ArcToolbox\Toolboxes\Data Management Tools.tbx\Dissolve" Date="20170530" Time="111006">Dissolve V:\cmc\projects\CBD_EBSA_global_map\GIS\Working\Global_EBSAs_automated_temp1.shp V:\cmc\projects\CBD_EBSA_global_map\GIS\Working\Global_EBSAs_automated_temp2.shp NAME;Workshop;EBSA_ID # MULTI_PART DISSOLVE_LINES</Process><Process Name="Add Field" ToolSource="c:\program files (x86)\arcgis\desktop10.4\ArcToolbox\Toolboxes\Data Management Tools.tbx\AddField" Date="20170530" Time="111009">AddField V:\cmc\projects\CBD_EBSA_global_map\GIS\Working\Global_EBSAs_automated_temp2.shp AREA_MW_KM FLOAT # # # # NULLABLE NON_REQUIRED #</Process><Process Name="Calculate Field" ToolSource="c:\program files (x86)\arcgis\desktop10.4\ArcToolbox\Toolboxes\Data Management Tools.tbx\CalculateField" Date="20170530" Time="111013">CalculateField V:\cmc\projects\CBD_EBSA_global_map\GIS\Working\Global_EBSAs_automated_temp2.shp AREA_MW_KM !shape.area@SQUAREKILOMETERS! PYTHON #</Process><Process Name="Add Field (2)" ToolSource="c:\program files (x86)\arcgis\desktop10.4\ArcToolbox\Toolboxes\Data Management Tools.tbx\AddField" Date="20170530" Time="111016">AddField V:\cmc\projects\CBD_EBSA_global_map\GIS\Working\Global_EBSAs_automated_temp2.shp GLOBAL_ID TEXT # # 10 # NULLABLE NON_REQUIRED #</Process><Process Name="Calculate Field (2)" ToolSource="c:\program files (x86)\arcgis\desktop10.4\ArcToolbox\Toolboxes\Data Management Tools.tbx\CalculateField" Date="20170530" Time="111020">CalculateField V:\cmc\projects\CBD_EBSA_global_map\GIS\Working\Global_EBSAs_automated_temp2.shp GLOBAL_ID Calc__GLOBAL_ID( !Workshop!, !EBSA_ID!) PYTHON_9.3 "def Calc__GLOBAL_ID(Workshop,EBSA_ID):\n\n    if Workshop == "Arctic":\n       ABR = "ARC"\n    if Workshop == "Eastern Tropical and Temperate Pacific":\n       ABR = "ETTP"\n    if Workshop == "Mediterranean":\n       ABR = "MED"     \n    if Workshop == "North Pacific":\n       ABR = "NP"  \n    if Workshop == "Northwest Atlantic":\n       ABR = "NWA"  \n    if Workshop == "South East Atlantic":\n       ABR = "SEA"  \n    if Workshop == "South Pacific":\n       ABR = "SP"      \n    if Workshop == "Southern Indian Ocean":\n       ABR = "SIO"  \n    if Workshop == "Wider Caribbean and Western MidAtlantic":\n       ABR = "WC"        \n    if Workshop == "OSPAR":\n        ABR = "OSP"\n    if Workshop == "Seas of East Asia":\n        ABR = "EA"\n    if Workshop == "North-East Indian Ocean Region":\n        ABR = "NEIO"\n    if Workshop == "North-West Indian Ocean and Adjacent Gulf Areas":\n        ABR = "NWIO"\n\n    GID = ABR + "_"+str(EBSA_ID)\n    return GID"</Process><Process Name="Sort" ToolSource="c:\program files (x86)\arcgis\desktop10.4\ArcToolbox\Toolboxes\Data Management Tools.tbx\Sort" Date="20170530" Time="111315">Sort "Global_EBSA_automated_temp2.shp (2)" V:\cmc\projects\CBD_EBSA_global_map\GIS\Version_1104_2016\Global_EBSAs_automated_final_1104_2016.shp "AREA_MW_KM DESCENDING" UR</Process><Process Name="Project" ToolSource="c:\program files (x86)\arcgis\desktop10.4\ArcToolbox\Toolboxes\Data Management Tools.tbx\Project" Date="20170530" Time="111419">Project V:\cmc\projects\CBD_EBSA_global_map\GIS\Version_1104_2016\Global_EBSAs_Automated_Final_1104_2016.shp V:\cmc\projects\CBD_EBSA_global_map\GIS\Version_1104_2016\Global_EBSAs_Automated_Final_1104_2016_WGS84.shp GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',SPHEROID['WGS_1984',6378137.0,298.257223563]],PRIMEM['Greenwich',0.0],UNIT['Degree',0.0174532925199433]] # PROJCS['World_Mollweide',GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',SPHEROID['WGS_1984',6378137.0,298.257223563]],PRIMEM['Greenwich',0.0],UNIT['Degree',0.0174532925199433]],PROJECTION['Mollweide'],PARAMETER['False_Easting',0.0],PARAMETER['False_Northing',0.0],PARAMETER['Central_Meridian',-160.0],UNIT['Meter',1.0]] NO_PRESERVE_SHAPE # NO_VERTICAL</Process></lineage></DataProperties></Esri><dataIdInfo><envirDesc Sync="TRUE"> Version 6.2 (Build 9200) ; Esri ArcGIS 10.4.1.5686</envirDesc><dataLang><languageCode Sync="TRUE" value="eng"></languageCode><countryCode value="USA" Sync="TRUE"></countryCode></dataLang><idCitation><resTitle Sync="TRUE">Global_EBSAs_automated_final_1104_2016</resTitle><presForm><PresFormCd Sync="TRUE" value="005"></PresFormCd></presForm></idCitation><spatRpType><SpatRepTypCd Sync="TRUE" value="001"></SpatRepTypCd></spatRpType><dataExt><geoEle><GeoBndBox esriExtentType="native"><westBL Sync="TRUE">-180</westBL><eastBL Sync="TRUE">179.99954</eastBL><northBL Sync="TRUE">83.73</northBL><southBL Sync="TRUE">-68.652558</southBL><exTypeCode Sync="TRUE">1</exTypeCode></GeoBndBox></geoEle></dataExt><geoBox esriExtentType="decdegrees"><westBL Sync="TRUE">-180</westBL><eastBL Sync="TRUE">179.99954</eastBL><northBL Sync="TRUE">83.73</northBL><southBL Sync="TRUE">-68.652558</southBL><exTypeCode Sync="TRUE">1</exTypeCode></geoBox></dataIdInfo><mdLang><languageCode Sync="TRUE" value="eng"></languageCode><countryCode value="USA" Sync="TRUE"></countryCode></mdLang><mdStanName Sync="TRUE">ISO 19115 Geographic Information - Metadata</mdStanName><mdStanVer Sync="TRUE">DIS_ESRI1.0</mdStanVer><mdChar><CharSetCd Sync="TRUE" value="004"></CharSetCd></mdChar><mdHrLv><ScopeCd Sync="TRUE" value="005"></ScopeCd></mdHrLv><mdHrLvName Sync="TRUE">dataset</mdHrLvName><distInfo><distributor><distorTran><onLineSrc><orDesc Sync="TRUE">002</orDesc><linkage Sync="TRUE">file://\\JESSE-14AD9A909\Z\Data\BaseData\MPAs\WDPApol2009.shp</linkage><protocol Sync="TRUE">Local Area Network</protocol></onLineSrc><transSize Sync="TRUE">601.836</transSize></distorTran><distorFormat><formatName Sync="TRUE">Shapefile</formatName></distorFormat></distributor><distFormat><formatName Sync="TRUE">Shapefile</formatName></distFormat><distTranOps><transSize Sync="TRUE">0.000</transSize></distTranOps></distInfo><refSysInfo><RefSystem><refSysID><identCode Sync="TRUE" value="4326" code="0">GCS_WGS_1984</identCode><idCodeSpace Sync="TRUE">EPSG</idCodeSpace><idVersion Sync="TRUE">7.4.1</idVersion></refSysID></RefSystem></refSysInfo><spatRepInfo><VectSpatRep><geometObjs Name="Global_EBSAs_automated_final_1104_2016"><geoObjTyp><GeoObjTypCd value="002" Sync="TRUE"></GeoObjTypCd></geoObjTyp><geoObjCnt Sync="TRUE">0</geoObjCnt></geometObjs><topLvl><TopoLevCd value="001" Sync="TRUE"></TopoLevCd></topLvl></VectSpatRep></spatRepInfo><mdDateSt Sync="TRUE">20170530</mdDateSt></metadata>

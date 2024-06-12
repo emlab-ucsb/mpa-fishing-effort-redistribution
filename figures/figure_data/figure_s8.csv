@@ -1,0 +1,17 @@
+variable_name,stage,contribution
+"AIS fishing effort: 1, 2, or 3 year lag",Stage 1,0.1555076133296492
+"AIS fishing effort: 1, 2, or 3 year lag",Stage 2,1.2340513780930245
+Economic,Stage 1,0.012135055193189801
+Economic,Stage 2,0.061392115395725005
+Environmental,Stage 1,0.12933071068034166
+Environmental,Stage 2,0.25173045574984376
+Geographic,Stage 1,0.11160573288055448
+Geographic,Stage 2,0.35331292446903667
+Governance,Stage 1,0.014809597249636902
+Governance,Stage 2,0.0709072724997392
+MPA implementation,Stage 1,0.06907106800673252
+MPA implementation,Stage 2,0.19162355774878134
+Technological,Stage 1,0.11314147146635091
+Technological,Stage 2,0.13117443216956556
+Year,Stage 1,0.006790409135280495
+Year,Stage 2,0.027232013809288608

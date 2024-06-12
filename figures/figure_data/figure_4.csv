@@ -1,0 +1,339 @@
+forecast_horizon,scenario,mpa_coverage,fishing_hours,observed,fishing_hours_millions
+1,Protecting unfished pixels,MPA coverage: 3%,55082007.4969415,Predicted,55.0820074969415
+2,Protecting unfished pixels,MPA coverage: 3%,54572533.856798775,Predicted,54.57253385679878
+3,Protecting unfished pixels,MPA coverage: 3%,54707121.03748079,Predicted,54.70712103748079
+1,Protecting unfished pixels,MPA coverage: 5%,54875588.76449259,Predicted,54.87558876449259
+2,Protecting unfished pixels,MPA coverage: 5%,54174772.38578575,Predicted,54.17477238578575
+3,Protecting unfished pixels,MPA coverage: 5%,54182937.02202788,Predicted,54.18293702202788
+1,Protecting unfished pixels,MPA coverage: 10%,54807856.0871503,Predicted,54.8078560871503
+2,Protecting unfished pixels,MPA coverage: 10%,54163195.45119147,Predicted,54.16319545119147
+3,Protecting unfished pixels,MPA coverage: 10%,53039552.70537228,Predicted,53.03955270537228
+1,Protecting unfished pixels,MPA coverage: 16%,54719424.02610911,Predicted,54.71942402610911
+2,Protecting unfished pixels,MPA coverage: 16%,53923790.4932682,Predicted,53.9237904932682
+3,Protecting unfished pixels,MPA coverage: 16%,52651919.65851813,Predicted,52.651919658518125
+1,Protecting unfished pixels,MPA coverage: 20%,54598939.84308974,Predicted,54.59893984308974
+2,Protecting unfished pixels,MPA coverage: 20%,53724513.729961716,Predicted,53.724513729961714
+3,Protecting unfished pixels,MPA coverage: 20%,52308773.53746593,Predicted,52.30877353746593
+1,Protecting unfished pixels,MPA coverage: 30%,54456151.84132847,Predicted,54.45615184132847
+2,Protecting unfished pixels,MPA coverage: 30%,53545736.3450043,Predicted,53.5457363450043
+3,Protecting unfished pixels,MPA coverage: 30%,52062022.39838269,Predicted,52.062022398382695
+1,Visalli et al. 2020,MPA coverage: 16%,53900977.395556234,Predicted,53.90097739555623
+2,Visalli et al. 2020,MPA coverage: 16%,52879351.1975149,Predicted,52.8793511975149
+3,Visalli et al. 2020,MPA coverage: 16%,53038093.404769026,Predicted,53.03809340476903
+1,Expert-derived EBSA,MPA coverage: 20%,51949030.20783532,Predicted,51.949030207835314
+2,Expert-derived EBSA,MPA coverage: 20%,50782408.64923896,Predicted,50.78240864923896
+3,Expert-derived EBSA,MPA coverage: 20%,49135327.780981004,Predicted,49.135327780981
+1,Sala et al. 2021 food,MPA coverage: 3%,53389092.09433628,Predicted,53.38909209433628
+2,Sala et al. 2021 food,MPA coverage: 3%,52394113.01271108,Predicted,52.39411301271108
+3,Sala et al. 2021 food,MPA coverage: 3%,50797383.06320254,Predicted,50.79738306320254
+1,Sala et al. 2021 food,MPA coverage: 5%,51744960.319199644,Predicted,51.74496031919964
+2,Sala et al. 2021 food,MPA coverage: 5%,50438753.391265996,Predicted,50.438753391266
+3,Sala et al. 2021 food,MPA coverage: 5%,47969285.30228684,Predicted,47.96928530228684
+1,Sala et al. 2021 food,MPA coverage: 10%,51233043.0448541,Predicted,51.2330430448541
+2,Sala et al. 2021 food,MPA coverage: 10%,49797046.87368855,Predicted,49.79704687368855
+3,Sala et al. 2021 food,MPA coverage: 10%,47545306.86122743,Predicted,47.54530686122743
+1,Sala et al. 2021 food,MPA coverage: 16%,50774472.60508541,Predicted,50.77447260508541
+2,Sala et al. 2021 food,MPA coverage: 16%,49194376.965152584,Predicted,49.194376965152586
+3,Sala et al. 2021 food,MPA coverage: 16%,46878305.34338326,Predicted,46.87830534338326
+1,Sala et al. 2021 food,MPA coverage: 20%,50722579.74101574,Predicted,50.72257974101574
+2,Sala et al. 2021 food,MPA coverage: 20%,49135807.94443316,Predicted,49.13580794443316
+3,Sala et al. 2021 food,MPA coverage: 20%,46809238.936151326,Predicted,46.809238936151324
+1,Sala et al. 2021 food,MPA coverage: 30%,50701970.15220515,Predicted,50.70197015220515
+2,Sala et al. 2021 food,MPA coverage: 30%,49113492.48420555,Predicted,49.11349248420555
+3,Sala et al. 2021 food,MPA coverage: 30%,46784293.609414324,Predicted,46.78429360941433
+1,Random,MPA coverage: 3%,54735085.98962035,Predicted,54.73508598962035
+2,Random,MPA coverage: 3%,54033897.453987524,Predicted,54.03389745398752
+3,Random,MPA coverage: 3%,54121545.684868164,Predicted,54.12154568486817
+1,Random,MPA coverage: 5%,54004235.1961356,Predicted,54.0042351961356
+2,Random,MPA coverage: 5%,52929003.91802437,Predicted,52.92900391802437
+3,Random,MPA coverage: 5%,51948063.36554645,Predicted,51.94806336554645
+1,Random,MPA coverage: 10%,52748859.09154619,Predicted,52.748859091546194
+2,Random,MPA coverage: 10%,51186523.15300049,Predicted,51.186523153000486
+3,Random,MPA coverage: 10%,49495816.33079967,Predicted,49.49581633079967
+1,Random,MPA coverage: 16%,51686297.96095277,Predicted,51.68629796095277
+2,Random,MPA coverage: 16%,49891783.45649301,Predicted,49.891783456493016
+3,Random,MPA coverage: 16%,47814470.76015168,Predicted,47.81447076015168
+1,Random,MPA coverage: 20%,51138829.25798738,Predicted,51.13882925798738
+2,Random,MPA coverage: 20%,49276429.649136044,Predicted,49.27642964913604
+3,Random,MPA coverage: 20%,47096388.1924335,Predicted,47.0963881924335
+1,Random,MPA coverage: 30%,49931193.8862222,Predicted,49.9311938862222
+2,Random,MPA coverage: 30%,47681288.1805366,Predicted,47.6812881805366
+3,Random,MPA coverage: 30%,45291590.40244277,Predicted,45.291590402442765
+1,Sala et al. 2021 multi-objective,MPA coverage: 3%,52575751.175128266,Predicted,52.57575117512827
+2,Sala et al. 2021 multi-objective,MPA coverage: 3%,51398282.701948725,Predicted,51.39828270194872
+3,Sala et al. 2021 multi-objective,MPA coverage: 3%,49117110.25102313,Predicted,49.11711025102313
+1,Sala et al. 2021 multi-objective,MPA coverage: 5%,51000015.94554547,Predicted,51.00001594554547
+2,Sala et al. 2021 multi-objective,MPA coverage: 5%,49544164.711635344,Predicted,49.54416471163535
+3,Sala et al. 2021 multi-objective,MPA coverage: 5%,47067104.234641515,Predicted,47.06710423464151
+1,Sala et al. 2021 multi-objective,MPA coverage: 10%,50250938.88886063,Predicted,50.25093888886063
+2,Sala et al. 2021 multi-objective,MPA coverage: 10%,48547850.80027435,Predicted,48.54785080027435
+3,Sala et al. 2021 multi-objective,MPA coverage: 10%,46064837.166084774,Predicted,46.06483716608477
+1,Sala et al. 2021 multi-objective,MPA coverage: 16%,49761466.85446955,Predicted,49.76146685446955
+2,Sala et al. 2021 multi-objective,MPA coverage: 16%,47942410.63971918,Predicted,47.94241063971918
+3,Sala et al. 2021 multi-objective,MPA coverage: 16%,45343197.24613404,Predicted,45.34319724613404
+1,Sala et al. 2021 multi-objective,MPA coverage: 20%,49391144.77967199,Predicted,49.39114477967199
+2,Sala et al. 2021 multi-objective,MPA coverage: 20%,47472525.813459724,Predicted,47.472525813459725
+3,Sala et al. 2021 multi-objective,MPA coverage: 20%,44864894.27694272,Predicted,44.86489427694272
+1,Sala et al. 2021 multi-objective,MPA coverage: 30%,48954542.48779455,Predicted,48.95454248779455
+2,Sala et al. 2021 multi-objective,MPA coverage: 30%,47051211.684634276,Predicted,47.051211684634275
+3,Sala et al. 2021 multi-objective,MPA coverage: 30%,44348754.19152546,Predicted,44.34875419152546
+1,Sala et al. 2021 carbon,MPA coverage: 3%,52227839.27964202,Predicted,52.227839279642026
+2,Sala et al. 2021 carbon,MPA coverage: 3%,51069740.637452014,Predicted,51.069740637452014
+3,Sala et al. 2021 carbon,MPA coverage: 3%,48697442.66925002,Predicted,48.697442669250016
+1,Sala et al. 2021 carbon,MPA coverage: 5%,50660066.13529915,Predicted,50.660066135299154
+2,Sala et al. 2021 carbon,MPA coverage: 5%,48932213.58508651,Predicted,48.93221358508651
+3,Sala et al. 2021 carbon,MPA coverage: 5%,45066607.256836556,Predicted,45.066607256836555
+1,Sala et al. 2021 carbon,MPA coverage: 10%,48827777.110035904,Predicted,48.8277771100359
+2,Sala et al. 2021 carbon,MPA coverage: 10%,44759204.275566705,Predicted,44.7592042755667
+3,Sala et al. 2021 carbon,MPA coverage: 10%,38089246.33101557,Predicted,38.08924633101557
+1,Sala et al. 2021 carbon,MPA coverage: 16%,48224459.70399107,Predicted,48.22445970399107
+2,Sala et al. 2021 carbon,MPA coverage: 16%,43376457.15538079,Predicted,43.37645715538079
+3,Sala et al. 2021 carbon,MPA coverage: 16%,37132586.36064317,Predicted,37.132586360643174
+1,Sala et al. 2021 carbon,MPA coverage: 20%,47998464.36905142,Predicted,47.99846436905142
+2,Sala et al. 2021 carbon,MPA coverage: 20%,42947919.27209049,Predicted,42.94791927209049
+3,Sala et al. 2021 carbon,MPA coverage: 20%,36578115.880221844,Predicted,36.578115880221844
+1,Sala et al. 2021 carbon,MPA coverage: 30%,47119243.477745,Predicted,47.119243477744995
+2,Sala et al. 2021 carbon,MPA coverage: 30%,41233149.78160532,Predicted,41.23314978160532
+3,Sala et al. 2021 carbon,MPA coverage: 30%,34917490.05455511,Predicted,34.91749005455511
+1,Sala et al. 2021 biodiversity,MPA coverage: 3%,54140516.431481466,Predicted,54.140516431481466
+2,Sala et al. 2021 biodiversity,MPA coverage: 3%,53297442.19124776,Predicted,53.29744219124776
+3,Sala et al. 2021 biodiversity,MPA coverage: 3%,52123827.555640005,Predicted,52.123827555640005
+1,Sala et al. 2021 biodiversity,MPA coverage: 5%,52715669.01203222,Predicted,52.715669012032215
+2,Sala et al. 2021 biodiversity,MPA coverage: 5%,51445816.07891937,Predicted,51.44581607891937
+3,Sala et al. 2021 biodiversity,MPA coverage: 5%,49400601.79101707,Predicted,49.40060179101707
+1,Sala et al. 2021 biodiversity,MPA coverage: 10%,50856206.78625823,Predicted,50.85620678625823
+2,Sala et al. 2021 biodiversity,MPA coverage: 10%,48868952.448842324,Predicted,48.86895244884232
+3,Sala et al. 2021 biodiversity,MPA coverage: 10%,45748546.1426437,Predicted,45.7485461426437
+1,Sala et al. 2021 biodiversity,MPA coverage: 16%,48876655.72772412,Predicted,48.87665572772412
+2,Sala et al. 2021 biodiversity,MPA coverage: 16%,43312992.19788449,Predicted,43.31299219788449
+3,Sala et al. 2021 biodiversity,MPA coverage: 16%,38174456.328339875,Predicted,38.17445632833987
+1,Sala et al. 2021 biodiversity,MPA coverage: 20%,48193208.86627048,Predicted,48.19320886627048
+2,Sala et al. 2021 biodiversity,MPA coverage: 20%,41975588.233412296,Predicted,41.975588233412296
+3,Sala et al. 2021 biodiversity,MPA coverage: 20%,36280346.15572615,Predicted,36.28034615572615
+1,Sala et al. 2021 biodiversity,MPA coverage: 30%,46961485.83789368,Predicted,46.96148583789368
+2,Sala et al. 2021 biodiversity,MPA coverage: 30%,40637955.112349555,Predicted,40.63795511234955
+3,Sala et al. 2021 biodiversity,MPA coverage: 30%,34268105.53908691,Predicted,34.26810553908691
+1,Protecting most-fished pixels,MPA coverage: 3%,52234339.22651762,Predicted,52.23433922651762
+2,Protecting most-fished pixels,MPA coverage: 3%,50806539.19092587,Predicted,50.80653919092587
+3,Protecting most-fished pixels,MPA coverage: 3%,47436156.25596062,Predicted,47.43615625596062
+1,Protecting most-fished pixels,MPA coverage: 5%,50115137.89897685,Predicted,50.11513789897685
+2,Protecting most-fished pixels,MPA coverage: 5%,46253964.34035621,Predicted,46.253964340356205
+3,Protecting most-fished pixels,MPA coverage: 5%,39868231.54319039,Predicted,39.86823154319039
+1,Protecting most-fished pixels,MPA coverage: 10%,48145104.06207205,Predicted,48.14510406207205
+2,Protecting most-fished pixels,MPA coverage: 10%,42735842.270472676,Predicted,42.73584227047267
+3,Protecting most-fished pixels,MPA coverage: 10%,33296588.9941535,Predicted,33.2965889941535
+1,Protecting most-fished pixels,MPA coverage: 16%,46363092.58069958,Predicted,46.36309258069958
+2,Protecting most-fished pixels,MPA coverage: 16%,40462036.276642196,Predicted,40.462036276642195
+3,Protecting most-fished pixels,MPA coverage: 16%,28748685.85976678,Predicted,28.74868585976678
+1,Protecting most-fished pixels,MPA coverage: 20%,45505136.90064237,Predicted,45.50513690064237
+2,Protecting most-fished pixels,MPA coverage: 20%,39381432.61118951,Predicted,39.38143261118951
+3,Protecting most-fished pixels,MPA coverage: 20%,27155759.52596229,Predicted,27.15575952596229
+1,Protecting most-fished pixels,MPA coverage: 30%,43869762.076629706,Predicted,43.869762076629705
+2,Protecting most-fished pixels,MPA coverage: 30%,37620657.05850434,Predicted,37.62065705850434
+3,Protecting most-fished pixels,MPA coverage: 30%,24905868.64746458,Predicted,24.90586864746458
+1,Business-as-usual,MPA coverage: 3%,55565396.50501361,Predicted,55.56539650501361
+2,Business-as-usual,MPA coverage: 3%,54774230.5793881,Predicted,54.774230579388096
+3,Business-as-usual,MPA coverage: 3%,55366811.689038,Predicted,55.366811689038
+1,Business-as-usual,MPA coverage: 5%,55565396.50501367,Predicted,55.565396505013666
+2,Business-as-usual,MPA coverage: 5%,54774230.57938805,Predicted,54.77423057938805
+3,Business-as-usual,MPA coverage: 5%,55366811.68903798,Predicted,55.36681168903798
+1,Business-as-usual,MPA coverage: 10%,55565396.505013704,Predicted,55.5653965050137
+2,Business-as-usual,MPA coverage: 10%,54774230.57938804,Predicted,54.77423057938804
+3,Business-as-usual,MPA coverage: 10%,55366811.68903803,Predicted,55.36681168903803
+1,Business-as-usual,MPA coverage: 16%,55565396.50501363,Predicted,55.56539650501363
+2,Business-as-usual,MPA coverage: 16%,54774230.57938804,Predicted,54.77423057938804
+3,Business-as-usual,MPA coverage: 16%,55366811.689038016,Predicted,55.366811689038016
+1,Business-as-usual,MPA coverage: 20%,55565396.5050138,Predicted,55.5653965050138
+2,Business-as-usual,MPA coverage: 20%,54774230.57938808,Predicted,54.77423057938808
+3,Business-as-usual,MPA coverage: 20%,55366811.689037964,Predicted,55.36681168903797
+1,Business-as-usual,MPA coverage: 30%,55565396.50501372,Predicted,55.565396505013716
+2,Business-as-usual,MPA coverage: 30%,54774230.57938801,Predicted,54.77423057938801
+3,Business-as-usual,MPA coverage: 30%,55366811.68903799,Predicted,55.366811689037995
+1,Business-as-usual,MPA coverage: 16%,55565396.505013704,Predicted,55.5653965050137
+2,Business-as-usual,MPA coverage: 16%,54774230.579388,Predicted,54.774230579388004
+3,Business-as-usual,MPA coverage: 16%,55366811.689037904,Predicted,55.3668116890379
+1,Business-as-usual,MPA coverage: 20%,55565396.50501377,Predicted,55.56539650501377
+2,Business-as-usual,MPA coverage: 20%,54774230.579388015,Predicted,54.77423057938802
+3,Business-as-usual,MPA coverage: 20%,55366811.68903807,Predicted,55.366811689038066
+1,Business-as-usual,MPA coverage: 3%,55565396.50501377,Predicted,55.56539650501377
+2,Business-as-usual,MPA coverage: 3%,54774230.57938814,Predicted,54.77423057938814
+3,Business-as-usual,MPA coverage: 3%,55366811.689038105,Predicted,55.36681168903811
+1,Business-as-usual,MPA coverage: 5%,55565396.505013704,Predicted,55.5653965050137
+2,Business-as-usual,MPA coverage: 5%,54774230.57938839,Predicted,54.77423057938839
+3,Business-as-usual,MPA coverage: 5%,55366811.68903805,Predicted,55.36681168903805
+1,Business-as-usual,MPA coverage: 10%,55565396.5050139,Predicted,55.5653965050139
+2,Business-as-usual,MPA coverage: 10%,54774230.579388626,Predicted,54.77423057938863
+3,Business-as-usual,MPA coverage: 10%,55366811.6890381,Predicted,55.366811689038094
+1,Business-as-usual,MPA coverage: 16%,55565396.50501372,Predicted,55.565396505013716
+2,Business-as-usual,MPA coverage: 16%,54774230.57938864,Predicted,54.77423057938864
+3,Business-as-usual,MPA coverage: 16%,55366811.68903835,Predicted,55.36681168903835
+1,Business-as-usual,MPA coverage: 20%,55565396.5050137,Predicted,55.565396505013695
+2,Business-as-usual,MPA coverage: 20%,54774230.57938866,Predicted,54.774230579388664
+3,Business-as-usual,MPA coverage: 20%,55366811.689038366,Predicted,55.366811689038364
+1,Business-as-usual,MPA coverage: 30%,55565396.50501369,Predicted,55.56539650501369
+2,Business-as-usual,MPA coverage: 30%,54774230.57938869,Predicted,54.77423057938869
+3,Business-as-usual,MPA coverage: 30%,55366811.68903835,Predicted,55.36681168903835
+1,Business-as-usual,MPA coverage: 3%,55565396.50501368,Predicted,55.56539650501368
+2,Business-as-usual,MPA coverage: 3%,54774230.57938802,Predicted,54.774230579388025
+3,Business-as-usual,MPA coverage: 3%,55366811.68903802,Predicted,55.36681168903802
+1,Business-as-usual,MPA coverage: 5%,55565396.50501396,Predicted,55.56539650501396
+2,Business-as-usual,MPA coverage: 5%,54774230.57938785,Predicted,54.774230579387854
+1,Business-as-usual,MPA coverage: 10%,55565396.505013615,Predicted,55.56539650501362
+2,Business-as-usual,MPA coverage: 10%,54774230.579388075,Predicted,54.774230579388075
+3,Business-as-usual,MPA coverage: 10%,55366811.6890382,Predicted,55.3668116890382
+1,Business-as-usual,MPA coverage: 16%,55565396.505013816,Predicted,55.565396505013815
+2,Business-as-usual,MPA coverage: 16%,54774230.579388395,Predicted,54.774230579388394
+3,Business-as-usual,MPA coverage: 16%,55366811.68903841,Predicted,55.366811689038414
+1,Business-as-usual,MPA coverage: 20%,55565396.505013704,Predicted,55.5653965050137
+2,Business-as-usual,MPA coverage: 20%,54774230.57938835,Predicted,54.77423057938835
+3,Business-as-usual,MPA coverage: 20%,55366811.6890383,Predicted,55.3668116890383
+2,Business-as-usual,MPA coverage: 30%,54774230.57938824,Predicted,54.77423057938824
+3,Business-as-usual,MPA coverage: 30%,55366811.68903802,Predicted,55.36681168903802
+2,Business-as-usual,MPA coverage: 3%,54774230.579388835,Predicted,54.774230579388835
+3,Business-as-usual,MPA coverage: 3%,55366811.6890382,Predicted,55.3668116890382
+1,Business-as-usual,MPA coverage: 5%,55565396.505013466,Predicted,55.56539650501347
+2,Business-as-usual,MPA coverage: 5%,54774230.5793887,Predicted,54.7742305793887
+3,Business-as-usual,MPA coverage: 5%,55366811.68903866,Predicted,55.366811689038656
+1,Business-as-usual,MPA coverage: 10%,55565396.50501356,Predicted,55.56539650501356
+2,Business-as-usual,MPA coverage: 10%,54774230.57938877,Predicted,54.77423057938877
+3,Business-as-usual,MPA coverage: 10%,55366811.68903869,Predicted,55.366811689038684
+1,Business-as-usual,MPA coverage: 16%,55565396.505013525,Predicted,55.565396505013524
+3,Business-as-usual,MPA coverage: 16%,55366811.68903878,Predicted,55.366811689038784
+1,Business-as-usual,MPA coverage: 20%,55565396.505013384,Predicted,55.56539650501338
+2,Business-as-usual,MPA coverage: 20%,54774230.579388596,Predicted,54.77423057938859
+3,Business-as-usual,MPA coverage: 20%,55366811.689038835,Predicted,55.36681168903883
+1,Business-as-usual,MPA coverage: 30%,55565396.50501346,Predicted,55.56539650501346
+2,Business-as-usual,MPA coverage: 30%,54774230.57938851,Predicted,54.77423057938851
+3,Business-as-usual,MPA coverage: 30%,55366811.689038604,Predicted,55.366811689038606
+1,Business-as-usual,MPA coverage: 3%,55565396.505013436,Predicted,55.56539650501344
+3,Business-as-usual,MPA coverage: 3%,55366811.68903833,Predicted,55.36681168903833
+1,Business-as-usual,MPA coverage: 5%,55565396.505013585,Predicted,55.56539650501359
+2,Business-as-usual,MPA coverage: 5%,54774230.579388686,Predicted,54.774230579388686
+3,Business-as-usual,MPA coverage: 5%,55366811.68903873,Predicted,55.366811689038734
+1,Business-as-usual,MPA coverage: 10%,55565396.505013525,Predicted,55.565396505013524
+2,Business-as-usual,MPA coverage: 10%,54774230.5793886,Predicted,54.7742305793886
+3,Business-as-usual,MPA coverage: 10%,55366811.68903851,Predicted,55.36681168903851
+1,Business-as-usual,MPA coverage: 16%,55565396.50501357,Predicted,55.56539650501357
+2,Business-as-usual,MPA coverage: 16%,54774230.579388574,Predicted,54.77423057938857
+3,Business-as-usual,MPA coverage: 16%,55366811.689038485,Predicted,55.366811689038485
+1,Business-as-usual,MPA coverage: 20%,55565396.50501363,Predicted,55.56539650501363
+2,Business-as-usual,MPA coverage: 20%,54774230.57938857,Predicted,54.774230579388565
+3,Business-as-usual,MPA coverage: 20%,55366811.68903852,Predicted,55.36681168903852
+1,Business-as-usual,MPA coverage: 30%,55565396.50501361,Predicted,55.56539650501361
+2,Business-as-usual,MPA coverage: 30%,54774230.579388425,Predicted,54.77423057938842
+3,Business-as-usual,MPA coverage: 30%,55366811.689038455,Predicted,55.36681168903846
+1,Business-as-usual,MPA coverage: 3%,55565396.50501372,Predicted,55.565396505013716
+2,Business-as-usual,MPA coverage: 3%,54774230.57938788,Predicted,54.77423057938788
+1,Business-as-usual,MPA coverage: 5%,55565396.50501378,Predicted,55.56539650501378
+2,Business-as-usual,MPA coverage: 5%,54774230.57938814,Predicted,54.77423057938814
+3,Business-as-usual,MPA coverage: 5%,55366811.68903815,Predicted,55.36681168903815
+1,Business-as-usual,MPA coverage: 10%,55565396.5050135,Predicted,55.5653965050135
+2,Business-as-usual,MPA coverage: 10%,54774230.579388775,Predicted,54.77423057938878
+3,Business-as-usual,MPA coverage: 10%,55366811.68903861,Predicted,55.36681168903861
+1,Business-as-usual,MPA coverage: 16%,55565396.50501346,Predicted,55.56539650501346
+2,Business-as-usual,MPA coverage: 16%,54774230.57938885,Predicted,54.77423057938885
+3,Business-as-usual,MPA coverage: 16%,55366811.68903869,Predicted,55.366811689038684
+1,Business-as-usual,MPA coverage: 20%,55565396.50501342,Predicted,55.565396505013425
+2,Business-as-usual,MPA coverage: 20%,54774230.57938863,Predicted,54.774230579388636
+3,Business-as-usual,MPA coverage: 20%,55366811.689038694,Predicted,55.36681168903869
+1,Business-as-usual,MPA coverage: 30%,55565396.50501348,Predicted,55.56539650501348
+2,Business-as-usual,MPA coverage: 30%,54774230.57938866,Predicted,54.774230579388664
+3,Business-as-usual,MPA coverage: 30%,55366811.68903852,Predicted,55.36681168903852
+1,Business-as-usual,MPA coverage: 3%,55565396.505013414,Predicted,55.56539650501341
+2,Business-as-usual,MPA coverage: 3%,54774230.579388805,Predicted,54.77423057938881
+3,Business-as-usual,MPA coverage: 3%,55366811.68903863,Predicted,55.36681168903863
+1,Business-as-usual,MPA coverage: 5%,55565396.50501357,Predicted,55.56539650501357
+2,Business-as-usual,MPA coverage: 5%,54774230.579388775,Predicted,54.77423057938878
+3,Business-as-usual,MPA coverage: 5%,55366811.689038604,Predicted,55.366811689038606
+1,Business-as-usual,MPA coverage: 10%,55565396.50501361,Predicted,55.56539650501361
+2,Business-as-usual,MPA coverage: 10%,54774230.57938867,Predicted,54.77423057938867
+3,Business-as-usual,MPA coverage: 10%,55366811.6890383,Predicted,55.3668116890383
+1,Business-as-usual,MPA coverage: 16%,55565396.50501356,Predicted,55.56539650501356
+2,Business-as-usual,MPA coverage: 16%,54774230.57938863,Predicted,54.774230579388636
+3,Business-as-usual,MPA coverage: 16%,55366811.68903838,Predicted,55.36681168903838
+1,Business-as-usual,MPA coverage: 20%,55565396.50501388,Predicted,55.56539650501389
+2,Business-as-usual,MPA coverage: 20%,54774230.57938855,Predicted,54.77423057938855
+3,Business-as-usual,MPA coverage: 20%,55366811.689038336,Predicted,55.366811689038336
+1,Business-as-usual,MPA coverage: 30%,55565396.505013935,Predicted,55.565396505013936
+2,Business-as-usual,MPA coverage: 30%,54774230.57938849,Predicted,54.774230579388494
+3,Business-as-usual,MPA coverage: 30%,55366811.68903821,Predicted,55.36681168903821
+-5,Business-as-usual,MPA coverage: 3%,38648542.370000064,Observed,38.648542370000065
+-5,Business-as-usual,MPA coverage: 5%,38648542.370000064,Observed,38.648542370000065
+-5,Business-as-usual,MPA coverage: 10%,38648542.370000064,Observed,38.648542370000065
+-5,Business-as-usual,MPA coverage: 16%,38648542.370000064,Observed,38.648542370000065
+-5,Business-as-usual,MPA coverage: 20%,38648542.370000064,Observed,38.648542370000065
+-5,Business-as-usual,MPA coverage: 30%,38648542.370000064,Observed,38.648542370000065
+-4,Business-as-usual,MPA coverage: 3%,44671650.815375015,Observed,44.67165081537502
+-4,Business-as-usual,MPA coverage: 5%,44671650.815375015,Observed,44.67165081537502
+-4,Business-as-usual,MPA coverage: 10%,44671650.815375015,Observed,44.67165081537502
+-4,Business-as-usual,MPA coverage: 16%,44671650.815375015,Observed,44.67165081537502
+-4,Business-as-usual,MPA coverage: 20%,44671650.815375015,Observed,44.67165081537502
+-4,Business-as-usual,MPA coverage: 30%,44671650.815375015,Observed,44.67165081537502
+-3,Business-as-usual,MPA coverage: 3%,48861261.936739504,Observed,48.8612619367395
+-3,Business-as-usual,MPA coverage: 5%,48861261.936739504,Observed,48.8612619367395
+-3,Business-as-usual,MPA coverage: 10%,48861261.936739504,Observed,48.8612619367395
+-3,Business-as-usual,MPA coverage: 16%,48861261.936739504,Observed,48.8612619367395
+-3,Business-as-usual,MPA coverage: 20%,48861261.936739504,Observed,48.8612619367395
+-3,Business-as-usual,MPA coverage: 30%,48861261.936739504,Observed,48.8612619367395
+0,Business-as-usual,MPA coverage: 3%,51451112.55494318,Observed,51.45111255494318
+0,Business-as-usual,MPA coverage: 5%,51451112.55494318,Observed,51.45111255494318
+0,Business-as-usual,MPA coverage: 10%,51451112.55494318,Observed,51.45111255494318
+0,Business-as-usual,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Business-as-usual,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Business-as-usual,MPA coverage: 30%,51451112.55494318,Observed,51.45111255494318
+-1,Business-as-usual,MPA coverage: 3%,51973763.07154176,Observed,51.973763071541754
+-1,Business-as-usual,MPA coverage: 5%,51973763.07154176,Observed,51.973763071541754
+-1,Business-as-usual,MPA coverage: 10%,51973763.07154176,Observed,51.973763071541754
+-1,Business-as-usual,MPA coverage: 16%,51973763.07154176,Observed,51.973763071541754
+-1,Business-as-usual,MPA coverage: 20%,51973763.07154176,Observed,51.973763071541754
+-1,Business-as-usual,MPA coverage: 30%,51973763.07154176,Observed,51.973763071541754
+-2,Business-as-usual,MPA coverage: 3%,52421314.18166692,Observed,52.421314181666915
+-2,Business-as-usual,MPA coverage: 5%,52421314.18166692,Observed,52.421314181666915
+-2,Business-as-usual,MPA coverage: 10%,52421314.18166692,Observed,52.421314181666915
+-2,Business-as-usual,MPA coverage: 16%,52421314.18166692,Observed,52.421314181666915
+-2,Business-as-usual,MPA coverage: 20%,52421314.18166692,Observed,52.421314181666915
+-2,Business-as-usual,MPA coverage: 30%,52421314.18166692,Observed,52.421314181666915
+0,Protecting unfished pixels,MPA coverage: 3%,51451112.55494318,Observed,51.45111255494318
+0,Protecting unfished pixels,MPA coverage: 5%,51451112.55494318,Observed,51.45111255494318
+0,Protecting unfished pixels,MPA coverage: 10%,51451112.55494318,Observed,51.45111255494318
+0,Protecting unfished pixels,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Protecting unfished pixels,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Protecting unfished pixels,MPA coverage: 30%,51451112.55494318,Observed,51.45111255494318
+0,Visalli et al. 2020,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Expert-derived EBSA,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 food,MPA coverage: 3%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 food,MPA coverage: 5%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 food,MPA coverage: 10%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 food,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 food,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 food,MPA coverage: 30%,51451112.55494318,Observed,51.45111255494318
+0,Random,MPA coverage: 3%,51451112.55494318,Observed,51.45111255494318
+0,Random,MPA coverage: 5%,51451112.55494318,Observed,51.45111255494318
+0,Random,MPA coverage: 10%,51451112.55494318,Observed,51.45111255494318
+0,Random,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Random,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Random,MPA coverage: 30%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 multi-objective,MPA coverage: 3%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 multi-objective,MPA coverage: 5%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 multi-objective,MPA coverage: 10%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 multi-objective,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 multi-objective,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 multi-objective,MPA coverage: 30%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 carbon,MPA coverage: 3%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 carbon,MPA coverage: 5%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 carbon,MPA coverage: 10%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 carbon,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 carbon,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 carbon,MPA coverage: 30%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 biodiversity,MPA coverage: 3%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 biodiversity,MPA coverage: 5%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 biodiversity,MPA coverage: 10%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 biodiversity,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 biodiversity,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Sala et al. 2021 biodiversity,MPA coverage: 30%,51451112.55494318,Observed,51.45111255494318
+0,Protecting most-fished pixels,MPA coverage: 3%,51451112.55494318,Observed,51.45111255494318
+0,Protecting most-fished pixels,MPA coverage: 5%,51451112.55494318,Observed,51.45111255494318
+0,Protecting most-fished pixels,MPA coverage: 10%,51451112.55494318,Observed,51.45111255494318
+0,Protecting most-fished pixels,MPA coverage: 16%,51451112.55494318,Observed,51.45111255494318
+0,Protecting most-fished pixels,MPA coverage: 20%,51451112.55494318,Observed,51.45111255494318
+0,Protecting most-fished pixels,MPA coverage: 30%,51451112.55494318,Observed,51.45111255494318

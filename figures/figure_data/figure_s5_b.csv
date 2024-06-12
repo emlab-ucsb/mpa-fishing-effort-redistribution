@@ -1,0 +1,121 @@
+forecast_horizon,.metric,.estimator,.estimate,region,testing_ocean
+1,rsq_trad,standard,0.2351557025866584,Global,Southern Ocean
+1,rsq,standard,0.6753553414902498,Global,Southern Ocean
+1,rmse,standard,1.4419986448472772e-7,Global,Southern Ocean
+1,nrmse,standard,0.8716337163227371,Global,Southern Ocean
+1,rsq_trad,standard,0.3893696148294946,Global,South Pacific Ocean
+1,rsq,standard,0.4607443343768173,Global,South Pacific Ocean
+1,rmse,standard,1.1647686781520198e-7,Global,South Pacific Ocean
+1,nrmse,standard,0.7813471585528319,Global,South Pacific Ocean
+1,rsq_trad,standard,0.2949521058829878,Global,South Atlantic Ocean
+1,rsq,standard,0.4416596402074412,Global,South Atlantic Ocean
+1,rmse,standard,6.545317224524055e-7,Global,South Atlantic Ocean
+1,nrmse,standard,0.839514573038889,Global,South Atlantic Ocean
+1,rsq_trad,standard,0.5913026017056742,Global,Indian Ocean
+1,rsq,standard,0.6352660862736057,Global,Indian Ocean
+1,rmse,standard,1.3372883751081008e-7,Global,Indian Ocean
+1,nrmse,standard,0.6392160845955407,Global,Indian Ocean
+1,rsq_trad,standard,0.6606275531224332,Global,South China and Easter Archipelagic Seas
+1,rsq,standard,0.8335750488882094,Global,South China and Easter Archipelagic Seas
+1,rmse,standard,4.531662027367988e-6,Global,South China and Easter Archipelagic Seas
+1,nrmse,standard,0.5816515238346663,Global,South China and Easter Archipelagic Seas
+1,rsq_trad,standard,0.8602703756411607,Global,North Atlantic Ocean
+1,rsq,standard,0.8797081699339899,Global,North Atlantic Ocean
+1,rmse,standard,5.00307268659532e-7,Global,North Atlantic Ocean
+1,nrmse,standard,0.3737488276298664,Global,North Atlantic Ocean
+1,rsq_trad,standard,0.624325443170369,Global,North Pacific Ocean
+1,rsq,standard,0.8995717373571998,Global,North Pacific Ocean
+1,rmse,standard,1.2532612918280522e-6,Global,North Pacific Ocean
+1,nrmse,standard,0.6128553361614587,Global,North Pacific Ocean
+1,rsq_trad,standard,0.9413503474612603,Global,Mediterranean Region
+1,rsq,standard,0.9421628838939748,Global,Mediterranean Region
+1,rmse,standard,5.642001313601047e-7,Global,Mediterranean Region
+1,nrmse,standard,0.24183167598882435,Global,Mediterranean Region
+1,rsq_trad,standard,0.7674666604630013,Global,Arctic Ocean
+1,rsq,standard,0.7926816701166857,Global,Arctic Ocean
+1,rmse,standard,5.31920864385655e-7,Global,Arctic Ocean
+1,nrmse,standard,0.4819986633923953,Global,Arctic Ocean
+1,rsq_trad,standard,0.9047596877095897,Global,Baltic Sea
+1,rsq,standard,0.9390644873611507,Global,Baltic Sea
+1,rmse,standard,4.956181083082157e-7,Global,Baltic Sea
+1,nrmse,standard,0.30712300476657356,Global,Baltic Sea
+2,rsq_trad,standard,0.22740404268111403,Global,Southern Ocean
+2,rsq,standard,0.6258405442009881,Global,Southern Ocean
+2,rmse,standard,1.449287516522462e-7,Global,Southern Ocean
+2,nrmse,standard,0.8760395639486991,Global,Southern Ocean
+2,rsq_trad,standard,0.30779447749491107,Global,South Pacific Ocean
+2,rsq,standard,0.39701804618727365,Global,South Pacific Ocean
+2,rmse,standard,1.240132267815863e-7,Global,South Pacific Ocean
+2,nrmse,standard,0.8319023698550541,Global,South Pacific Ocean
+2,rsq_trad,standard,0.22095113978975978,Global,South Atlantic Ocean
+2,rsq,standard,0.3378652327664726,Global,South Atlantic Ocean
+2,rmse,standard,6.880242383643744e-7,Global,South Atlantic Ocean
+2,nrmse,standard,0.8824726974984399,Global,South Atlantic Ocean
+2,rsq_trad,standard,0.3780387690250173,Global,Indian Ocean
+2,rsq,standard,0.4104469510961191,Global,Indian Ocean
+2,rmse,standard,1.649703098250718e-7,Global,Indian Ocean
+2,nrmse,standard,0.7885485096837949,Global,Indian Ocean
+2,rsq_trad,standard,0.5863996857446024,Global,South China and Easter Archipelagic Seas
+2,rsq,standard,0.7999503309915483,Global,South China and Easter Archipelagic Seas
+2,rmse,standard,5.002759815910899e-6,Global,South China and Easter Archipelagic Seas
+2,nrmse,standard,0.6421182455200597,Global,South China and Easter Archipelagic Seas
+2,rsq_trad,standard,0.8091702983414432,Global,North Atlantic Ocean
+2,rsq,standard,0.8269445395527446,Global,North Atlantic Ocean
+2,rmse,standard,5.846763841030141e-7,Global,North Atlantic Ocean
+2,nrmse,standard,0.4367758111667155,Global,North Atlantic Ocean
+2,rsq_trad,standard,0.7168933397653681,Global,North Pacific Ocean
+2,rsq,standard,0.7466651693279674,Global,North Pacific Ocean
+2,rmse,standard,1.0879546134633065e-6,Global,North Pacific Ocean
+2,nrmse,standard,0.5320189769763862,Global,North Pacific Ocean
+2,rsq_trad,standard,0.914788992440841,Global,Mediterranean Region
+2,rsq,standard,0.9200960625405387,Global,Mediterranean Region
+2,rmse,standard,6.800616916762188e-7,Global,Mediterranean Region
+2,nrmse,standard,0.2914931236853737,Global,Mediterranean Region
+2,rsq_trad,standard,0.72410236264198,Global,Arctic Ocean
+2,rsq,standard,0.7545616523373149,Global,Arctic Ocean
+2,rmse,standard,5.793998814419439e-7,Global,Arctic Ocean
+2,nrmse,standard,0.5250216472468582,Global,Arctic Ocean
+2,rsq_trad,standard,0.8272081520840486,Global,Baltic Sea
+2,rsq,standard,0.9334859926793668,Global,Baltic Sea
+2,rmse,standard,6.675724183926245e-7,Global,Baltic Sea
+2,nrmse,standard,0.4136790879895144,Global,Baltic Sea
+3,rsq_trad,standard,0.19781321438041433,Global,Southern Ocean
+3,rsq,standard,0.6200632368947953,Global,Southern Ocean
+3,rmse,standard,1.4767809707071845e-7,Global,Southern Ocean
+3,nrmse,standard,0.8926583185718123,Global,Southern Ocean
+3,rsq_trad,standard,0.2845044675179329,Global,South Pacific Ocean
+3,rsq,standard,0.3839789548054314,Global,South Pacific Ocean
+3,rmse,standard,1.2608224730177907e-7,Global,South Pacific Ocean
+3,nrmse,standard,0.8457817206202636,Global,South Pacific Ocean
+3,rsq_trad,standard,0.23451551471693732,Global,South Atlantic Ocean
+3,rsq,standard,0.3664989796267717,Global,South Atlantic Ocean
+3,rmse,standard,6.820081844419503e-7,Global,South Atlantic Ocean
+3,nrmse,standard,0.8747563947329463,Global,South Atlantic Ocean
+3,rsq_trad,standard,0.29165049170188173,Global,Indian Ocean
+3,rsq,standard,0.32939771270598917,Global,Indian Ocean
+3,rmse,standard,1.760548246994648e-7,Global,Indian Ocean
+3,nrmse,standard,0.841531847679818,Global,Indian Ocean
+3,rsq_trad,standard,0.5582458889483455,Global,South China and Easter Archipelagic Seas
+3,rsq,standard,0.8233165629712701,Global,South China and Easter Archipelagic Seas
+3,rmse,standard,5.170225944493248e-6,Global,South China and Easter Archipelagic Seas
+3,nrmse,standard,0.6636129925449586,Global,South China and Easter Archipelagic Seas
+3,rsq_trad,standard,0.7886804830320352,Global,North Atlantic Ocean
+3,rsq,standard,0.8078590425248424,Global,North Atlantic Ocean
+3,rmse,standard,6.152652279934127e-7,Global,North Atlantic Ocean
+3,nrmse,standard,0.45962685743118525,Global,North Atlantic Ocean
+3,rsq_trad,standard,0.7175855324718602,Global,North Pacific Ocean
+3,rsq,standard,0.7282651770671449,Global,North Pacific Ocean
+3,rmse,standard,1.086623780896543e-6,Global,North Pacific Ocean
+3,nrmse,standard,0.5313681886328887,Global,North Pacific Ocean
+3,rsq_trad,standard,0.8655458347586347,Global,Mediterranean Region
+3,rsq,standard,0.8825358324062255,Global,Mediterranean Region
+3,rmse,standard,8.542551221500325e-7,Global,Mediterranean Region
+3,nrmse,standard,0.3661572134227762,Global,Mediterranean Region
+3,rsq_trad,standard,0.7072366533200432,Global,Arctic Ocean
+3,rsq,standard,0.7544861558872465,Global,Arctic Ocean
+3,rmse,standard,5.968466530848275e-7,Global,Arctic Ocean
+3,nrmse,standard,0.540830992537524,Global,Arctic Ocean
+3,rsq_trad,standard,0.7666224589895546,Global,Baltic Sea
+3,rsq,standard,0.8105479528490259,Global,Baltic Sea
+3,rmse,standard,7.758295018197211e-7,Global,Baltic Sea
+3,nrmse,standard,0.48076348259101087,Global,Baltic Sea

@@ -1,0 +1,2008 @@
+---
+title: "Working title: Global expansion of marine protected areas and the expected redistribution of fishing effort"
+author: "Working author list: McDonald G, Bone J, Englander G, Raynor J, and Costello C"
+date: 'Latest knit date: `r format(Sys.time(), "%m/%d/%Y")`'
+output: 
+  pdf_document: 
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r echo = FALSE}
+# This chunk sets up default settings for all chunks below
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,dev = 'pdf',dpi=300)
+
+figure_path <- "../figures/"
+```
+
+```{r include=FALSE}
+# Load all necessary packages
+library(tidyverse)
+library(sf)
+library(rnaturalearth)
+library(glue)
+library(targets)
+library(stars)
+# Set ggplot theme for all plots
+theme_set(theme_bw() +
+            theme(axis.title.y = element_text(angle = 0,vjust=0.6),
+                  strip.background = element_rect(fill = NA),
+                  strip.text.y = element_text(angle=0),
+                  strip.text.y.right = element_text(angle=0),
+                  strip.text.y.left = element_text(angle=0),
+                  panel.background = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  text = element_text(size = 9),
+                  title = element_text(size = 9),
+                  plot.title = element_text(size = 9),
+                  plot.margin=grid::unit(c(0.1,0.1,0.1,0.1), "mm")))
+
+# There are some plots with jitter, so set random seed
+set.seed(101)
+
+# Set directory for saving figure data
+figure_data_directory <- here::here("figures/figure_data/")
+
+# Source functions
+source("r/_functions_modeling.R")
+```
+
+```{r}
+# Load pixel id locations, and make them into sf object for joining then plotting
+data_grid <- tar_read("global_grid") %>%
+  st_as_sf(wkt = "geometry_wkt",
+           crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+
+# Load full training dataset
+tar_load("training_dataset")
+
+# Make spatial dataset of 2021 fishing effort
+fishing_2021 <- training_dataset %>%
+  filter(year == 2021) %>%
+  # Convert area-normalized effort back to absolute effort in hours
+  mutate(fishing_hours = fishing_hours_per_m2 * pixel_area_m2) %>%
+  dplyr::select(pixel_id,fishing_hours,pixel_area_m2)
+
+# Calculate 2020 MPA coverage, which is used as BAU
+current_mpa_coverage <- training_dataset %>%
+  filter(year == 2020) %>%
+  calculate_mpa_coverage() %>%
+  round(3)
+
+# Set standard scenario factor order for all figures
+scenario_factor_order <- c("Business-as-usual",
+                           "Protecting unfished pixels",
+                           "Visalli et al. 2020",
+                           "Expert-derived EBSA",
+                           "Sala et al. 2021 food",
+                           "Random",
+                           "Sala et al. 2021 multi-objective",
+                           "Sala et al. 2021 carbon",
+                           "Sala et al. 2021 biodiversity",
+                           "Protecting most-fished pixels")
+# Load some simulation data
+# So we can add pixel-level info on distance to nearest MPAs and fraction MPA overlap, which varies
+# by scenario and MPA coverage
+full_simulation_data <- tar_read("full_simulation_data") %>%
+  dplyr::select(pixel_id,scenario,fraction_mpa_overlap,mpa_coverage,nearest_mpa_distance_m)
+
+# Set standard scenario colors for figures
+# Use color-blind friendly palette, as well as black for BAU
+scenario_color_pal <- setNames(c("black","grey40",paletteer::paletteer_d("colorblindr::OkabeIto")),
+                               scenario_factor_order)
+
+# Set standard scenario shapes for figures
+# The shape will typically be NA for all scenarios that have multiple MPA coverage options
+# For those with just a single coverage value (BAU, Visalli et al., EBSA) we will specify a shape
+scenario_shape_pal <- setNames(c(21,NA,22,24,NA,NA,NA,NA,NA,NA),
+                               scenario_factor_order)
+
+# Set standard scenario linetype for figures
+# For those with just a single coverage value ( Visalli et al., EBSA) this will be NA, since no lines will be drawn.
+scenario_linetype_pal <- setNames(c(1,1,0,0,2,3,4,5,6,1),
+                                  scenario_factor_order)
+
+# Create global land sf object for mapping. This will just be used for creating global land outline
+world_plotting <- ne_countries(scale = "small", returnclass = "sf")  %>%
+  dplyr::select(geometry)
+
+# Also create coastline
+coastline <- rnaturalearth::ne_coastline(scale = "small", returnclass = "sf")
+
+# Set theme for maps
+theme_map <- function(){
+  theme_minimal() %+replace%
+    theme(panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          text = element_text(size = 10),
+          plot.margin=grid::unit(c(0,0,0,0), "mm"),
+          strip.background = element_rect(fill=NA,color=NA),
+          panel.background = element_rect(fill = "white",
+                                          color = "black"))
+}
+
+# Load simulation results
+simulation_results <- tar_read("simulation_results") %>%
+  # Don't need to use all MPA sizes
+  filter(!(mpa_coverage %in% c(0.075)))%>%
+  # Set MPA coverage for BAU
+  mutate(mpa_coverage = ifelse(scenario == "counterfactual",current_mpa_coverage,mpa_coverage)) %>%
+  # Add pixel-level info on distance to nearest MPAs, which varies
+  # by scenario and MPA coverage
+  left_join(full_simulation_data %>%
+              distinct(pixel_id,scenario,mpa_coverage,nearest_mpa_distance_m),
+            by = c("pixel_id","scenario", "mpa_coverage")) %>%
+  # Add binned distance-to-MPA column, for later figure
+  mutate(mpa_distance_bin = case_when(nearest_mpa_distance_m == 0 ~ 0,
+                                      nearest_mpa_distance_m <= 100000 ~ 1,
+                                      nearest_mpa_distance_m <= 200000 ~ 2,
+                                      #nearest_mpa_distance_m <= 300000 ~ 3,
+                                      TRUE ~3)) %>% 
+  mutate(region = case_when(region == "Inside MPAs" ~ "Inside\nMPAs",
+                            region == "Partial MPA overlap" ~ "Partial\nMPA overlap",
+                            region == "Outside MPAs" ~ "Outside\nMPAs",
+                            region == "Global" ~ "Global")) %>%
+  mutate(scenario = case_when(scenario == "counterfactual" ~ "Business-as-usual",
+                              scenario == "sala_multi_objective" ~ "Sala et al. 2021 multi-objective",
+                              scenario == "sala_biodiversity" ~ "Sala et al. 2021 biodiversity",
+                              scenario == "sala_carbon" ~ "Sala et al. 2021 carbon",
+                              scenario == "sala_food" ~ "Sala et al. 2021 food",
+                              scenario == "most_fished" ~ "Protecting most-fished pixels",
+                              scenario == "unfished" ~ "Protecting unfished pixels",
+                              scenario == "ebsa" ~ "Expert-derived EBSA",
+                              scenario == "visalli" ~ "Visalli et al. 2020",
+                              scenario == "random" ~ "Random") %>%
+           fct_relevel(c(scenario_factor_order))) 
+```
+
+
+```{r label = "main-text-fishing-map",fig.height=2.1, fig.width=3.4, fig.path = figure_path}
+# Define map of 2021 fishing effort
+fishing_map <- fishing_2021 %>%
+  inner_join(data_grid, by = "pixel_id") %>%
+  ggplot()+
+  geom_tile(aes(fill = fishing_hours,
+                x = lon,
+                y = lat)) +
+  geom_sf(data = world_plotting,
+          fill = "grey50",
+          color = "grey50") +
+  geom_sf(data = coastline,
+          fill = NA,
+          color = "black",
+          linewidth = 0.05) +
+  scico::scale_fill_scico("Fishing\nhours", palette = "devon", trans = "pseudo_log", 
+                          labels = scales::comma,
+                          direction = -1,
+                          breaks = c(0,10,1000,100000)) +
+  theme_map() +
+  theme(legend.position = "bottom",
+        legend.direction = "horizontal", 
+        legend.box.spacing = unit(0, "pt"),
+        legend.margin=margin(0,0,0,0)) +
+  labs(x = "",
+       y = "") +
+  # Remove extra margins around plot, but leave background border
+  scale_x_continuous(expand = c(0.005, 0.005)) +
+  scale_y_continuous(expand = c(0.01, 0.01))+
+  guides(fill = guide_colorbar(frame.colour = "black",
+                               ticks.colour = "black",
+                               barwidth = unit(5, "cm"),
+                               barheight = unit(0.3, "cm")))
+
+fishing_map
+
+# Save data for reproducing figure
+write_csv(fishing_2021,
+          glue(figure_data_directory,"figure_1.csv"))
+```
+
+```{r label = "main-text-mpa-network-simulation-maps", fig.height=5.5, fig.width=7, fig.path = figure_path}
+mpa_network_scenarios_df <- simulation_results %>%
+  filter(region %in% c("Inside\nMPAs")) %>%
+  dplyr::select(scenario,mpa_coverage,pixel_id) %>%
+  inner_join(data_grid, by = "pixel_id")%>%
+  mutate(scenario = fct_rev(scenario) %>%
+           fct_relevel("Business-as-usual")) %>%
+  # Arrange by MPA coverage, so they overlay correctly in the map
+  arrange(desc(mpa_coverage)) %>%
+  mutate(scenario = fct_relevel(scenario,
+                                c("Business-as-usual",
+                                  "Expert-derived EBSA",
+                                  "Visalli et al. 2020",
+                                  "Sala et al. 2021 biodiversity",
+                                  "Sala et al. 2021 carbon",
+                                  "Sala et al. 2021 food",
+                                  "Sala et al. 2021 multi-objective",
+                                  "Random",
+                                  "Protecting most-fished pixels",
+                                  "Protecting unfished pixels"))) %>%
+  dplyr::select(mpa_coverage,lon,lat,scenario)
+
+# Set breaks for color scale based on MPA area protected coverage
+area_protected_breaks <- sort(unique(mpa_network_scenarios_df$mpa_coverage))
+
+# Make labels for those breaks
+area_protected_labels <- map_chr(area_protected_breaks,
+                                 function(x){
+                                   ifelse(x == 0.025,"2.5%",scales::percent(x))})
+
+# Make maps of all MPA network scenarios
+mpa_maps <- mpa_network_scenarios_df %>%
+  ggplot()+
+  geom_tile(aes(fill = as.factor(mpa_coverage),
+                x = lon,
+                y = lat)) +
+  geom_sf(data = world_plotting,
+          color = "grey50",
+          fill = "grey50") +
+  geom_sf(data = coastline,
+          fill = NA,
+          color = "black",
+          linewidth = 0.1) +
+  scale_fill_viridis_d("Area protected", option = "rocket", begin = 0.2, end = 0.65,
+                       direction = -1,
+                       breaks = area_protected_breaks,
+                       labels = area_protected_labels) +
+  facet_wrap(scenario~.,ncol=3) +
+  theme_map() +
+  theme(legend.position = c(.675,0.125),
+        legend.direction = "horizontal", 
+        legend.spacing.y = unit(0.1, 'cm'),
+        legend.key.size = unit(1, "cm")) +
+  labs(x = "",
+       y = "") +
+  # Remove extra margins around plot
+  scale_x_continuous(expand = c(0.005, 0.005)) +
+  scale_y_continuous(expand = c(0.01, 0.01)) +
+  guides(fill = guide_legend(byrow = TRUE,
+                             nrows = 2,
+                             title.position = "top", title.hjust=0.5))
+
+mpa_maps
+
+# Save data for reproducing figure
+write_csv(mpa_network_scenarios_df,
+          glue(figure_data_directory,"figure_2.csv"))
+
+```
+
+```{r label = "main-text-overlapping-area-with-protection", fig.height=2.75, fig.width=7, fig.path = figure_path}
+# For each MPA network scenario,
+# Determine fraction of 2021 effort that would be covered by the MPA network
+fishing_protected_by_scenario <- fishing_2021 %>%
+  left_join(full_simulation_data,by = "pixel_id") %>%
+  mutate(mpa_coverage = ifelse(scenario == "counterfactual",current_mpa_coverage,mpa_coverage)) %>%
+  group_by(scenario,mpa_coverage) %>%
+  summarize(unprotected_effort = sum(fishing_hours * (1 - fraction_mpa_overlap)),
+            protected_effort = sum(fishing_hours * fraction_mpa_overlap)) %>%
+  ungroup() %>%
+  mutate(fraction_effort_protected = protected_effort / (protected_effort +unprotected_effort)) %>%
+  # Don't need to use all MPA sizes
+  filter(!(mpa_coverage %in% c(0.075)))%>%
+  # Don't include unfished scenario in main text figure
+  # Set MPA coverage for BAU
+  mutate(scenario = case_when(scenario == "sala_multi_objective" ~ "Sala et al. 2021 multi-objective",
+                              scenario == "sala_biodiversity" ~ "Sala et al. 2021 biodiversity",
+                              scenario == "sala_carbon" ~ "Sala et al. 2021 carbon",
+                              scenario == "sala_food" ~ "Sala et al. 2021 food",
+                              scenario == "most_fished" ~ "Protecting most-fished pixels",
+                              scenario == "unfished" ~ "Protecting unfished pixels",
+                              scenario == "ebsa" ~ "Expert-derived EBSA",
+                              scenario == "visalli" ~ "Visalli et al. 2020",
+                              scenario == "counterfactual" ~ "Business-as-usual",
+                              scenario == "random" ~ "Random") %>%
+           fct_relevel(scenario_factor_order) %>%
+           fct_rev())
+
+current_effort_protected <- fishing_protected_by_scenario %>%
+  filter(scenario=="Business-as-usual") %>% 
+  .$fraction_effort_protected
+
+# Make figure to show fraction of Current fishing hours overlapping with area protected vs. percent are protected
+fishing_protected_figure <- ggplot() +
+  geom_abline(linetype = 2) +
+  geom_point(data = fishing_protected_by_scenario %>%
+               filter(scenario %in% "Business-as-usual"),
+             size = 4,
+             aes(x = mpa_coverage,
+                 y = fraction_effort_protected,
+                 color = scenario))+
+  scale_color_manual("",values = scenario_color_pal, guide = guide_legend(order = 1))+
+  ggnewscale::new_scale_color()  +
+  geom_point(data = fishing_protected_by_scenario %>%
+               filter(scenario != "Business-as-usual"),
+             size = 4,
+             aes(x = mpa_coverage,
+                 y = fraction_effort_protected,
+                 shape = scenario,
+                 fill = scenario)) +
+  geom_line(data = fishing_protected_by_scenario %>%
+              filter(scenario != "Business-as-usual"),
+            linewidth = 1.05,
+            aes(x = mpa_coverage,
+                y = fraction_effort_protected,
+                color = scenario,
+                linetype = scenario)) +
+  scale_shape_manual(values = scenario_shape_pal) +
+  scale_linetype_manual(values = scenario_linetype_pal) +
+  scale_fill_manual(values = scenario_color_pal,
+                    guide = guide_legend(reverse = TRUE)) +
+  scale_color_manual(values = scenario_color_pal,
+                     guide = guide_legend(reverse = TRUE)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0,NA),breaks = seq(0,1,0.1)) +
+  scale_x_continuous(labels = scales::percent, limits = c(0,NA)) +
+  labs(x = "Area protected",
+       y = "Current\nfishing hours\noverlapping\nwith\narea protected") +
+  theme(legend.position = "right", legend.box="vertical",
+        legend.key.height = unit(0.5, "cm"),
+        legend.key.width = unit(2.5, "cm")) +
+  guides(linetype = guide_legend(title = "MPA network scenario"),
+         color = guide_legend(title = "MPA network scenario"),
+         shape = guide_legend(title = "MPA network scenario"),
+         fill = guide_legend(title = "MPA network scenario"))
+
+fishing_protected_figure
+
+# Save data for reproducing figure
+write_csv(fishing_protected_by_scenario,
+          glue(figure_data_directory,"figure_3.csv"))
+```
+
+
+```{r}
+# Filter to just BAU results, rename fishing indicators to include _bau
+BAU_results <- simulation_results %>%
+  filter(scenario == "Business-as-usual") %>%
+  dplyr::select(forecast_horizon,
+                pixel_id,
+                fishing_binary_bau = .pred_class,
+                fishing_hours_bau = .pred,
+                pixel_area_m2)
+# Filter to non-BAU results, join BAU results by pixel
+# So we can compare pixel-by-pixel impact
+scenario_results <- simulation_results %>%
+  filter(scenario != "Business-as-usual") %>%
+  dplyr::select(-c(.pred_0,.pred_1,year,pixel_area_m2)) %>%
+  rename(fishing_binary = .pred_class,
+         fishing_hours = .pred) %>%
+  left_join(BAU_results,
+            by = c("pixel_id","forecast_horizon"))
+
+# Summarize total global results
+scenario_results_global <- scenario_results %>%
+  group_by(scenario,mpa_coverage,forecast_horizon) %>%
+  summarize(across(c(fishing_binary,
+                     fishing_hours,
+                     fishing_binary_bau,
+                     fishing_hours_bau),
+                   ~sum(.))) %>%
+  ungroup() %>%
+  mutate(region = "Global")
+
+# Summarize total results by region
+scenario_results_region <- scenario_results %>%
+  group_by(scenario,mpa_coverage,forecast_horizon,region) %>%
+  summarize(across(c(fishing_binary,
+                     fishing_hours,
+                     fishing_binary_bau,
+                     fishing_hours_bau),
+                   ~sum(.))) %>%
+  ungroup()
+
+# Combine datasets,and add absolute and relative changes relative to BAU
+scenario_results_combined <- scenario_results_global %>%
+  bind_rows(scenario_results_region)  %>%
+  mutate(fishing_binary_delta = (fishing_binary - fishing_binary_bau)/fishing_binary_bau,
+         fishing_hours_delta_absolute = fishing_hours - fishing_hours_bau,
+         fishing_hours_delta = fishing_hours_delta_absolute/fishing_hours_bau)%>%
+  mutate(region = fct_relevel(region,
+                              c("Inside\nMPAs","Partial\nMPA overlap","Outside\nMPAs"))) %>%
+  # Add fraction of effort that is protected for each scenario/mpa coverage
+  left_join(fishing_protected_by_scenario,
+            by = c("scenario","mpa_coverage"))
+```
+
+\pagebreak
+
+## Simulation results
+
+```{r label = "main-text-results-simulations-hurdle-global", fig.width=7,fig.height=3.75, fig.path = figure_path}
+# Save data for reproducing figures 3 and S11 and S12
+write_csv(scenario_results_combined,
+          glue("{figure_data_directory}/figure_5_and_s11_s12.csv"))
+
+change_vs_area_fig <- scenario_results_combined %>%
+  mutate(forecast_horizon = case_when(forecast_horizon == 1 ~ "Forecast: 1 year",
+                                      TRUE ~ glue::glue("Forecast: {forecast_horizon} years"))) %>%
+  filter(region == "Global") %>%
+  ggplot(aes(x = mpa_coverage,
+             y = fishing_hours_delta,
+             shape = scenario,
+             fill = scenario,
+             linetype = scenario))+
+  geom_hline(yintercept=0,linetype=2) +
+  geom_line(aes(color=scenario),linewidth = 1.05) +
+  geom_point(size = 3) +
+  labs(x = "Area protected",
+       y = "Change\nin\nfishing\nhours") +
+  scale_y_continuous(labels = scales::percent)  +
+  scale_x_continuous(labels = scales::percent,
+                     breaks = c(0.03,0.1,0.2,0.3)) +
+  scale_color_manual(values = scenario_color_pal) +
+  scale_fill_manual(values = scenario_color_pal) +
+  scale_shape_manual(values = scenario_shape_pal) +
+  scale_linetype_manual(values = scenario_linetype_pal) +
+  facet_grid(.~forecast_horizon) +
+  guides(linetype = guide_legend(title = "MPA network scenario"),
+         color = guide_legend(title = "MPA network scenario"),
+         shape = guide_legend(title = "MPA network scenario"),
+         fill = guide_legend(title = "MPA network scenario")) +
+  theme(legend.key.height = unit(0.5, "cm"),
+        legend.key.width = unit(1.25, "cm"),
+        plot.margin = unit(c(0,0,1,0), "lines"))
+
+change_vs_effort_fig <- scenario_results_combined %>%
+  mutate(forecast_horizon = case_when(forecast_horizon == 1 ~ "Forecast: 1 year",
+                                      TRUE ~ glue::glue("Forecast: {forecast_horizon} years"))) %>%
+  filter(region == "Global") %>%
+  ggplot(aes(x = fraction_effort_protected,
+             y = fishing_hours_delta,
+             fill = scenario,
+             shape = scenario,
+             linetype = scenario))+
+  geom_hline(yintercept=0,linetype=2) +
+  geom_line(aes(color = scenario),
+            linewidth = 1.05) +
+  geom_point(size = 3) +
+  labs(x = "Current fishing hours overlapping with area protected",
+       y = "Change\nin\nfishing\nhours") +
+  scale_y_continuous(labels = scales::percent)  +
+  scale_x_continuous(labels = scales::percent) +
+  scale_shape_manual(values = scenario_shape_pal) +
+  
+  scale_color_manual(values = scenario_color_pal) +
+  scale_fill_manual(values = scenario_color_pal) +
+  scale_linetype_manual(values = scenario_linetype_pal) +
+  facet_grid(.~forecast_horizon)
+
+# Generate shared legend
+legend <- cowplot::get_legend(change_vs_area_fig)
+
+cowplot::plot_grid(cowplot::plot_grid(change_vs_area_fig+ theme(legend.position="none"),
+                                      change_vs_effort_fig+ theme(legend.position="none"),ncol=1,labels=c("(A)","(B)")),
+                   legend,
+                   ncol = 2,
+                   rel_widths = c(0.7,0.3))
+```
+
+\pagebreak
+
+Area-based figure, by region and stage 1 and stage 2
+
+```{r label = "si-results-simulations-region-number-pixels", fig.path = figure_path}
+scenario_results_combined %>%
+  mutate(forecast_horizon = case_when(forecast_horizon == 1 ~ "Forecast: 1 year",
+                                      TRUE ~ glue::glue("Forecast: {forecast_horizon} years"))) %>%
+  ggplot(aes(x = mpa_coverage,
+             y = fishing_binary_delta,
+             color = scenario,
+             fill = scenario,
+             linetype = scenario,
+             shape = scenario))+
+  geom_hline(yintercept=0,linetype=2) +
+  geom_line(linewidth = 1.05) +
+  geom_point(size = 2)+
+  labs(x = "Area protected",
+       y = "Change in\nnumber of\nfished pixels") +
+  scale_y_continuous(labels = scales::percent)  +
+  scale_x_continuous(labels = scales::percent) +
+  facet_grid(region~forecast_horizon) +
+  scale_color_manual(values = scenario_color_pal) +
+  scale_fill_manual(values = scenario_color_pal) +
+  scale_linetype_manual(values = scenario_linetype_pal)+
+  scale_shape_manual(values = scenario_shape_pal)+
+  guides(linetype = guide_legend(title = "MPA network scenario"),
+         color = guide_legend(title = "MPA network scenario"),
+         shape = guide_legend(title = "MPA network scenario"),
+         fill = guide_legend(title = "MPA network scenario"))
+```
+
+\pagebreak
+
+```{r label = "si-results-simulations-region-effort", fig.path = figure_path}
+scenario_results_combined %>%
+  mutate(forecast_horizon = case_when(forecast_horizon == 1 ~ "Forecast: 1 year",
+                                      TRUE ~ glue::glue("Forecast: {forecast_horizon} years")))%>%
+  ggplot(aes(x = mpa_coverage,
+             y = fishing_hours_delta,
+             color = scenario,
+             fill = scenario,
+             linetype = scenario,
+             shape = scenario))+
+  geom_hline(yintercept=0,linetype=2) +
+  geom_line(linewidth = 1.05) +
+  geom_point(size = 2)+
+  labs(x = "Area protected",
+       y = "Change in\nfishing effort") +
+  scale_y_continuous(labels = scales::percent)  +
+  scale_x_continuous(labels = scales::percent) +
+  facet_grid(region~forecast_horizon) +
+  scale_color_manual(values = scenario_color_pal) +
+  scale_fill_manual(values = scenario_color_pal) +
+  scale_linetype_manual(values = scenario_linetype_pal)+
+  scale_shape_manual(values = scenario_shape_pal)+
+  guides(linetype = guide_legend(title = "MPA network scenario"),
+         color = guide_legend(title = "MPA network scenario"),
+         shape = guide_legend(title = "MPA network scenario"),
+         fill = guide_legend(title = "MPA network scenario"))
+```
+
+\pagebreak
+
+Historical observed and future predicted BAU fishing effort, in levels, and over time
+
+```{r "main-text-results-simulations-hurdle-global-levels", fig.height=3,fig.width=7, fig.path = figure_path}
+# Summarize annual observed data
+observed_data <- training_dataset %>%
+  group_by(year) %>%
+  summarize(fishing_hours = sum(fishing_hours_per_m2 * pixel_area_m2)) %>%
+  ungroup() %>%
+  # Add negative forecast horizon values
+  mutate(forecast_horizon = year - 2021) %>%
+  mutate(observed = "Observed") %>%
+  dplyr::select(-year)
+
+# What is currently observed fishing effort, in millions of fishing hours?
+# We will add this as a horizontal dashed line to the figure
+current_observed_fishing_hours_millions <- observed_data %>%
+  filter(forecast_horizon == 0) %>% 
+  .$fishing_hours / 1e6
+
+# Start with MPA scenario predictions
+levels_data <- scenario_results_combined %>%
+  filter(region == "Global") %>%
+  dplyr::select(forecast_horizon,scenario,mpa_coverage,fishing_hours) %>%
+  # Add BAU predictions
+  bind_rows(scenario_results_combined %>%
+              filter(region=="Global") %>%
+              distinct(mpa_coverage,forecast_horizon,fishing_hours_bau) %>%
+              rename(fishing_hours = fishing_hours_bau) %>%
+              mutate(scenario = "Business-as-usual")) %>%
+  # Add column - so far, these are all future predicted values
+  mutate(observed = "Predicted") %>%
+  # Add observed historical data
+  # We want this on all MPA coverage plots, so we will cross it with that
+  bind_rows(observed_data %>%
+              mutate(scenario = "Business-as-usual") %>%
+              crossing(distinct(scenario_results_combined,mpa_coverage))) %>%
+  # Add observed data for forecast_horizon of 0 and cross that with all scenarios
+  # So that the scenario lines start at 0
+  bind_rows(observed_data %>%
+              filter(forecast_horizon == 0) %>%
+              crossing(distinct(scenario_results_combined,scenario,mpa_coverage))) %>%
+  mutate(scenario = fct_relevel(scenario,scenario_factor_order)) %>%
+  mutate(mpa_coverage = glue("MPA coverage: {mpa_coverage * 100}%") %>%
+           fct_relevel("MPA coverage: 3%","MPA coverage: 5%")) %>%
+  # Plot fishing hours in millions, to remove zeros from y-axis
+  mutate(fishing_hours_millions = fishing_hours / 1e6)
+
+# Save data for reproducing figure
+write_csv(levels_data,
+          glue("{figure_data_directory}/figure_4.csv"))
+
+
+# For this figure, we now need to also have a linetype scale for Visalli and EBSA
+scenario_linetype_pal_levels <- setNames(c(1,1,4,5,2,3,4,5,6,1),
+                                         scenario_factor_order)
+
+ggplot()+
+  geom_line(data = levels_data %>%
+              filter(scenario=="Business-as-usual"),
+            aes(x = forecast_horizon,
+                y = fishing_hours_millions,
+                color = scenario),
+            linewidth = 1.05) +
+  scale_color_manual("",values = "black", guide = guide_legend(order = 1))+
+  ggnewscale::new_scale_color() +
+  geom_line(data = levels_data %>%
+              filter(scenario!="Business-as-usual"),
+            aes(x = forecast_horizon,
+                y = fishing_hours_millions,
+                color = scenario,
+                linetype = scenario),
+            linewidth = 1.05) +
+  scale_color_manual(values = scenario_color_pal)+
+  scale_linetype_manual(values = scenario_linetype_pal_levels) +
+  geom_hline(yintercept = current_observed_fishing_hours_millions,linetype=2,alpha=0.5) +
+  geom_vline(xintercept=0,linetype=2,alpha=0.5) +
+  labs(x = "Forecast horizon (years)",
+       y = "Fishing\nhours\n(millions)") +
+  scale_y_continuous(labels = scales::comma,
+                     limits = c(0,NA))  +
+  scale_x_continuous(breaks = seq(-5,3)) +
+  facet_wrap(.~mpa_coverage,ncol=3) +
+  theme(axis.title.y = element_text(vjust = 0.6),
+        legend.key.height = unit(0.5, "cm"),
+        legend.key.width = unit(1.25, "cm"))+
+  guides(linetype = guide_legend(title = "MPA network scenario"),
+         color = guide_legend(title = "MPA network scenario"))
+```
+
+\pagebreak
+
+Now look at results, from across all simulations, but at various distances from MPAs
+
+```{r}
+# Filter to just 1 year forecast horizon, add relative fishing hour change
+distance_data <- scenario_results %>% 
+  filter(forecast_horizon==1,
+         !is.na(mpa_distance_bin)) %>%
+  mutate(fishing_hours_delta_absolute = fishing_hours - fishing_hours_bau,
+         fishing_hours_delta_relative = fishing_hours_delta_absolute / fishing_hours_bau) %>%
+  # Focus just on pixels with some pre-MPA effort, since we can't calculate relative effort if they started with 0
+  filter(fishing_hours_bau>0) %>%
+  dplyr::select(c(scenario,mpa_distance_bin,fishing_hours_delta_relative))
+
+# Save data for reproducing figure
+write_csv(distance_data,
+          glue("{figure_data_directory}/figure_6_predicted.csv"))
+
+predicted_distance_fig <- distance_data %>%
+  ggplot() +
+  geom_hline(yintercept = 0,alpha=0.5) +
+  # Can thin jitter data, to not show duplicate values
+  # This reduces output file size
+  geom_jitter(data = distance_data %>%
+                distinct(mpa_distance_bin,fishing_hours_delta_relative),
+              aes(x = mpa_distance_bin, y = fishing_hours_delta_relative, group = mpa_distance_bin), position=position_jitter(0.025),pch=".",alpha=0.05)+
+  geom_violin(aes(x = mpa_distance_bin, y = fishing_hours_delta_relative, group = mpa_distance_bin),fill=NA,color="gray30") +
+  stat_summary(fun = median,geom = 'line',
+               aes(x = mpa_distance_bin,y = fishing_hours_delta_relative),
+               color = "gray30")  +
+  geom_boxplot(aes(x = mpa_distance_bin, y = fishing_hours_delta_relative, group = mpa_distance_bin),outlier.shape = NA,fill=NA,width=0.125,color="gray40")  +
+  stat_summary(fun = median,geom = 'point',
+               aes(x = mpa_distance_bin,y = fishing_hours_delta_relative),color = "gray70" 
+  )+
+  labs(x = "Distance to nearest MPA (km)",
+       y = "",
+       title = "Change in predicted fishing effort between\nMPA scenario and BAU scenario") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(breaks = seq(0,3),
+                     labels = c("Inside MPA",
+                                "0-100",
+                                "100-200",
+                                ">200"))+
+  coord_cartesian(ylim = c(-1,1.5)) +
+  theme(plot.title = element_text(hjust=0.5))
+```
+
+\pagebreak
+
+We can also look at a similar plot, but using historic observed data
+
+```{r}
+# Find only pixels that had a single new MPA implemented during training dataset
+# And where they single MPA only corresponds to a single implementation year
+# If there were multiple MPAs implemented in a pixel over the study period,
+# We won't be able to isolate before/after MPA effect for that pixel
+pixels_with_single_new_mpa <- training_dataset %>%
+  filter(nearest_years_since_mpa_designation == 0) %>%
+  # Only take pixels where MPA was implemented at least in 2016
+  # Otherwise, we don't have pre-mpa data
+  filter(year > 2016)  %>%
+  group_by(pixel_id) %>%
+  summarize(n_mpas = n_distinct(nearest_mpa),
+            n_new_mpa_years = n_distinct(year)) %>%
+  ungroup() %>%
+  filter(n_mpas==1,
+         n_new_mpa_years==1) %>%
+  select(pixel_id)
+
+# Find years each MPA was implemented
+# Then find 1 year before and 1 year after
+# We get the mpa_distance_bin for each pixel based on post-MPA location
+mpa_comparison_mpa_year_pixels <- training_dataset %>%
+  inner_join(pixels_with_single_new_mpa, by = "pixel_id") %>%
+  filter(nearest_years_since_mpa_designation ==0) %>%
+  # Only take pixels where MPA was implemented at least in 2016
+  # Otherwise, we don't have pre-mpa data
+  filter(year > 2016) %>%
+  distinct(nearest_mpa,year,pixel_id,nearest_mpa_distance_m) %>%
+  # Modify year column for joining by different years_post_mpa
+  crossing(tibble(years_post_mpa = c(-1,1))) %>%
+  mutate(year = year + years_post_mpa) %>%
+  # Add binned distance-to-MPA column, for later figure
+  mutate(mpa_distance_bin = case_when(nearest_mpa_distance_m == 0 ~ 0,
+                                      nearest_mpa_distance_m <= 100000 ~ 1,
+                                      nearest_mpa_distance_m <= 200000 ~ 2,
+                                      TRUE ~ 3)) 
+
+# For these pixel and year combinations, summarize fishing_hours
+# This will give us fishing_hours, by pixel_id, for all before/after MPA years
+# Also summarize by nearest MPA and distance bin
+mpa_comparison_data <- training_dataset %>%
+  # Convert area-normalized effort to regular effort
+  mutate(fishing_hours =fishing_hours_per_m2 * pixel_area_m2) %>%
+  group_by(pixel_id,year) %>%
+  summarize(fishing_hours = sum(fishing_hours,na.rm=TRUE)) %>%
+  ungroup() %>%
+  inner_join(mpa_comparison_mpa_year_pixels, by = c("year","pixel_id"))
+
+# Now for each of these pixels and before/after MPA implementation years
+# Find relative change in fishing effort
+mpa_comparison_data_with_baseline <- mpa_comparison_data %>%
+  dplyr::select(pixel_id,mpa_distance_bin,fishing_hours,years_post_mpa) %>%
+  mutate(years_post_mpa = ifelse(years_post_mpa==-1,"pre_mpa","post_mpa")) %>%
+  pivot_wider(names_from = "years_post_mpa",
+              values_from = "fishing_hours",
+              names_prefix = "fishing_hours_") %>%
+  mutate(fishing_hours_delta = (fishing_hours_post_mpa - fishing_hours_pre_mpa),
+         fishing_hours_delta_relative = fishing_hours_delta /fishing_hours_pre_mpa) %>%
+  # Focus just on pixels with some pre-MPA effort, since we can't calculate relative effort if they started with 0
+  filter(fishing_hours_pre_mpa>0)
+
+# Save data for reproducing figure
+write_csv(mpa_comparison_data_with_baseline,
+          glue("{figure_data_directory}/figure_6_observed.csv"))
+
+observed_distance_fig <- mpa_comparison_data_with_baseline %>%
+  ggplot(aes(x = mpa_distance_bin,
+             y = fishing_hours_delta_relative)) +
+  geom_hline(yintercept = 0,alpha=0.5) +
+  # Can thin jitter data, to not show duplicate values
+  # This reduces output file size
+  geom_jitter(data = mpa_comparison_data_with_baseline %>%
+                distinct(mpa_distance_bin,fishing_hours_delta_relative),
+              aes(x = mpa_distance_bin, y = fishing_hours_delta_relative, group = mpa_distance_bin), position=position_jitter(0.025),pch=".",alpha=0.25)+
+  geom_violin(aes(x = mpa_distance_bin, y = fishing_hours_delta_relative, group = mpa_distance_bin),fill=NA,color="gray30")  +
+  stat_summary(fun = median,geom = 'line',
+               aes(x = mpa_distance_bin,y = fishing_hours_delta_relative),
+               color = "gray30")  +
+  geom_boxplot(aes(x = mpa_distance_bin, y = fishing_hours_delta_relative, group = mpa_distance_bin),outlier.shape = NA,fill=NA,width=0.125,color="gray40")+
+  stat_summary(fun = median,geom = 'point',
+               aes(x = mpa_distance_bin,y = fishing_hours_delta_relative),
+               color = "gray30")  +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(breaks = seq(0,3),
+                     labels = c("Inside MPA",
+                                "0-100",
+                                "100-200",
+                                ">200"))+
+  labs(x = "Distance to nearest MPA (km)",
+       y = "",
+       title = "Change in observed fishing effort between\nyear after and year before MPA implementation")+
+  coord_cartesian(ylim = c(-1,1.5)) +
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        plot.margin = unit(c(0.1,0.1,1,1.1), "lines"),
+        plot.title = element_text(hjust=0.5))
+```
+
+```{r label = "main-text-effort-change-by-distance-to-mpa", fig.width = 3.4, fig.height=3.5, fig.path = figure_path}
+# Now combine predicted and observed distance figures
+cowplot::plot_grid(observed_distance_fig,
+                   predicted_distance_fig,
+                   ncol=1,
+                   align = "v",
+                   rel_heights = c(0.45,0.55),
+                   labels = c("(A)","(B)"))
+```
+
+
+\pagebreak
+
+# Supplementary materials
+
+## Materials and Methods
+
+### Data processing
+
+```{r}
+data_sources <- read_csv(here::here("data/raw/data_sources.csv")) %>%
+  dplyr::select(-`Model feature shorthand`) %>%
+  knitr::kable("latex",escape=FALSE,caption = "Data sources for all included model features, including the units, feature type, whether it varies spatially, whether it varies temporally, and the source name and reference citation.", label = "data_sources") %>%
+  kableExtra::kable_styling(latex_options = c("hold_position", "repeat_header"),
+                            font_size = 5)
+```
+
+```{r}
+# Load trained models and performance rds
+tar_load(c("oos_results_baseline",
+           "oos_results_lm",
+           "oos_results_lm_just_lagged_fishing",
+           "oos_results_just_lagged_fishing",
+           "oos_results_baseline_spatiotemporal"))
+```
+
+```{r label = "si-data-summary-training-testing-years", fig.path = figure_path}
+# Training/test data partition by year
+training_testing_years_features <- oos_results_baseline %>%
+  dplyr::select(forecast_horizon,training_testing_years) %>%
+  unnest(training_testing_years) %>%
+  mutate(type = "Model features")
+
+training_testing_years_outcome <- oos_results_baseline%>%
+  dplyr::select(forecast_horizon,training_testing_years) %>%
+  unnest(training_testing_years) %>%
+  mutate(year = year+forecast_horizon) %>%
+  mutate(type = "Outcome variable")
+
+training_testing_years <- training_testing_years_features %>%
+  bind_rows(training_testing_years_outcome) 
+
+# Save data for reproducing figure
+write_csv(training_testing_years,
+          glue("{figure_data_directory}/figure_s1.csv"))
+
+# Create tibble to show how different model features years predict different outcome variable years
+# Based on forecast horizon
+arrow_tibble_training_testing <- training_testing_years %>%
+  filter(type == "Model features") %>%
+  distinct(forecast_horizon,year) %>%
+  mutate(x = year,
+         xend = year + forecast_horizon,
+         y = "Model features", 
+         yend = "Outcome variable")%>%
+  mutate(forecast_horizon = glue("Forecast\nhorizon:\n{forecast_horizon}"))
+
+training_testing_years %>%
+  mutate(name = str_to_sentence(name)) %>%
+  mutate(name = fct_rev(name),
+         type = fct_rev(type)) %>%
+  mutate(forecast_horizon = glue("Forecast\nhorizon:\n{forecast_horizon}")) %>%
+  ggplot(aes(x = year, y = type, fill = name)) +
+  geom_tile(color = "black") +
+  scale_x_continuous(breaks = seq(2016,2021)) +
+  coord_equal() +
+  scale_fill_brewer("Data partition",palette="Accent") +
+  labs(x = "",
+       y = "") +
+  theme(axis.text.x = element_text(angle = 45,hjust=1),
+        legend.position = "bottom",
+        legend.direction = "horizontal") +
+  facet_grid(forecast_horizon~.) +
+  geom_segment(data = arrow_tibble_training_testing,  aes(x=x,y=y,yend=yend,xend=xend), 
+               arrow = arrow(length=unit(3, "mm")),inherit.aes=FALSE)
+```
+
+```{r label = "si-data-summary-obs-mpas", fig.path = figure_path}
+# Data summary
+# Summarize number of pixels and unique MPAs by forecast horizon, fishing binary, and broken apart by training and testing datasets
+data_summary <- oos_results_baseline %>% 
+  dplyr::select(forecast_horizon,training_data_size,testing_data_size) %>% 
+  pivot_longer(-c(forecast_horizon)) %>%
+  mutate(name = str_remove_all(name,"_data_size") %>%
+           str_to_sentence()) %>%
+  unnest(value) %>%
+  mutate(forecast_horizon = glue("Forecast horizon: {forecast_horizon}")) %>%
+  mutate(region = region %>%
+           fct_relevel(c("Inside MPAs",
+                         "Partial MPA overlap"))) %>%
+  mutate(name = fct_relevel(name,"Testing"))
+
+# Save data for reproducing figure
+write_csv(data_summary,
+          glue("{figure_data_directory}/figure_s2.csv"))
+
+# Plot number of pixel-years (observations), by region and ocean, forecast horizon
+# and disaggregated by training and testing dataset
+data_summary_figure_n <- data_summary %>%
+  ggplot(aes(x = n_pixel_years, y = fct_rev(forecast_horizon), fill = name)) +
+  geom_bar(stat = "identity",position = "stack",color="black",linewidth=0.25)+
+  facet_wrap(region~.,scales="free_x") +
+  scale_fill_brewer("",palette="Set1",
+                    guide = guide_legend(reverse = TRUE)) +
+  labs(x = "Number pixel-years",
+       y = "") +
+  scale_x_continuous(labels = scales::comma) +
+  theme(panel.spacing = unit(2, "lines"),
+        axis.text.x = element_text(angle=45,
+                                   hjust=1)) + 
+  guides(fill = "none")
+
+# Plot number of unique MPAs, by region and ocean, forecast horizon
+# and disaggregated by training and testing dataset
+data_summary_figure_mpa <- data_summary %>%
+  ggplot(aes(x = n_distinct_mpas, y = fct_rev(forecast_horizon), fill = name)) +
+  geom_bar(stat = "identity",position = "stack",color="black",linewidth=0.25)+
+  facet_wrap(region~.,scales="free_x") +
+  scale_fill_brewer("",palette="Set1",
+                    guide = guide_legend(reverse = TRUE)) +
+  labs(x = "Number distinct fully covered (Inside), partially covered (Partial),\nor nearest MPAs (Outside)",
+       y = "") +
+  scale_x_continuous(labels = scales::comma) +
+  theme(panel.spacing = unit(2, "lines"),
+        axis.text.x = element_text(angle=45,
+                                   hjust=1),
+        legend.position="bottom",
+        legend.direction="horizontal")
+
+cowplot::plot_grid(data_summary_figure_n,
+                   data_summary_figure_mpa,
+                   ncol=1,
+                   align = "v",
+                   labels = c("(A)","(B)"),
+                   rel_heights = c(0.46,0.54))
+```
+
+```{r "si-data-summary-cv-years",fig.height=4, fig.path = figure_path}
+# Cross-validation data partition by year
+cv_years_model_features <- oos_results_baseline %>%
+  dplyr::select(forecast_horizon,cv_years) %>%
+  unnest(cv_years) %>%
+  mutate(type = "Model features")
+
+cv_years_outcome <- oos_results_baseline %>%
+  dplyr::select(forecast_horizon,cv_years) %>%
+  unnest(cv_years) %>%
+  mutate(year = year+forecast_horizon) %>%
+  mutate(type = "Outcome variable")
+
+cv_years <- cv_years_model_features %>%
+  bind_rows(cv_years_outcome) 
+
+# Save data for reproducing figure
+write_csv(cv_years,
+          glue("{figure_data_directory}/figure_s3.csv"))
+
+arrow_tibble_cv <- cv_years %>%
+  filter(type == "Model features")%>%
+  distinct(forecast_horizon,year,id) %>%
+  mutate(x = year,
+         xend = year + forecast_horizon,
+         y = "Model features", 
+         yend = "Outcome variable")%>%
+  mutate(forecast_horizon = glue("Forecast\nhorizon:\n{forecast_horizon}"),
+         id = glue("CV fold: {str_remove_all(id,'Slice')}"))
+
+cv_years %>%
+  mutate(forecast_horizon = glue("Forecast\nhorizon:\n{forecast_horizon}"),
+         name = str_to_sentence(name),
+         id = glue("CV fold: {str_remove_all(id,'Slice')}"),
+         type = fct_relevel(type,"Outcome variable")) %>%
+  ggplot(aes(x = year, y = type, fill = name)) +
+  geom_tile(color = "black") +
+  facet_grid(forecast_horizon~id) +
+  scale_x_continuous(breaks = seq(2016,2020)) +
+  coord_equal() +
+  scale_fill_brewer("CV split",palette="Accent") +
+  labs(x = "",
+       y = "") +
+  theme(axis.text.x = element_text(angle = 45,hjust=1),
+        legend.position = "bottom",
+        legend.direction = "horizontal") +
+  geom_segment(data = arrow_tibble_cv,  aes(x=x,y=y,yend=yend,xend=xend), arrow = arrow(length=unit(1, "mm")),inherit.aes=FALSE)
+```
+
+### Model training and performance testing
+
+## Model performance - Temporal out-of-sample testing
+
+```{r label = "si-performance-temporal-combined",fig.width = 8,fig.height=9, fig.path = figure_path}
+stage_1_temporal_oos_fig_data <- oos_results_baseline %>%
+  dplyr::select(forecast_horizon,performance_stage_1) %>%
+  unnest(performance_stage_1)
+
+# Save data for reproducing figure
+write_csv(stage_1_temporal_oos_fig_data,
+          glue("{figure_data_directory}/figure_s4_a.csv"))
+
+stage_1_temporal_oos_fig <- stage_1_temporal_oos_fig_data %>%
+  mutate(region = fct_relevel(region,
+                              c("Inside MPAs","Partial MPA overlap","Outside MPAs","Global")))%>%
+  ggplot(aes(x = forecast_horizon, y = .estimate, group = forecast_horizon)) + 
+  facet_grid(.metric~region) +
+  geom_bar(stat = "identity",color="black",linewidth=0.25) +
+  labs(x = "Forecast horizon (years)",
+       y = "",
+       title = "(A) Stage 1 models")+
+  scale_x_continuous(breaks = c(1,2,3)) +
+  geom_hline(yintercept = 0) +
+  coord_cartesian(ylim=c(0,1))
+
+stage_2_temporal_oos_fig_data <- oos_results_baseline %>%
+  dplyr::select(forecast_horizon,performance_stage_2) %>%
+  unnest(performance_stage_2)
+
+# Save data for reproducing figure
+write_csv(stage_2_temporal_oos_fig_data,
+          glue("{figure_data_directory}/figure_s4_b.csv"))
+
+stage_2_temporal_oos_fig <- stage_2_temporal_oos_fig_data %>%
+  # Set y-axis limits for facets
+  # ALl metrics except rmse should have a max of 1
+  mutate(y_min = 0,
+         y_max = ifelse(.metric=="rmse",NA,1)) %>%
+  mutate(region = fct_relevel(region,
+                              c("Inside MPAs","Partial MPA overlap","Outside MPAs","Global")))%>%
+  ggplot(aes(x = forecast_horizon, y = .estimate, group = forecast_horizon)) + 
+  facet_grid(.metric~region,scales="free_y") +
+  geom_bar(stat = "identity",color="black",linewidth=0.25) +
+  labs(x = "Forecast horizon (years)",
+       y = "",
+       title = "(B) Stage 2 models")+
+  scale_x_continuous(breaks = c(1,2,3)) +
+  geom_hline(yintercept = 0) +
+  # Add blank geometries to properly set y-axis limits
+  # https://stackoverflow.com/a/42590452
+  geom_blank(aes(y = y_min)) +
+  geom_blank(aes(y = y_max))
+
+cowplot::plot_grid(stage_1_temporal_oos_fig,
+                   stage_2_temporal_oos_fig,
+                   ncol=1,
+                   align = "v",
+                   vjust = 0.25)
+
+```
+
+
+```{r}
+table_performance <- oos_results_baseline %>%
+  dplyr::select(forecast_horizon,performance_stage_1) %>%
+  unnest(performance_stage_1) %>%
+  mutate(Model = "Stage 1") %>%
+  bind_rows( oos_results_baseline %>%
+               dplyr::select(forecast_horizon,performance_stage_2) %>%
+               unnest(performance_stage_2) %>%
+               mutate(Model = "Stage 2"))  %>%
+  filter(region == "Global") %>%
+  dplyr::select(-c(region,.estimator))%>%
+  arrange(Model,.metric) %>%
+  relocate(Model) %>%
+  # Only show 3 digits
+  mutate(.estimate = signif(.estimate,3)) %>%
+  # Since RMSE is on very small unit scale, show in scientific
+  mutate(.estimate = ifelse(.metric == "rmse",
+                            scales::scientific(.estimate),
+                            .estimate)) %>%
+  rename(Metric = .metric) %>%
+  mutate(forecast_horizon = glue("Forecast horizon: {forecast_horizon}")) %>%
+  pivot_wider(names_from = forecast_horizon,
+              values_from = .estimate)
+table_performance %>%
+  xtable::xtable(label = "tab:table_performance_stages_combined",
+                 caption = "Temporal out-of-sample global performance for Stage 1 classification models and Stage 2 regression models, for each of the three forecast horizon models.") %>%
+  print(file = "tables/table_performance_stages_combined.tex", comment=FALSE, include.rownames=FALSE,append=FALSE,silent=TRUE, caption.placement = "top")
+```
+
+```{r label = "si-performance-spatiotemporal-combined",fig.width=7, fig.path = figure_path}
+oos_spatiotemporal_figure_stage_1_df <- oos_results_baseline_spatiotemporal %>%
+  dplyr::select(forecast_horizon,performance_stage_1,testing_ocean) %>%
+  unnest(performance_stage_1) %>%
+  filter(region == "Global")
+
+# Save data for reproducing figure
+write_csv(oos_spatiotemporal_figure_stage_1_df,
+          glue("{figure_data_directory}/figure_s5_a.csv"))
+
+oos_spatiotemporal_figure_stage_1 <- oos_spatiotemporal_figure_stage_1_df %>%
+  ggplot(aes(x = forecast_horizon, y = .estimate, group = forecast_horizon)) + 
+  facet_grid(.metric~.,scales = "free_y") +
+  geom_boxplot(outlier.shape = NA,width=0.1) +
+  geom_violin(fill = NA) +
+  geom_jitter(position=position_jitter(0.05),alpha = 0.25) +
+  
+  labs(x = "Forecast horizon (years)",
+       y = "",
+       title = "(A) Stage 1 models")+
+  scale_x_continuous(breaks = c(1,2,3)) +
+  geom_hline(yintercept = 0) +
+  scale_y_continuous(limits = c(0,1))
+
+oos_spatiotemporal_figure_stage_2_df <- oos_results_baseline_spatiotemporal %>%
+  dplyr::select(forecast_horizon,performance_stage_2,testing_ocean) %>%
+  unnest(performance_stage_2) %>%
+  filter(region == "Global")
+
+# Save data for reproducing figure
+write_csv(oos_spatiotemporal_figure_stage_2_df,
+          glue("{figure_data_directory}/figure_s5_b.csv"))
+
+oos_spatiotemporal_figure_stage_2 <- oos_spatiotemporal_figure_stage_2_df %>%
+  # Set y-axis limits for facets
+  # ALl metrics except rmse should have a max of 1
+  mutate(y_min = 0,
+         y_max = ifelse(.metric=="rmse",NA,1)) %>%
+  ggplot(aes(x = forecast_horizon, y = .estimate, group = forecast_horizon)) + 
+  facet_grid(.metric~.,scales = "free_y") +
+  geom_violin(fill = NA) +
+  geom_boxplot(outlier.shape = NA,width=0.1) +
+  geom_jitter(position=position_jitter(0.05),alpha = 0.25) +
+  
+  labs(x = "Forecast horizon (years)",
+       y = "",
+       title = "(B) Stage 2 models")+
+  scale_x_continuous(breaks = c(1,2,3)) +
+  geom_hline(yintercept = 0) +
+  # Add blank geometries to properly set y-axis limits
+  # https://stackoverflow.com/a/42590452
+  geom_blank(aes(y = y_min)) +
+  geom_blank(aes(y = y_max))
+
+cowplot::plot_grid(oos_spatiotemporal_figure_stage_1,
+                   oos_spatiotemporal_figure_stage_2,
+                   ncol=2,
+                   align = "h")
+```
+
+\pagebreak
+
+## Model specification robustness check
+
+Compare the baseline model (random forest with all model features) to two robusntess checks: 1) random forest with just lagged fishing model feature, and 2) logistic and linear regression with all model features.
+
+```{r "si-performance-robustness-combined",fig.width =8,fig.height=9, fig.path = figure_path}
+robustness_data <- oos_results_baseline %>%
+  mutate(model = "Baseline (RF with all model features)")%>%
+  bind_rows(oos_results_just_lagged_fishing %>%
+              mutate(model = "RF with just lagged fishing model feature"))  %>%
+  bind_rows(oos_results_lm_just_lagged_fishing %>%
+              mutate(model = "LM with just lagged fishing model feature"))  %>%
+  bind_rows(oos_results_lm %>%
+              mutate(model = "LM with all model features")) %>%
+  mutate(model = fct_relevel(model,
+                             c("Baseline (RF with all model features)",
+                               "RF with just lagged fishing model feature"))) 
+
+robustness_fig_stage_1_df <- robustness_data %>%
+  dplyr::select(forecast_horizon,performance_stage_1,model) %>%
+  unnest(performance_stage_1)%>%
+  filter(region=="Global")
+
+# Save data for reproducing figure
+write_csv(robustness_fig_stage_1_df,
+          glue("{figure_data_directory}/figure_s6_a.csv"))
+
+robustness_fig_stage_1 <-robustness_fig_stage_1_df %>%
+  mutate(forecast_horizon = glue("Forecast horizon: {forecast_horizon}")) %>%
+  ggplot(aes(x = model, y = .estimate, fill = model, group = interaction(model,forecast_horizon))) + 
+  facet_grid(.metric~forecast_horizon,scales="free_x") +
+  geom_bar(stat = "identity", position=position_dodge(1),color="black",linewidth=0.25) +
+  labs(x = "",
+       y= "",
+       title = "(A) Stage 1 models")+
+  scale_fill_brewer("",type="qual",palette="Set2",direction=-1) +
+  theme(legend.position = "bottom")+
+  geom_hline(yintercept = 0) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = "none")
+
+robustness_fig_stage_2_df <- robustness_data %>%
+  dplyr::select(forecast_horizon,performance_stage_2,model) %>%
+  unnest(performance_stage_2)%>%
+  filter(region=="Global")
+
+# Save data for reproducing figure
+write_csv(robustness_fig_stage_2_df,
+          glue("{figure_data_directory}/figure_s6_b.csv"))
+
+robustness_fig_stage_2 <- robustness_fig_stage_2_df  %>%
+  # Set y-axis limits for facets
+  # ALl metrics except rmse should have a max of 1
+  mutate(y_min = 0,
+         y_max = ifelse(.metric %in% c("rsq","rsq_trad"),1,NA))%>%
+  mutate(forecast_horizon = glue("Forecast horizon: {forecast_horizon}")) %>%
+  ggplot(aes(x = model, y = .estimate, fill = model, group = interaction(model,forecast_horizon))) + 
+  facet_grid(.metric~forecast_horizon,scales="free") +
+  geom_bar(stat = "identity", position=position_dodge(1),color="black",linewidth=0.25) +
+  labs(x = "",
+       y= "",
+       title = "(B) Stage 2 models")+
+  scale_fill_brewer("",type="qual",palette="Set2",direction=-1) +
+  theme(legend.position = "bottom")+
+  geom_hline(yintercept = 0) +
+  guides(fill=guide_legend(nrow=2, byrow=TRUE),
+         color=guide_legend(nrow=2, byrow=TRUE)) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())+
+  # Add blank geometries to properly set y-axis limits
+  # https://stackoverflow.com/a/42590452
+  geom_blank(aes(y = y_min)) +
+  geom_blank(aes(y = y_max))
+
+cowplot::plot_grid(robustness_fig_stage_1,
+                   robustness_fig_stage_2,
+                   ncol=1,
+                   align = "v",
+                   rel_heights = c(0.43,0.57))
+```
+
+\pagebreak
+
+## Palau case study
+
+First, let's look at fishing activity within the Palau EEZ over time, looking both inside and outside the MPA area that was implemented in 2020. We will focus on the top two fishing fleets in Palau, Taiwan and Japan.
+
+```{r "si-palau-gfw-figure", fig.height=8, fig.width=8, fig.path = figure_path}
+# Load outline of Palau MPA, which was implemented on January 1, 2020
+mpa_palau <- tar_read("mpa") %>%
+  filter(mpa_id == "mpa_id_68807606")
+
+# Save geopackage of MPA data, for reproducing figure
+mpa_palau %>%
+  sf::st_write(glue("{figure_data_directory}/figure_s13_a_mpa_outline.gpkg"),
+               # Overwrite existing data
+               append = FALSE,
+               delete_layer = TRUE)
+
+# Reload it
+mpa_palau <- st_read(glue("{figure_data_directory}/figure_s13_a_mpa_outline.gpkg"))
+
+# Load spatial Palau data from GFW
+tar_load("palau_gfw_data")
+
+# Summarize by lon, lat, year, flag
+palau_df <- palau_gfw_data %>%
+  # Filter to non-na flags
+  filter(!is.na(flag)) %>%
+  # Summarize annal fishing effort spatially by flag
+  group_by(lon,lat,year,flag) %>%
+  summarize(fishing_hours = sum(fishing_hours,na.rm=TRUE)) %>%
+  ungroup() 
+
+# Save data for reproducing figure
+write_csv(palau_df,
+          glue("{figure_data_directory}/figure_s13_a.csv"))
+
+palau_sf <- palau_df %>%
+  # Turn this into a stars raster object
+  st_as_stars(dims = c("lon", "lat", "year","flag")) %>%
+  st_set_crs(4326) %>%
+  st_as_sf(long = TRUE) %>%
+  # Transform it to apprpriate projection
+  st_transform(st_crs(mpa_palau))
+
+# Summarize pre-2020 effort by flag
+pre_2020_effort_by_flag <- palau_sf %>%
+  st_set_geometry(NULL) %>%
+  filter(year < 2020) %>%
+  group_by(flag) %>%
+  summarize(fishing_hours = sum(fishing_hours,
+                                na.rm=TRUE)) %>%
+  ungroup() 
+
+# What are top 2 flags, by pre-2020 effort
+top_2_palau_flags <- pre_2020_effort_by_flag%>%
+  slice_max(n = 2, order_by = fishing_hours) %>%
+  dplyr::select(flag,fishing_hours)
+
+# What gears did top-2 flags use pre-2020?
+# Predominantly drifting longlines
+gear_for_top_2_flags_pre_2020 <- palau_gfw_data %>%
+  filter(year < 2020) %>%
+  group_by(flag,gear) %>%
+  summarize(fishing_hours = sum(fishing_hours,
+                                na.rm=TRUE)) %>%
+  ungroup()  %>%
+  inner_join(top_2_palau_flags %>%
+               dplyr::select(flag),by="flag") %>%
+  arrange(flag,-fishing_hours)
+
+# Make map of Taiwan and Japan Palau effort over time
+palau_map_figure <- ggplot() +
+  geom_sf(data = palau_sf  %>%
+            inner_join(top_2_palau_flags %>%
+                         dplyr::select(flag),by="flag") %>%
+            mutate(flag = case_when(flag == "JPN" ~ "Japan",
+                                    flag == "TWN" ~ "Taiwan") %>%
+                     fct_relevel("Taiwan")),
+          aes(fill = fishing_hours,
+              color = fishing_hours)) +
+  geom_sf(data = mpa_palau,
+          color = "#D55E00",
+          fill = NA) +
+  facet_grid(flag~year) +
+  scale_fill_viridis_c("Fishing\nhours",
+                       option = "B",
+                       na.value = "black")+
+  scale_color_viridis_c("Fishing\nhours",
+                        option = "B",
+                        na.value = "black") +
+  theme_minimal() %+replace%
+  theme(panel.background = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        strip.text.y = element_text(angle=0),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        strip.background = element_rect(fill=NA,color=NA),
+        legend.position = "left",
+        legend.title.align=0.5)
+
+
+# Filter data to top 2 flags, join with MPA to determine if each pixel is inside MPA
+palau_top_2_flags_with_mpa_df <- palau_sf %>%
+  inner_join(top_2_palau_flags %>%
+               dplyr::select(flag),by="flag")  %>%
+  st_join(mpa_palau, left = TRUE, largest = TRUE)%>%
+  st_set_geometry(NULL)
+
+# Make annual effort time series, by flag and inside/outside MPA
+palau_time_series <- palau_top_2_flags_with_mpa_df %>%
+  mutate(mpa = ifelse(is.na(mpa_name),
+                      "Outside 2020 MPA area",
+                      "Inside 2020 MPA area")) %>%
+  group_by(year,mpa,flag) %>%
+  summarize(fishing_hours = sum(fishing_hours,na.rm=TRUE)) %>%
+  ungroup() %>%
+  mutate(flag = case_when(flag == "JPN" ~ "Japan",
+                          flag == "TWN" ~ "Taiwan") %>%
+           fct_relevel("Taiwan"))
+
+# Save data for reproducing figure
+write_csv(palau_time_series,
+          glue("{figure_data_directory}/figure_s12_b.csv"))
+
+# Add baseline daata to time series
+# Get baseline effort in 2019, year before MPA
+baseline_pre_mpa_effort <- palau_time_series %>%
+  filter(year == 2019) %>%
+  dplyr::select(mpa,flag,pre_mpa_fishing_hours = fishing_hours)
+
+# This is disaggregated inside/outside MPA
+# Filter to just 2020
+palau_time_series_with_baseline_2020 <- palau_time_series %>%
+  left_join(baseline_pre_mpa_effort, by = c("mpa","flag")) %>%
+  mutate(fishing_hours_delta_from_pre_mpa_baseline = scales::percent((fishing_hours - pre_mpa_fishing_hours) / pre_mpa_fishing_hours,accuracy=0.1))%>%
+  filter(year == 2020)
+
+# Aggregate acriss inside/outside MPA
+# filter to just 2020
+palau_time_series_with_baseline_totals_2020 <- palau_time_series %>%
+  left_join(baseline_pre_mpa_effort) %>%
+  group_by(year,flag) %>%
+  summarize(across(c(fishing_hours,pre_mpa_fishing_hours),~sum(.))) %>%
+  ungroup()%>%
+  mutate(fishing_hours_delta_from_pre_mpa_baseline = scales::percent((fishing_hours - pre_mpa_fishing_hours) / pre_mpa_fishing_hours,accuracy=0.1))%>%
+  filter(year == 2020)
+
+palau_time_series_figure <- palau_time_series %>%
+  ggplot(aes(x = year,
+             y = fishing_hours,
+             color = mpa)) +
+  geom_line(linewidth = 1.05) +
+  geom_vline(xintercept = 2020, linetype = 2) +
+  labs(x = "",
+       y = "Fishing\nhours") +
+  scale_y_continuous(labels = scales::comma) +
+  scale_color_manual("",
+                     values = c("#D55E00","#56B4E9")) +
+  facet_grid(flag~.,scales="free") +
+  theme(strip.background = element_rect(fill=NA,color=NA),
+        legend.position = "bottom")
+
+cowplot::plot_grid(palau_map_figure,
+                   palau_time_series_figure,
+                   ncol=1,
+                   align = "vh",
+                   axis = "lr",
+                   rel_heights = c(0.57,0.43),
+                   labels = c("(A)","(B)"))
+```
+
+```{r echo = TRUE, results = 'asis'}
+# fraction pre-2020 effort by Taiwan
+(top_2_palau_flags %>%
+   filter(flag == "TWN") %>%
+   .$fishing_hours / sum(pre_2020_effort_by_flag$fishing_hours)) %>%
+  scales::percent()
+
+# fraction pre-2020 effort by Japan
+(top_2_palau_flags %>%
+    filter(flag == "JPN") %>%
+    .$fishing_hours / sum(pre_2020_effort_by_flag$fishing_hours)) %>%
+  scales::percent()
+
+# What gears did these two flags predominantly use before 2020?
+gear_for_top_2_flags_pre_2020 %>%
+  knitr::kable()
+
+# Change in effort from pre-MPA baseline in 2020, by inside/outside MPA and flag
+palau_time_series_with_baseline_2020 %>%
+  dplyr::select(mpa,flag,fishing_hours_delta_from_pre_mpa_baseline) %>%
+  knitr::kable()
+
+# Total in effort from pre-MPA baseline in 2020, by flag
+palau_time_series_with_baseline_totals_2020 %>%
+  dplyr::select(flag,fishing_hours_delta_from_pre_mpa_baseline) %>%
+  knitr::kable()
+```
+
+# Palau vessel-level analysis
+
+Here we look at the activity of the pre-MPA Palau fishing fleet (i.e., those unique vessels that were observed fishing in the Palau EEZ prior to 2020)
+
+```{r}
+# For our study period, filter vessel-level pre-MPA Palau fishing fleet data to just the top 2 Palau flags (Taiwan and Japan)
+# By year, summarize number of unique vessels and total fishing effort, globally
+targets::tar_load(palau_vessel_level_gfw_data)
+
+palau_pre_mpa_fleet_global_fig_data <- palau_vessel_level_gfw_data %>%
+  filter(year>= 2016, year<=2021) %>%
+  group_by(year) %>%
+  summarize(`Number distinct fishing vessels in pre-MPA Palau fleet operating globally, across flags` = n_distinct(ssvid),
+            `Total global fishing hours by pre-MPA Palau fleet, across flags` = sum(fishing_hours)) %>%
+  ungroup() %>%
+  pivot_longer(-c(year),names_to = "metric",values_to = "value")
+
+# Save data for reproducing figure
+write_csv(palau_pre_mpa_fleet_global_fig_data,
+          glue("{figure_data_directory}/figure_s14_a.csv")) 
+
+palau_pre_mpa_fleet_global_fig <- palau_pre_mpa_fleet_global_fig_data %>%
+  ggplot(aes(x = year, y = value)) +
+  geom_line(linewidth = 1.05) +
+  facet_wrap(metric~.,scales = "free_y",ncol=1)+ 
+  geom_vline(xintercept = 2020, linetype = 2)+
+  scale_y_continuous(limits = c(0,NA),
+                     labels = scales::comma) +
+  labs(x = "",
+       y = "") +
+  theme(strip.background = element_blank(),
+        strip.text = element_text(hjust=0))
+```
+
+\pagebreak
+
+```{r}
+# Now summarize the number of unique vessels of the pre-MPA Palau fleet, and total fishing effort, by year and EEZ
+vessel_summary_data <- palau_vessel_level_gfw_data %>%
+  filter(year>= 2016, year<=2021) %>%
+  filter(flag_iso3 %in% top_2_palau_flags$flag) %>%
+  group_by(year,flag_iso3,eez_iso3) %>%
+  summarize(n_distinct_vessels = n_distinct(ssvid),
+            fishing_hours = sum(fishing_hours)) %>%
+  ungroup() %>%
+  complete(year,flag_iso3,eez_iso3,fill = list(n_distinct_vessels = 0,
+                                               fishing_hours = 0))
+
+# For our plot, let's focus on the top 12 countries in terms of the size of the pre-MPA Palau fleet
+top_fished_countries <- palau_vessel_level_gfw_data %>%
+  group_by(eez_iso3) %>%
+  summarize(n_distinct_vessels = n_distinct(ssvid)) %>%
+  top_n(12, n_distinct_vessels) %>%
+  arrange(-n_distinct_vessels) %>%
+  select(eez_iso3) %>%
+  mutate(eez = ifelse(eez_iso3 == "high_seas", 
+                      "High seas",
+                      countrycode::countrycode(eez_iso3, "iso3c", "country.name")))
+
+# Now plot number of unique vessels in the fleet, by EEZ and high seas
+palau_pre_mpa_fleet_by_eez_fig_data <- vessel_summary_data %>%
+  mutate(eez = ifelse(eez_iso3 == "high_seas", 
+                      "High seas",
+                      countrycode::countrycode(eez_iso3, "iso3c", "country.name"))) %>%
+  inner_join(top_fished_countries, by = "eez") %>%
+  # For EEZs, first show Palau, High Seas, Taiwan, and Japan
+  # Then order based on EEZ with largest fleet size over full time series
+  mutate(eez = eez %>%
+           fct_relevel(top_fished_countries$eez) %>%
+           fct_relevel(c("Palau","High seas","Taiwan","Japan"))) %>%
+  mutate(flag = case_when(flag_iso3 == "JPN" ~ "Japan",
+                          flag_iso3 == "TWN" ~ "Taiwan") %>%
+           fct_rev())  
+
+# Save data for reproducing figure
+write_csv(palau_pre_mpa_fleet_by_eez_fig_data,
+          glue("{figure_data_directory}/figure_s14_b.csv"))
+
+palau_pre_mpa_fleet_by_eez_fig <- palau_pre_mpa_fleet_by_eez_fig_data %>%
+  ggplot(aes(x = year, y = n_distinct_vessels, color = flag)) +
+  geom_line(linewidth = 1.05) + 
+  geom_vline(xintercept = 2020, linetype = 2) +
+  labs(x = "",
+       y = "",
+       title = "Number of distinct Taiwanese- and Japanese-flagged fishing vessels in pre-MPA Palau fleet operating by EEZ and high seas") +
+  facet_wrap(eez~.,scales = "free_y",ncol = 4) +
+  scale_y_continuous(limits = c(0,NA),
+                     breaks = scales::pretty_breaks()) +
+  scale_color_manual("Flag",
+                     values = c("#E66100","#5D3A9B")) +
+  theme(strip.background = element_rect(fill=NA,color=NA),
+        legend.position = "right",
+        title = element_text(size = 8))
+```
+
+```{r "si-palau-gfw-pre-mpa-fleet-timeseries", fig.height=8, fig.width=10, fig.path = figure_path}
+cowplot::plot_grid(palau_pre_mpa_fleet_global_fig,
+                   palau_pre_mpa_fleet_by_eez_fig,
+                   ncol=1,
+                   align = "vh",
+                   axis = "lr",
+                   rel_heights = c(0.5,0.5),
+                   labels = c("(A)","(B)"))
+```
+
+```{r}
+# What was the change in total fishing activity (vessels or hours) by the pre-MPA fleet (global change, regardless of where in the world they fish)?
+palau_pre_mpa_fleet_global_change <-  palau_vessel_level_gfw_data %>%
+  filter(year %in% c(2019,2021)) %>%
+  group_by(year) %>%
+  summarize(n_vessels = n_distinct(ssvid),
+            fishing_hours = sum(fishing_hours)) %>%
+  ungroup() %>%
+  pivot_wider(names_from = year,values_from = c(n_vessels,fishing_hours)) %>%
+  mutate(global_delta_n_vessels = n_vessels_2021 - n_vessels_2019,
+         global_delta_n_vessels_relative = global_delta_n_vessels / n_vessels_2019,
+         global_delta_fishing_hours = fishing_hours_2021 - fishing_hours_2019,
+         global_delta_fishing_hours_relative = global_delta_fishing_hours / fishing_hours_2019)
+
+# THe pre-MPA fishing fleet in Palau in 2019 had
+palau_pre_mpa_fleet_global_change$n_vessels_2019
+# vessels in 2019
+# This decreased by
+abs(palau_pre_mpa_fleet_global_change$global_delta_n_vessels)
+# vessels in 2021 to 
+palau_pre_mpa_fleet_global_change$n_vessels_2021
+# in 2021, a change of
+scales::percent(palau_pre_mpa_fleet_global_change$global_delta_n_vessels_relative)
+
+# There was also a 
+scales::percent(palau_pre_mpa_fleet_global_change$global_delta_fishing_hours_relative)
+# decrease in fishing effort by this fleet from 2019 to 2021
+
+# By comparison, global fishing effort across all vessel decreased by only
+training_dataset %>%
+  group_by(year) %>%
+  summarize(fishing_hours = sum(fishing_hours_per_m2 * pixel_area_m2)) %>%
+  ungroup() %>%
+  filter(year %in% c(2019,2021)) %>%
+  pivot_wider(values_from = fishing_hours,
+              names_from = year) %>%
+  mutate(change = (`2021` - `2019`) / `2019`) %>%
+  .$change %>%
+  scales::percent(accuracy = 0.1)
+#between 2019 and 2021.
+
+```
+
+
+
+\pagebreak
+## Change in effort by Large Marine Ecosystem (LME)
+
+```{r "si-fishing-change-by-lme",fig.width =9,fig.height=9, fig.path = figure_path}
+# Downloaded from here https://www.sciencebase.gov/catalog/item/55c77722e4b08400b1fd8244
+lme_sf <- here::here("data/raw/LME66/LMEs66.shp") %>%
+  read_sf() %>%
+  sf::st_wrap_dateline(options = c("WRAPDATELINE=YES", "DATELINEOFFSET=0"), quiet = TRUE) %>%
+  st_transform(analysis_projection) %>%
+  st_make_valid() %>%
+  dplyr::select(lme = LME_NAME)
+
+# For each pixel in our global grid, determine the LME it belongs to
+lme_grid <- tar_read(projected_global_grid) %>%
+  st_join(lme_sf,
+          largest = TRUE) %>%
+  st_set_geometry(NULL) %>%
+  dplyr::select(pixel_id,lme) %>%
+  as_tibble()
+
+# Make pixel-level MPA scenario results
+projection_data_by_lme <- scenario_results %>%
+  # Filter to just 3-year time horizon, 30% global target
+  filter(forecast_horizon == 3, mpa_coverage==0.3)%>%
+  # Add LME info
+  left_join(lme_grid, by="pixel_id")%>%
+  # Now calculate fishing hours by LME, for each MPA scenario
+  group_by(scenario, lme) %>%
+  summarize(fishing_hours = sum(fishing_hours),
+            fishing_hours_bau = sum(fishing_hours_bau)) %>%
+  ungroup() %>%
+  mutate(fishing_hours_delta = (fishing_hours - fishing_hours_bau) / fishing_hours_bau) %>%
+  filter(!is.na(lme)) %>%
+  # Don't include LMEs with no fishing effort
+  filter(!(fishing_hours == 0 & fishing_hours_bau==0)) %>%
+  # Make some names shorter, for plotting
+  mutate(lme = case_when(lme =="Canadian Eastern Arctic - West Greenland" ~ "Canadian E. Arctic − W. Greenland",
+                         TRUE ~ lme))
+
+# Save data for reproducing figure
+write_csv(projection_data_by_lme,
+          glue("{figure_data_directory}/figure_s15.csv"))
+
+lme_figure_barplot <- projection_data_by_lme %>%
+  ggplot(aes(x = fishing_hours_delta,
+             y = reorder(lme,
+                         fishing_hours_delta))) +
+  geom_bar(stat = "identity",
+           position = "dodge",
+           fill = "black") +
+  labs(x = "Change in fishing hours",
+       y="") +
+  facet_wrap(scenario~.,
+             scales = "fixed",
+             ncol = 7, 
+             labeller = labeller(scenario = label_wrap_gen(15))) +
+  scale_x_continuous(breaks = c(-1,-0.75,-0.5,-0.25,0),
+                     labels = c("-100%","","","","0%")) + theme(panel.spacing = unit(1.25, "lines")) +
+  theme(plot.margin=grid::unit(c(0.1,1.5,0.1,0.1), "mm"))
+
+# Make map of regions, for inset
+lme_map <- data_grid %>%
+  left_join(lme_grid, by = "pixel_id") %>%
+  filter(!is.na(lme)) %>%
+  ggplot() +
+  geom_tile(aes(x = lon,
+                y = lat,
+                fill = lme),
+            show.legend = FALSE) +
+  geom_sf(data = world_plotting,
+          fill = "grey50",
+          color = "grey50") +
+  theme_map() +
+  theme(legend.position = "bottom") +
+  paletteer::scale_color_paletteer_d(palette = "khroma::stratigraphy") +
+  labs(x = "",
+       y = "") +
+  # Remove extra margins around plot
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0))
+
+
+cowplot::ggdraw() +
+  cowplot::draw_plot(lme_figure_barplot, width = 1, height = 0.93) +
+  cowplot::draw_plot(lme_map,scale=0.18,halign=0,valign=1.025)
+```
+
+\pagebreak
+
+## Shapley feature contribution
+
+```{r}
+# Load Shapley feature contribution tibbles, one for each stage
+# Full data has contributions for each feature, observation, and iteration, so we need to aggregate this to get one score per feature
+tar_load("shapley_contributions_stage_1")
+tar_load("shapley_contributions_stage_2")
+
+# Pull the second set of Shapley values for stage 1, which correspond to a classification of 1
+shapley_data <- shapley_contributions_stage_1$S[[2]] %>% as_tibble() %>%
+  mutate(stage = "Stage 1") %>%
+  bind_rows(shapley_contributions_stage_2$S %>% as_tibble() %>%
+              mutate(stage = "Stage 2")) %>%
+  pivot_longer(-stage) %>%
+  rename(contribution = value,
+         variable_name = name) %>%
+  # For each model feature, calculate average value
+  group_by(variable_name,stage) %>%
+  summarize(contribution = mean(abs(contribution))) %>%
+  ungroup() %>%
+  # Some features are not used in model training, and have 0 contribution
+  # Don't include these
+  filter(contribution != 0)  %>%
+  # Label each feature if it is related to MPAs
+  mutate(mpa_feature_label = ifelse(stringr::str_detect(variable_name,"mpa"),
+                                    "MPA implementation feature",
+                                    "All other features") %>%
+           fct_rev()) %>%
+  mutate(variable_name_code = variable_name) %>%
+  # Make feature names more readable and match Table 1
+  mutate(variable_name = case_when(variable_name == "ais_reception_positions_per_day_class_A" ~ "AIS reception: Type A transponders (pings/day)",
+                                   variable_name == "ais_reception_positions_per_day_class_B" ~ "AIS reception: Type Type B transponders (pings/day)",
+                                   variable_name == "anom_sst_c_mean" ~ "Sea surface temperature anomaly, mean (degree C)",
+                                   variable_name == "anom_sst_c_sd" ~ "Sea surface temperature anomaly, SD (degree C)",
+                                    variable_name == "chl_mg_per_m3_mean" ~ "Chlorophyll-A, mean (mg/m^3)",
+                                    variable_name == "chl_mg_per_m3_sd" ~ "Chlorophyll-A, SD (mg/m^3)",
+                                    variable_name == "distance_from_port_m" ~ "Distance from port (m)",
+                                    variable_name == "distance_from_shore_m" ~ "Shore: nearest distance (m)",
+                                   variable_name == "eez_region_world_bank_7" ~ "World Bank Development Indicators region",
+                                   variable_name == "eez_sovereign" ~ "Exclusive economic zone: sovereign state",
+                                   variable_name == "elevation_m" ~ "Bathymetry: depth (m)",
+                                   variable_name == "enso_index_mean" ~ "El Niño Southern Oscillation index, mean",
+                                   variable_name == "enso_index_sd" ~ "El Niño Southern Oscillation index, SD",
+                                   variable_name == "fishing_hours_per_m2_lag_log" ~ "AIS fishing effort: 1, 2, or 3 year lag (log(hour/m^2))",
+                                   variable_name == "fraction_eez_overlap" ~ "Exclusive economic zone: fraction of pixel coverage",
+                                   variable_name == "fraction_mpa_overlap" ~ "MPA Spatial coverage: fraction of pixel",
+                                   variable_name == "fraction_mpa_overlap_neighbor_1" ~ "MPA Spatial coverage: fraction of pixels, 1st neighbor",
+                                   variable_name == "fraction_mpa_overlap_neighbor_2" ~ "MPA Spatial coverage: fraction of pixels, 2nd neighbor",
+                                   variable_name == "fraction_year_with_mpa" ~ "Temporal coverage: fraction of year with MPA",
+                                   variable_name == "fuel_price_usd_mt_mean" ~ "IFO 380 fuel price, mean (USD/MT)",
+                                   variable_name == "fuel_price_usd_mt_sd" ~ "IFO 380 fuel price, SD (USD/MT)",
+                                   variable_name == "gfi_fisheries_governance_capacity" ~ "Global Fishing Index governance capacity",
+                                   variable_name == "lat" ~ "Latitude",
+                                   variable_name == "lon" ~ "Longitude",
+                                   variable_name == "mesopelagic_zone" ~ "Mesopelagic zone",
+                                   variable_name == "nearest_eez_distance_m" ~ "Exclusive economic zone: nearest distance (m)",
+                                   variable_name == "nearest_eez_sovereign" ~ "Exclusive economic zone: nearest sovereign state",
+                                   variable_name == "nearest_mpa_distance_m"  ~ "Nearest MPA: distance (m)",
+                                   variable_name == "nearest_seamount_distance_m" ~ "Seamount: nearest distance (m)",
+                                   variable_name == "nearest_years_since_mpa_designation" ~ "Nearest MPA: years since designation (years)",
+                                   variable_name == "ocean" ~ "Ocean",
+                                   variable_name == "one_year_before_full_mpa" ~ "MPA future coverage: inside, 1 year lead",
+                                   variable_name == "one_year_before_partial_mpa" ~ "MPA future coverage: partial, 1 year lead",
+                                   variable_name == "pdo_index_mean" ~ "Pacific Decadal Oscillation index, mean",
+                                   variable_name == "pdo_index_sd" ~ "Pacific Decadal Oscillation index, SD",
+                                   variable_name == "region" ~ "MPA spatial coverage: inside, outside, or partial",
+                                   variable_name == "sst_c_mean" ~ "Sea surface temperature, mean (degree C)",
+                                   variable_name == "sst_c_sd" ~ "Sea surface temperature, SD (degree C)",
+                                   variable_name == "two_years_before_full_mpa" ~ "MPA future coverage: inside, 2 year lead",
+                                   variable_name == "two_years_before_partial_mpa" ~ "MPA future coverage: partial, 2 year lead",
+                                   variable_name == "wind_speed_ms_mean" ~ "Wind speed, mean (m/s)",
+                                   variable_name == "wind_speed_ms_sd" ~ "Wind speed, SD (m/s)",
+                                   variable_name == "year" ~ "Year"))
+
+# Make lookup table for going from short-hand code to full name that matches Table 1
+variable_name_lookup <- shapley_data %>%
+  distinct(variable_name,variable_name_code)
+
+
+# Save data for reproducing figure
+write_csv(shapley_data,
+          glue("{figure_data_directory}/figure_s7.csv"))
+
+# Create version of tibble where we aggregate features into feature groups
+# We first recode all the features into feature groups
+# For each observation, we then sum up the Shapley values using the additive property
+# We then take the mean absolute value across observations to get a single value per feature group
+shapley_data_aggregate <- shapley_contributions_stage_1$S[[2]] %>% as_tibble() %>%
+  bind_cols(shapley_contributions_stage_1$X %>%
+              dplyr::select(pixel_id,year_id = year)) %>%
+  mutate(stage = "Stage 1") %>%
+  bind_rows(shapley_contributions_stage_2$S %>% as_tibble() %>%
+              bind_cols(shapley_contributions_stage_2$X %>%
+                          dplyr::select(pixel_id,year_id = year)) %>%
+              mutate(stage = "Stage 2")) %>%
+  pivot_longer(-c(pixel_id,year_id,stage)) %>%
+  rename(contribution = value,
+         variable_name = name)%>%
+  mutate(variable_name = case_when(variable_name == "fishing_hours_per_m2_lag_log" ~ "AIS fishing effort: 1, 2, or 3 year lag",
+                                   stringr::str_detect(variable_name,"mpa") ~ "MPA implementation",stringr::str_detect(variable_name,"region") ~ "MPA implementation",
+                                   stringr::str_detect(variable_name,"MPA") ~ "MPA",
+                                   stringr::str_detect(variable_name,"mesopelagic") ~ "Geographic",
+                                   stringr::str_detect(variable_name,"ocean") ~ "Geographic",
+                                   variable_name %in% c("nearest_seamount_distance_m",
+                                                        "distance_from_shore_m",
+                                                        "lat",
+                                                        "lon",
+                                                        "elevation_m") ~ "Geographic",
+                                   variable_name %in% c("distance_from_port_m",
+                                                        "fuel_price_usd_mt_mean",
+                                                        "fuel_price_usd_mt_sd") ~ "Economic",
+                                   stringr::str_detect(variable_name,"ais_reception")~ "Technological",
+                                   stringr::str_detect(variable_name,"eez") ~ "Governance",
+                                   stringr::str_detect(variable_name,"governance") ~ "Governance",
+                                   variable_name %in% c("anom_sst_c_mean",
+                                                        "anom_sst_c_sd",
+                                                        "chl_mg_per_m3_mean",
+                                                        "chl_mg_per_m3_sd",
+                                                        "wind_speed_ms_mean",
+                                                        "wind_speed_ms_sd",
+                                                        "sst_c_mean",
+                                                        "sst_c_sd",
+                                                        "pdo_index_mean",
+                                                        "pdo_index_sd",
+                                                        "enso_index_mean",
+                                                        "enso_index_sd") ~ "Environmental",
+                                   variable_name == "year" ~ "Year",
+                                   TRUE ~ variable_name)) %>%
+  group_by(pixel_id,year_id,stage,variable_name) %>%
+  summarize(contribution = sum(contribution)) %>%
+  ungroup() %>%
+  # For each model feature, calculate average value
+  group_by(variable_name,stage) %>%
+  summarize(contribution = mean(abs(contribution))) %>%
+  ungroup()
+
+# Save data for reproducing figure
+write_csv(shapley_data_aggregate,
+          glue("{figure_data_directory}/figure_s8.csv"))
+```
+
+```{r label = "si-vip-shapley", fig.height=8, fig.path = figure_path}
+bar_order <- shapley_data %>% 
+  filter(stage == "Stage 1") %>%
+  arrange(contribution) %>%
+  .$variable_name
+
+shapley_data  %>%
+  mutate(variable_name = variable_name %>%
+           as.factor() %>%
+           fct_relevel(bar_order))%>%
+  ggplot(aes(x = contribution, y =variable_name ,fill=mpa_feature_label)) + 
+  geom_vline(xintercept = 0) +
+  facet_grid(.~stage,scales="free_x") + 
+  geom_bar(stat = "identity",color="black",linewidth=0.25) +
+  labs(x = "Mean absolute Shapley value",
+       y = "") +
+  theme(legend.position = "bottom") +
+  scale_fill_manual("",values = c("cyan3","black")) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.y = element_text(size=8))
+```
+
+```{r label = "si-vip-shapley-aggregate-mpas", fig.path = figure_path}
+bar_order <- shapley_data_aggregate %>% 
+  filter(stage == "Stage 1") %>%
+  arrange(contribution) %>%
+  .$variable_name
+
+shapley_data_aggregate  %>%
+  # Label each feature if it is related to MPAs
+  mutate(mpa_feature_label = ifelse(stringr::str_detect(variable_name,"MPA"),
+                                    "MPA implementation feature",
+                                    "All other features") %>%
+           fct_rev())%>%
+  mutate(variable_name = variable_name %>%
+           as.factor() %>%
+           fct_relevel(bar_order))%>%
+  ggplot(aes(x = contribution, y =variable_name ,fill=mpa_feature_label)) + 
+  geom_vline(xintercept = 0) +
+  facet_grid(.~stage,scales="free_x") + 
+  geom_bar(stat = "identity") +
+  labs(x = "Sum of mean absolute Shapley value by feature group",
+       y = "") +
+  theme(legend.position = "bottom") +
+  scale_fill_manual("",values = c("cyan3","black")) +
+  geom_bar(stat = "identity",color="black",linewidth=0.25)
+```
+
+```{r label = 'si-vip-shapley-pdp-stage-1', fig.height=8, fig.path = figure_path}
+make_shapley_partial_plot_data <- function(stage){
+  if(stage == 1) {
+    df <- shapley_contributions_stage_1$X
+    # Pull the second set of Shapley values, which correspond to a classification of 1
+    shap_values <- shapley_contributions_stage_1$S[[2]] %>%
+      as_tibble()}
+  
+  if(stage == 2) {
+    df <- shapley_contributions_stage_2$X
+    shap_values <- shapley_contributions_stage_2$S %>%
+      as_tibble()}
+  
+  shap_values %>%
+    as_tibble() %>%
+    dplyr::select(any_of(df %>%
+                           dplyr::select(where(is.numeric)) %>%
+                           colnames())) %>%
+    colnames() %>%
+    map_dfr(function(feature){
+      tibble(shapley_value = shap_values[[feature]]) %>%
+        bind_cols(tibble(observed_data = df[[feature]])) %>%
+        mutate(feature = feature)
+    })  %>%
+    rename(variable_name_code = feature) %>%
+    left_join(variable_name_lookup, by = "variable_name_code")
+}
+
+make_shapley_partial_plot <- function(shapley_partial_plot_data){
+  shapley_partial_plot_data %>%
+    ggplot(aes(x = observed_data, y = shapley_value)) +
+    geom_point(size = 0.01,alpha=.05) +
+    geom_smooth(method = 'gam',
+                formula = y ~ s(x, bs = "cs", k = 5)) +
+    facet_wrap(variable_name~.,scales="free",ncol=4, 
+               labeller = labeller(variable_name = label_wrap_gen(35))) +
+    labs(x = "Feature value",
+         y = "Shapley value") +
+    theme(text = element_text(size=6),
+          axis.title.y = element_text(angle = 90),
+                  plot.margin=grid::unit(c(0.1,1.5,0.1,0.1), "mm"))
+}
+
+shapley_partial_plot_stage_1_data <- make_shapley_partial_plot_data(1)
+
+# Save data for reproducing figure
+write_csv(shapley_partial_plot_stage_1_data,
+          glue("{figure_data_directory}/figure_s9.csv"))
+
+make_shapley_partial_plot(shapley_partial_plot_stage_1_data)
+```
+
+
+```{r label = 'si-vip-shapley-pdp-stage-2', fig.height=8, fig.path = figure_path}
+shapley_partial_plot_stage_2_data <- make_shapley_partial_plot_data(2)
+
+# Save data for reproducing figure
+write_csv(shapley_partial_plot_stage_2_data,
+          glue("{figure_data_directory}/figure_s10.csv"))
+
+make_shapley_partial_plot(shapley_partial_plot_stage_2_data)
+```
+
+\pagebreak
+
+# Numbers for manuscript text
+
+```{r echo = TRUE}
+# Current MPA coverage
+current_mpa_coverage %>%
+  scales::percent(accuracy = 0.1)
+
+# Decrease in fishing effort for unfished scenario
+scenario_results_combined %>%
+  filter(region=="Global") %>%
+  filter(scenario == "Protecting unfished pixels") %>%
+  .$fishing_hours_delta %>%
+  range() %>%
+  rev() %>%
+  scales::percent()
+
+# Decrease in fishing effort for most-fished scenario
+scenario_results_combined %>%
+  filter(region=="Global") %>%
+  filter(scenario == "Protecting most-fished pixels") %>%
+  .$fishing_hours_delta %>%
+  range() %>%
+  rev() %>%
+  scales::percent()
+
+
+# Largest decline, seen in Sala et al. 2021 biodiversity
+scenario_results_combined%>%
+  filter(scenario =="Sala et al. 2021 biodiversity")%>%
+  filter(region=="Global") %>%
+  slice_min(fishing_hours_delta) %>%
+  .$fishing_hours_delta %>%
+  round(2) %>%
+  scales::percent()
+
+# Largest decline, seen in Sala et al. 2021 carbon
+scenario_results_combined%>%
+  filter(scenario =="Sala et al. 2021 carbon")%>%
+  filter(region=="Global") %>%
+  slice_min(fishing_hours_delta) %>%
+  .$fishing_hours_delta %>%
+  round(2) %>%
+  scales::percent()
+
+# Filter results to global results, and only for scenarios that have been proposed
+scenario_results_combined_proposed_global <- scenario_results_combined %>%
+  filter(!(scenario %in% c("Protecting unfished pixels",
+                           "Protecting most-fished pixels",
+                           "Random"))) %>%
+  filter(region=="Global")
+
+# Range of effort change for proposed scenarios
+scenario_results_combined_proposed_global$fishing_hours_delta %>%
+  round(2) %>%
+  range() %>%
+  scales::percent()
+
+# Fraction of effort protected for proposed scenario with smallest decrease in fishing effort
+scenario_results_combined_proposed_global%>%
+  slice_max(fishing_hours_delta) %>%
+  .$fraction_effort_protected %>%
+  round(2) %>%
+  scales::percent()
+
+# Fraction of effort protected for scenario with largest decrease in fishing effort
+scenario_results_combined_proposed_global%>%
+  slice_min(fishing_hours_delta) %>%
+  .$fraction_effort_protected %>%
+  round(2) %>%
+  scales::percent()
+
+# Median decrease in predicted fishing effort inside MPAs
+distance_data %>%
+  filter(mpa_distance_bin==0) %>%
+  .$fishing_hours_delta_relative %>%
+  median(na.rm=TRUE) %>%
+  round(2) %>%
+  scales::percent()
+
+# Median decrease in observed fishing effort inside MPAs, focusing on just pixels with some pre-mpa effort
+mpa_comparison_data_with_baseline %>%
+  filter(mpa_distance_bin==0) %>%
+  .$fishing_hours_delta_relative %>%
+  median(na.rm = TRUE) %>%
+  round(2) %>%
+  scales::percent()
+
+# Number of unique vessels in our GFW dataset
+# That were observed fishing between 2016 and 2021
+read_csv(here::here("data/raw/n_unique_vessels_gfw.csv")) %>%
+  .$number_unique_vessels
+```
+

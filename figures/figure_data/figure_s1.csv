@@ -1,0 +1,25 @@
+forecast_horizon,year,name,type
+1,2016,training,Model features
+1,2017,training,Model features
+1,2018,training,Model features
+1,2019,training,Model features
+1,2020,testing,Model features
+2,2016,training,Model features
+2,2017,training,Model features
+2,2018,training,Model features
+2,2019,testing,Model features
+3,2016,training,Model features
+3,2017,training,Model features
+3,2018,testing,Model features
+1,2017,training,Outcome variable
+1,2018,training,Outcome variable
+1,2019,training,Outcome variable
+1,2020,training,Outcome variable
+1,2021,testing,Outcome variable
+2,2018,training,Outcome variable
+2,2019,training,Outcome variable
+2,2020,training,Outcome variable
+2,2021,testing,Outcome variable
+3,2019,training,Outcome variable
+3,2020,training,Outcome variable
+3,2021,testing,Outcome variable

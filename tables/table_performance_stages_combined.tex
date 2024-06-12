@@ -1,0 +1,19 @@
+\begin{table}[ht]
+\centering
+\caption{Temporal out-of-sample global performance for Stage 1 classification models and Stage 2 regression models, for each of the three forecast horizon models.} 
+\label{tab:table_performance_stages_combined}
+\begin{tabular}{lllll}
+  \hline
+Model & Metric & Forecast horizon: 1 & Forecast horizon: 2 & Forecast horizon: 3 \\ 
+  \hline
+Stage 1 & f\_meas & 0.912 & 0.909 & 0.91 \\ 
+  Stage 1 & precision & 0.9 & 0.889 & 0.907 \\ 
+  Stage 1 & recall & 0.924 & 0.931 & 0.913 \\ 
+  Stage 1 & roc\_auc & 0.97 & 0.967 & 0.969 \\ 
+  Stage 2 & nrmse & 0.409 & 0.469 & 0.423 \\ 
+  Stage 2 & rmse & 6.10e-07 & 6.98e-07 & 6.31e-07 \\ 
+  Stage 2 & rsq & 0.898 & 0.853 & 0.861 \\ 
+  Stage 2 & rsq\_trad & 0.832 & 0.78 & 0.821 \\ 
+   \hline
+\end{tabular}
+\end{table}

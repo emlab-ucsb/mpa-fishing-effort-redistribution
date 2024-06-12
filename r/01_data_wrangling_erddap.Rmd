@@ -1,0 +1,215 @@
+---
+title: "Arnhold BWMPA Project - Data wrangling"
+author: "Gavin McDonald (emLab)"
+date: '`r format(Sys.time(), "%m/%d/%Y")`'
+output: 
+  pdf_document: 
+    number_sections: yes
+    toc: true
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+params:
+     download_data: FALSE
+     aggregate_data: FALSE
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports",
+                         "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports")) })
+---
+
+```{r echo = FALSE}
+# This chunk sets up default settings for all chunks below
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,fig.width = 7.5,fig.height = 5,dev = 'png',dpi=300)
+```
+
+```{r include=FALSE}
+# Load all necessary packages
+library(tidyverse)
+library(sf)
+library(stars)
+library(rerddap)
+library(rnaturalearth)
+library(glue)
+library(scico)
+library(lubridate)
+library(furrr)
+source(here::here("r/_functions_data_wrangling_erddap.R"))
+# Set the data directory. This specifies the folder in Team Drive where the data can be found. This code automatically detects the system type and assigns the correct directory
+# data_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data",
+#                          "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data")
+# 
+# figure_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/figures",
+#                            "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/figures")
+data_directory <- "/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/Projects/current-projects/arnhold-bwmpa-redistribution/data"
+# Set ggplot theme for all plots
+theme_set(theme_minimal() +
+            theme(axis.title.y = element_text(angle = 0,vjust=0.5),
+                  strip.background = element_blank(),
+                  strip.text.y = element_text(angle=0),
+                  strip.text.y.right = element_text(angle=0),
+                  strip.text.y.left = element_text(angle=0),
+                  panel.grid = element_blank(),
+                  panel.background = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  panel.grid.major = element_blank()))
+
+# Set mapping projection
+map_projection <- "+proj=eqearth +datum=WGS84 +wktext"
+# Create global land sf object for mapping
+world_plotting <- ne_countries(scale = "small", returnclass = "sf")  %>%
+  dplyr::select(geometry)
+
+# Get high-res ocean data
+ocean <- ne_download(scale = 50, type = 'ocean', category = 'physical',returnclass = "sf") %>%
+  dplyr::select(geometry)
+```
+
+# Defining our global grid
+
+```{r}
+pixel_size <- 1
+
+# Create polygon rectangle of globe
+# This will serve as basis of grid
+# global_polygon_sf <- 
+#   tibble(lon = c(-180,-180,180,180,-180), 
+#        lat = c(-90,90,90,-90,-90))%>% 
+#   as.matrix() %>%
+#   list(.) %>%
+#   st_polygon() %>%
+#   st_sfc(crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") %>%
+#   st_as_sf()+
+
+# global_polygon_sf_small <- tibble(lon = c(-5,-5,5,5,-5),
+#                                   lat = c(-5,5,5,-5,-5))%>%
+#   as.matrix() %>%
+#   list(.) %>%
+#   st_polygon() %>%
+#   st_sfc(crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") %>%
+#   st_as_sf()
+
+# Start with global ocean
+starting_shape <- ocean
+#starting_shape <- global_polygon_sf_small
+```
+
+```{r eval = params$download_data}
+# Make a grid using desired pixel size
+data_grid <- starting_shape %>%
+  make_grid_custom(pixel_size = pixel_size)
+
+data_grid %>%
+  # Add geometry wkt column for saving this as a csv
+  mutate(geometry_wkt = st_as_text(geometry)) %>% 
+  # Make geometry point, grab lon/lat in lower left-hand corner
+  # We'll use this later for joining to GFW data
+  st_cast("POINT") %>%
+  dplyr::mutate(lon = sf::st_coordinates(.)[,1],
+                lat = sf::st_coordinates(.)[,2])%>%
+  st_set_geometry(NULL)  %>% 
+  group_by(pixel_id,geometry_wkt) %>% 
+  summarize(lon = min(lon),
+            lat = min(lat))%>%
+  ungroup()  %>%
+  as_tibble() %>%
+  write_csv(here::here("data/model_features/global_grid.csv"))
+```
+
+We define a global grid using pixels that are `r pixel_size` degree latitude by `r pixel_size` degree longitude. We will then aggregate all of our model feature data to these `r pixel_size`x`r pixel_size` degree pixels. We include only pixels that overlap with the ocean. Each pixel is assigned a static `pixel_id`.
+
+
+```{r}
+data_grid <- data.table::fread(here::here("data/model_features/global_grid.csv")) %>%
+  st_as_sf(wkt = "geometry_wkt",
+           crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+```
+
+\pagebreak
+
+# Environmental model features
+
+## SST and SST anomaly data 
+
+We use 0.25 degree data from [SST, Daily Optimum Interpolation (OI), AVHRR Only, Version 2.1, Final, Global, 0.25°, 1981-present, Lon+/-180](https://coastwatch.pfeg.noaa.gov/erddap/info/ncdcOisst21Agg_LonPM180/index.html). These data download ~25x as fast and are much faster to spatially aggregate.
+
+```{r eval = params$download_data}
+# Download all global SST and SST anomaly data
+download_errdap_data_wrapper(dataset_name = "ncdcOisst21Agg_LonPM180",
+                             variables = c("sst","anom"),
+                             temporal_resolution = "day",
+                             date_start = "2012-01-01",
+                             date_end = "2021-12-31",
+                             data_grid = data_grid,
+                             run_parallel = TRUE)
+```
+
+
+```{r eval = params$aggregate_data}
+# Are there missing dates from our downloads?
+missing_dates <- determine_missing_dates(dataset_name = "ncdcOisst21Agg_LonPM180",
+                                         temporal_resolution = "day",
+                                         date_start = "2012-01-01",
+                                         date_end = "2021-12-31")
+```
+
+```{r eval = params$aggregate_data}
+# Spatially aggregate SST and SST anomaly data
+spatially_aggregate_errdap_data_wrapper(dataset_name = "ncdcOisst21Agg_LonPM180",
+                                        spatial_aggregation = data_grid,
+                                        run_parallel = TRUE)
+```
+
+```{r eval = params$aggregate_data}
+# Spatially aggregate SST and SST anomaly data
+temporally_aggregate_errdap_data_wrapper(dataset_name = "ncdcOisst21Agg_LonPM180",
+                                         temporal_aggregation = "year",
+                                         run_parallel = TRUE)%>%
+    # Write aggregated data to clean data folder
+    data.table::fwrite(here::here("data/model_features/errdap_sst.csv"))
+```
+
+\pagebreak
+
+# Chlorophyll
+
+We get monthly chlorophyll data from [Chlorophyll-a, Aqua MODIS, NPP, L3SMI, Global, 4km, Science Quality, 2003- present (Monthly Composite)](https://coastwatch.pfeg.noaa.gov/erddap/griddap/erdMH1chlamday.html). Units are mg m-3 .
+
+
+```{r eval = params$download_data}
+# Download all global  chlorp data
+download_errdap_data_wrapper(dataset_name = "erdMH1chlamday",
+                             variables = c("chlorophyll"),
+                             temporal_resolution = "month",
+                             date_start = "2012-01-01",
+                             date_end = "2021-12-31",
+                             data_grid = data_grid,
+                             run_parallel = TRUE)
+```
+
+```{r eval = params$aggregate_data}
+# Are there missing dates from our downloads?
+missing_dates <- determine_missing_dates(dataset_name = "erdMH1chlamday",
+                                         temporal_resolution = "month",
+                                         date_start = "2012-01-01",
+                                         date_end = "2021-12-31")
+```
+
+```{r eval = params$aggregate_data}
+knitr::kable(missing_dates$missing_dates_summary)
+```
+
+```{r eval = params$aggregate_data}
+# Spatially aggregate chl data
+spatially_aggregate_errdap_data_wrapper(dataset_name = "erdMH1chlamday",
+                                        spatial_aggregation = data_grid,
+                                        run_parallel = FALSE)
+```
+
+```{r eval = params$aggregate_data}
+# Spatially aggregate SST and SST anomaly data
+temporally_aggregate_errdap_data_wrapper(dataset_name = "erdMH1chlamday",
+                                         temporal_aggregation = "year",
+                                         run_parallel = TRUE)%>%
+    # Write aggregated data to clean data folder
+    data.table::fwrite(here::here("data/model_features/errdap_chl.csv"))
+```

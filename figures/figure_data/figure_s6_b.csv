@@ -1,0 +1,49 @@
+forecast_horizon,.metric,.estimator,.estimate,region,model
+1,rsq_trad,standard,0.8324559398726621,Global,Baseline (RF with all model features)
+1,rsq,standard,0.8982396866252672,Global,Baseline (RF with all model features)
+1,rmse,standard,6.095881506423226e-7,Global,Baseline (RF with all model features)
+1,nrmse,standard,0.4093127036867064,Global,Baseline (RF with all model features)
+2,rsq_trad,standard,0.7800821498914097,Global,Baseline (RF with all model features)
+2,rsq,standard,0.8527870906732665,Global,Baseline (RF with all model features)
+2,rmse,standard,6.983967975920867e-7,Global,Baseline (RF with all model features)
+2,nrmse,standard,0.46894396022518015,Global,Baseline (RF with all model features)
+3,rsq_trad,standard,0.8207593107737015,Global,Baseline (RF with all model features)
+3,rsq,standard,0.8606446901474739,Global,Baseline (RF with all model features)
+3,rmse,standard,6.305075643687981e-7,Global,Baseline (RF with all model features)
+3,nrmse,standard,0.42335920669517546,Global,Baseline (RF with all model features)
+1,rsq_trad,standard,-1.0678852764118685,Global,RF with just lagged fishing model feature
+1,rsq,standard,0.8818318363816777,Global,RF with just lagged fishing model feature
+1,rmse,standard,2.141584520961875e-6,Global,RF with just lagged fishing model feature
+1,nrmse,standard,1.4379835787898037,Global,RF with just lagged fishing model feature
+2,rsq_trad,standard,-2.7186777270493194,Global,RF with just lagged fishing model feature
+2,rsq,standard,0.8223985548105641,Global,RF with just lagged fishing model feature
+2,rmse,standard,2.8718798729793978e-6,Global,RF with just lagged fishing model feature
+2,nrmse,standard,1.928346071415614,Global,RF with just lagged fishing model feature
+3,rsq_trad,standard,-3.0847564079686425,Global,RF with just lagged fishing model feature
+3,rsq,standard,0.7972395783273442,Global,RF with just lagged fishing model feature
+3,rmse,standard,3.0099208824201816e-6,Global,RF with just lagged fishing model feature
+3,nrmse,standard,2.021034780561803,Global,RF with just lagged fishing model feature
+1,rsq_trad,standard,0.17285699682805167,Global,LM with just lagged fishing model feature
+1,rsq,standard,0.5020570523069388,Global,LM with just lagged fishing model feature
+1,rmse,standard,1.3544478834445357e-6,Global,LM with just lagged fishing model feature
+1,nrmse,standard,0.9094545630377766,Global,LM with just lagged fishing model feature
+2,rsq_trad,standard,0.16449537213809406,Global,LM with just lagged fishing model feature
+2,rsq,standard,0.422369586750313,Global,LM with just lagged fishing model feature
+2,rmse,standard,1.361276754861994e-6,Global,LM with just lagged fishing model feature
+2,nrmse,standard,0.9140398618498738,Global,LM with just lagged fishing model feature
+3,rsq_trad,standard,0.1533603604466528,Global,LM with just lagged fishing model feature
+3,rsq,standard,0.3635935161446355,Global,LM with just lagged fishing model feature
+3,rmse,standard,1.370317795827455e-6,Global,LM with just lagged fishing model feature
+3,nrmse,standard,0.920110539106011,Global,LM with just lagged fishing model feature
+1,rsq_trad,standard,0.4491676805242302,Global,LM with all model features
+1,rsq,standard,0.6550427003903182,Global,LM with all model features
+1,rmse,standard,1.1053039084273885e-6,Global,LM with all model features
+1,nrmse,standard,0.7421649037586916,Global,LM with all model features
+2,rsq_trad,standard,0.54118152112139,Global,LM with all model features
+2,rsq,standard,0.598989975233769,Global,LM with all model features
+2,rmse,standard,1.0087706756178964e-6,Global,LM with all model features
+2,nrmse,standard,0.6773469139811058,Global,LM with all model features
+3,rsq_trad,standard,0.5451194373466547,Global,LM with all model features
+3,rsq,standard,0.5971367957782318,Global,LM with all model features
+3,rmse,standard,1.0044323424882862e-6,Global,LM with all model features
+3,nrmse,standard,0.674433906467913,Global,LM with all model features

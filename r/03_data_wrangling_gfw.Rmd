@@ -1,0 +1,635 @@
+---
+title: "Arnhold BWMPA Project - Data wrangling - Global Fishing Watch"
+author: "Gavin McDonald (emLab)"
+date: '`r format(Sys.time(), "%m/%d/%Y")`'
+output: 
+  pdf_document: 
+    number_sections: yes
+    toc: true
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+params:
+     process_data: FALSE
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports",
+                         "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports")) })
+---
+
+```{r echo = FALSE}
+# This chunk sets up default settings for all chunks below
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,fig.width = 4,dev = 'png',dpi=300)
+```
+
+```{r include=FALSE}
+# Load all necessary packages
+library(tidyverse)
+library(glue)
+library(sf)
+# Set up BigQuery access
+library(bigrquery)
+# Running this script requires special permissions to access GFW data
+billing_project <- "emlab-gcp"
+options(scipen = 20)
+
+# Set the data directory. This specifies the folder in Team Drive where the data can be found. This code automatically detects the system type and assigns the correct directory
+# data_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data",
+#                          "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data")
+data_directory <- "/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/Projects/current-projects/arnhold-bwmpa-redistribution/data"
+```
+
+# Download and process data
+
+```{r}
+# Pixel size in degrees lat/lon
+pixel_size <- 1
+
+# Read in data_grid, generated in data_wrangling.Rmd
+data_grid <- read_csv(glue("{data_directory}/clean/global_grid.csv"))%>%
+  st_as_sf(wkt = "geometry_wkt",
+           crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+```
+
+We calculate total fishing effort (kW-hours), by year for `r pixel_size`x`r pixel_size` degree pixels globally. We first do this disaggregated by gear and flag, just in case we need those later. This is adapted from a [demo query](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/blob/master/queries/fishing_hours_gridded.sql) on Global Fishing Watch's data wiki. So these data give us rows of pixel-year-gear-flag.
+
+```{r eval = params$process_data}
+sql <- glue("
+#standardSQL
+###########################################################
+# EXAMPLE QUERY: GRIDDED FISHING EFFORT AT 1 DEGREE
+# DESCRIPTION:
+# This query demonstrates how to produce a fishing effort
+# raster for a given date range.
+# The query includes the following steps:
+-- 1) Identify good segments and active non-noise fishing vessels
+-- 2) Get all activity by potential fishing vessel over a period of time
+--    and bin the data to desired resolution
+-- 3) Filter to best list of fishing vessels
+-- 4) Identify 'fishing' positions and calculate fishing hours using
+--    night_loitering for squid jiggers, and nnet_score for all other vessels.
+-- 5) Calculate fishing hours and sum by grid
+-- NOTE: Validator estimate: 81.41; Actual: 13.88
+###########################################################
+--
+--
+#### Define our pixel size for aggregation
+CREATE TEMPORARY FUNCTION
+  pixel_size() AS ({pixel_size});
+WITH
+  ########################################
+  # This subquery identifies good segments
+  good_segments AS (
+  SELECT
+    seg_id
+  FROM
+    `world-fishing-827.pipe_production_v20201001.research_segs`
+  WHERE good_seg
+    AND NOT overlapping_and_short
+  ),
+  ####################################################################
+  # Get the list of active fishing vessels that pass the noise filters
+  fishing_vessels AS (
+  SELECT
+    ssvid,
+    best_vessel_class as gear,
+    best_flag as flag,
+    year
+  FROM `world-fishing-827.gfw_research.fishing_vessels_ssvid_v20220601`
+  ),
+    ####################################################################
+  # Get the engine power for fishing vesselsby ssvid and year
+  fishing_vessel_engine_power AS (
+  SELECT
+    ssvid,
+    best.best_engine_power_kw engine_power_kw,
+    year
+  FROM `world-fishing-827.gfw_research.vi_ssvid_byyear_v20221001`
+  ),
+  #####################################################################
+  # This subquery gets all fishing in January, 2020.
+  # It queries the pipe_vYYYYMMDD_fishing table, which includes only likely
+  # fishing vessels. However, the table also includes noisy vessels. Thus, we use the
+  # more refined list of fishing vessels from the above subquery
+  fishing AS (
+  SELECT
+    ssvid,
+    /*
+    Assign lat/lon bins at desired resolution
+    FLOOR takes the smallest integer after converting to units of
+    0.1 degree - e.g. 37.42 becomes 374 10th degree units
+    */
+    FLOOR(lat /  pixel_size()) as lat,
+    FLOOR(lon /  pixel_size()) as lon,
+    EXTRACT(year FROM _partitiontime) as year,
+    hours,
+    nnet_score,
+    night_loitering
+  FROM `world-fishing-827.pipe_production_v20201001.research_messages`
+  # Restrict query to single month
+  WHERE _partitiontime BETWEEN '2012-01-01' AND '2022-12-31'
+  # Use good_segments subquery to only include positions from good segments
+  AND is_fishing_vessel
+  AND seg_id IN (
+    SELECT
+      seg_id
+    FROM
+      good_segments)
+  ),
+  ########################################################################
+  # Filter fishing to just the list of active fishing vessels in that year
+  # Create fishing_score attribute using night_loitering instead of nnet_score
+  # for squid jiggers
+  fishing_filtered AS (
+  SELECT
+    *,
+    IF(gear = 'squid_jigger',
+       night_loitering,
+       nnet_score) as fishing_score
+  FROM fishing
+  # Join on the fishing vessels list to filter out other vessels
+  JOIN fishing_vessels
+  USING(ssvid, year)
+  # Add engine power
+  JOIN fishing_vessel_engine_power
+  USING (ssvid,year)
+  ),
+  ########################################################################
+  # Calculate fishing hours using combined fishing score metric
+  fishing_hours_filtered AS (
+  SELECT
+    *,
+    IF(fishing_score > 0.5, hours, 0) as fishing_hours
+  FROM fishing_filtered
+  )
+  #####################################################################
+  # This sums fishing hours and converts coordinates back to
+  # decimal degrees
+  SELECT
+    /*
+    Convert lat/lon bins to units of degrees from 10th of degrees.
+    374 now becomes 37.4 instead of the original 37.42
+    */
+    lat * pixel_size() as lat,
+    lon * pixel_size() as lon,
+    year,
+    gear,
+    flag,
+    SUM(hours) as hours,
+    SUM(fishing_hours) as fishing_hours,
+    SUM(fishing_hours * engine_power_kw) as fishing_kw_hours
+  FROM fishing_hours_filtered
+  GROUP BY lat, lon, year, gear, flag
+")
+
+bq_project_query(billing_project,
+                 sql, 
+                 destination_table = bq_table(project = billing_project,
+                                              table = "fishing_by_pixel_year_gear_flag",
+                                              dataset = "arnhold_bwmpa"),
+                 use_legacy_sql = FALSE, 
+                 allowLargeResults = TRUE,
+                 write_disposition = "WRITE_TRUNCATE")
+```
+
+Next we aggregate those data to give us rows of pixel-year. These will be the main units of our analysis.
+
+```{r eval = params$process_data}
+sql <- glue("
+#standardSQL
+SELECT
+  lat,
+  lon,
+  year,
+  SUM(fishing_hours_kw) fishing_kw_hours,
+  SUM(fishing_hours) fishing_hours
+FROM
+  `emlab-gcp.arnhold_bwmpa.fishing_by_pixel_year_gear_flag`
+GROUP BY
+  lat,
+  lon,
+  year
+")
+
+bq_project_query(billing_project,
+                 sql, 
+                 destination_table = bq_table(project = billing_project,
+                                              table = "fishing_by_pixel_year",
+                                              dataset = "arnhold_bwmpa"),
+                 use_legacy_sql = FALSE, 
+                 allowLargeResults = TRUE,
+                 write_disposition = "WRITE_TRUNCATE")
+```
+
+Next, we write the data from BigQuery locally to CSV.
+
+```{r eval = params$process_data}
+# Now save the data for the analysis
+bq_project_query(billing_project, paste0("SELECT * FROM `emlab-gcp.arnhold_bwmpa.fishing_by_pixel_year`")) %>%
+  bq_table_download(n_max = Inf) %>%
+  write_csv(here::here("data/model_features/gfw_fishing_by_pixel_year.csv"))
+```
+
+```{r}
+library(rnaturalearth)
+library(sf)
+
+map_projection <- "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+# Create global land sf object for mapping
+world_plotting <- ne_countries(scale = "small", returnclass = "sf")  %>%
+  dplyr::select(geometry)
+```
+
+Then, we use those data and expand it so that every pixel observed in the dataset gets a row for each year. When there is no fishing effort for that pixel-year, it gets a value of 0. We also standardize fishing hours by pixel area.
+
+```{r}
+gfw_effort_data <- read_csv(here::here("data/model_features/gfw_fishing_by_pixel_year.csv")) %>% 
+  inner_join(data_grid %>%
+               st_set_geometry(NULL),
+             by = c("lat","lon")) %>%
+  dplyr::select(-c(lat,lon,)) %>%
+  # Complete zeros for all possible pixel-year combinations
+  complete(pixel_id,year,fill=list(fishing_hours = 0)) 
+```
+
+```{r}
+gfw_effort_data %>%
+  group_by(year) %>%
+  summarize(fishing_kw_hours = sum(fishing_kw_hours)) %>%
+  ungroup() %>%
+  ggplot(aes(x = as.factor(year),y =fishing_kw_hours)) +
+  geom_bar(stat = "identity")
+```
+
+```{r}
+# Set theme for maps
+theme_map <- function(){
+  theme_minimal() %+replace%
+    theme(panel.background = element_blank(),
+          panel.grid.minor = element_line(colour = "black"),
+          panel.grid.major = element_line(colour = "black"),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          strip.background = element_rect(fill=NA,color=NA))
+}
+
+data_grid %>%
+               dplyr::select(pixel_id) %>%
+  left_join(gfw_effort_data %>%
+  filter(year == 2021),
+             by = "pixel_id") %>%
+  mutate(fishing_hours = replace_na(fishing_hours,0)) %>%
+  st_transform(map_projection) %>%
+  ggplot() +
+  geom_sf(aes(fill = fishing_hours,
+              color = fishing_hours)) +
+  geom_sf(data = world_plotting%>%
+            st_transform(map_projection),
+          color = NA,
+          fill = "darkgrey") +
+  scale_color_viridis_c(trans="log10" ,na.value = "black", labels = scales::comma) +
+  scale_fill_viridis_c(trans="log10" ,na.value = "black", labels = scales::comma) +
+  theme_map()
+```
+
+\pagebreak
+
+# AIS satellite reception quality
+
+We also construct a model feature that quantifies the reception quality for a given pixel. AIS reception quality is measured as the "Average AIS positions per day received by a vessel operating in the grid cell." We look at the average reception quality over the 2017-2020 time period, and include features for both Class A and Class B device transponders (these AIS transponder types have different tranmitting powers, and therefore different reception quality)
+
+```{r eval = params$process_data}
+sql<-"SELECT * FROM `world-fishing-827.gfw_research.sat_reception_smoothed_one_degree_v20210722`"
+
+reception_quality <- bq_project_query(billing_project,sql) %>%
+  bq_table_download(n_max = Inf)
+
+reception_quality_aggregate <- reception_quality %>%
+  group_by(lat_bin,lon_bin,class) %>%
+  summarize(positions_per_day = mean(positions_per_day)) %>%
+  ungroup() %>%
+  pivot_wider(values_from = positions_per_day, names_from = class,
+              names_prefix = "ais_reception_positions_per_day_class_") %>%
+  rename(lat = lat_bin,
+         lon = lon_bin)
+
+reception_quality_aggregate %>%
+  data.table::fwrite(here::here("data/model_features/gfw_reception_quality.csv"))
+```
+
+# AIS Reception quality
+
+We also plot AIS satellite reception quality, for both Class A and Class B transponders. Reception quality, measured as "Average AIS positions per day received by a vessel operating in the grid cell," will be used as model features.
+
+```{r}
+gfw_reception_quality <- data.table::fread(here::here("data/model_features/gfw_reception_quality.csv")) %>%
+  pivot_longer(-c(lat,lon)) %>%
+  mutate(name = str_remove_all(name,"ais_reception_positions_per_day_")) %>%
+  inner_join(data_grid,
+             by = c("lat","lon")) %>% 
+  sf::st_as_sf() 
+```
+
+```{r}
+gfw_reception_quality %>%
+  st_transform(map_projection) %>%
+  ggplot() +
+  geom_sf(aes(fill = value,
+              color = value)) +
+  geom_sf(data = world_plotting%>%
+            st_transform(map_projection),
+          color = NA,
+          fill = "darkgrey") +
+  facet_wrap(.~name,ncol=1) +
+    scale_color_viridis_c("Satellite\nreception\nquality\n(pings/day/vessel)",option = "B")+
+    scale_fill_viridis_c("Satellite\nreception\nquality\n(pings/day/vessel)",option = "B") +
+  theme(legend.position = "right",
+        legend.direction = "vertical") 
+```
+
+# Palau data
+
+As an anecdote, we will look at fishing inside and outside and before and after the creation of their MPA, which was implemented in 2020. We pull high-resolution spatial data, by flag, gear, month, and year, to look at this.
+
+```{r eval = params$process_data}
+# Pull Palau data
+sql <-"
+#standardSQL
+CREATE TEMPORARY FUNCTION
+  pixel_size() AS (0.1);
+WITH
+  ########################################
+  # This subquery identifies good segments
+  good_segments AS (
+  SELECT
+    seg_id
+  FROM
+    `world-fishing-827.pipe_production_v20201001.research_segs`
+  WHERE
+    good_seg
+    AND NOT overlapping_and_short ),
+  ####################################################################
+  # Get the list of active fishing vessels that pass the noise filters
+  fishing_vessels AS (
+  SELECT
+    ssvid,
+    best_vessel_class AS gear,
+    best_flag AS flag,
+    year
+  FROM
+    `world-fishing-827.gfw_research.fishing_vessels_ssvid_v20220601` ),
+  #####################################################################
+  # This subquery gets all fishing in January, 2020.
+  # It queries the pipe_vYYYYMMDD_fishing table, which includes only likely
+  # fishing vessels. However, the table also includes noisy vessels. Thus, we use the
+  # more refined list of fishing vessels from the above subquery
+  fishing AS (
+  SELECT
+    ssvid,
+    EXTRACT(year
+    FROM
+      _partitiontime) AS year,
+    EXTRACT(month
+    FROM
+      _partitiontime) AS month,
+    FLOOR(lat /  pixel_size()) * pixel_size() as lat,
+    FLOOR(lon /  pixel_size()) * pixel_size() as lon,
+    hours,
+    nnet_score,
+    night_loitering
+  FROM
+    `world-fishing-827.pipe_production_v20201001.research_messages`
+  LEFT JOIN
+    UNNEST(regions.eez) AS eez_id
+    # Restrict query to single month
+  WHERE
+    _partitiontime BETWEEN '2016-01-01'
+    AND '2021-12-31'
+    # Restrict to Palau EEZ
+    AND eez_id = '8315'
+    # Use good_segments subquery to only include positions from good segments
+    AND is_fishing_vessel
+    AND seg_id IN (
+    SELECT
+      seg_id
+    FROM
+      good_segments) ),
+  ########################################################################
+  # Filter fishing to just the list of active fishing vessels in that year
+  # Create fishing_score attribute using night_loitering instead of nnet_score
+  # for squid jiggers
+  fishing_filtered AS (
+  SELECT
+    *,
+  IF
+    (gear = 'squid_jigger', night_loitering, nnet_score) AS fishing_score
+  FROM
+    fishing
+    # Join on the fishing vessels list to filter out other vessels
+  JOIN
+    fishing_vessels
+  USING
+    (ssvid,
+      year) ),
+  ########################################################################
+  # Calculate fishing hours using combined fishing score metric
+  fishing_hours_filtered AS (
+  SELECT
+    *,
+  IF
+    (fishing_score > 0.5, hours, 0) AS fishing_hours
+  FROM
+    fishing_filtered )
+  #####################################################################
+  # This sums fishing hours and converts coordinates back to
+  # decimal degrees
+SELECT
+  year,
+  month,
+  lat,
+  lon,
+  flag,
+  gear,
+  SUM(fishing_hours) AS fishing_hours,
+FROM
+  fishing_hours_filtered
+GROUP BY
+  year,
+  month,
+  lat,
+  lon,
+  flag,
+  gear"
+
+palau_gfw_data <- bq_project_query(billing_project,sql) %>%
+  bq_table_download(n_max = Inf)
+
+palau_gfw_data  %>%
+  write_csv(here::here("data/raw/palau_gfw_data.csv"))
+```
+
+Now, look at where vessels that fishing in Palau before the MPA fished after the MPA
+
+```{r}
+sql <- "WITH
+  # Get EEZ ID and info
+  eez_names AS (
+  SELECT
+    CAST(eez_id AS STRING) AS eez,
+    sovereign1_iso3 AS eez_iso3
+  FROM
+    `world-fishing-827.gfw_research.eez_info`),
+  all_effort AS(
+  SELECT
+    ssvid,
+    year,
+    best.best_flag flag_iso3,
+    eez.value AS eez,
+    eez.fishing_hours
+  FROM
+    `world-fishing-827.gfw_research.vi_ssvid_byyear_v20240201`
+    # Unnest the eez array
+  CROSS JOIN
+    UNNEST(activity.eez) AS eez
+  WHERE
+    on_fishing_list_best),
+  # Find vessels that fished in Palau before closure
+  palau_vessels_pre_mpa AS(
+  SELECT
+    ssvid
+  FROM
+    all_effort
+  WHERE
+    eez = '8315'
+    AND year < 2020
+    AND fishing_hours >0
+  GROUP BY
+    ssvid )
+SELECT
+  * EXCEPT(eez_iso3),
+  IFNULL(eez_iso3, 'high_seas') eez_iso3
+FROM
+  all_effort
+LEFT JOIN
+  eez_names
+USING
+  (eez)
+JOIN
+  palau_vessels_pre_mpa
+USING
+  (ssvid)
+WHERE
+  fishing_hours >0"
+
+palau_vessel_level_gfw_data <- bq_project_query(billing_project,sql) %>%
+  bq_table_download(n_max = Inf)
+
+palau_vessel_level_gfw_data  %>%
+  write_csv(here::here("data/raw/palau_vessel_level_gfw_data.csv"))
+```
+
+# How many vessels are in our time series that have observed fishing effort?
+
+```{r}
+sql <- "WITH
+  ########################################
+  # This subquery identifies good segments
+  good_segments AS (
+  SELECT
+    seg_id
+  FROM
+    `world-fishing-827.pipe_production_v20201001.research_segs`
+  WHERE
+    good_seg
+    AND NOT overlapping_and_short ),
+  ####################################################################
+  # Get the list of active fishing vessels that pass the noise filters
+  fishing_vessels AS (
+  SELECT
+    ssvid,
+    best_vessel_class AS gear,
+    year
+  FROM
+    `world-fishing-827.gfw_research.fishing_vessels_ssvid_v20220601` ),
+  ####################################################################
+  # Get the engine power for fishing vesselsby ssvid and year
+  fishing_vessel_engine_power AS (
+  SELECT
+    ssvid,
+    best.best_engine_power_kw engine_power_kw,
+    year
+  FROM
+    `world-fishing-827.gfw_research.vi_ssvid_byyear_v20221001` ),
+  fishing AS (
+  SELECT
+    ssvid,
+EXTRACT(year
+    FROM
+      _partitiontime) AS year,
+    hours,
+    nnet_score,
+    night_loitering
+  FROM
+    `world-fishing-827.pipe_production_v20201001.research_messages`
+    # Restrict query to single month
+  WHERE
+    _partitiontime BETWEEN '2016-01-01'
+    AND '2021-12-31'
+    # Use good_segments subquery to only include positions from good segments
+    AND is_fishing_vessel
+    AND seg_id IN (
+    SELECT
+      seg_id
+    FROM
+      good_segments) ),
+  ########################################################################
+  # Filter fishing to just the list of active fishing vessels in that year
+  # Create fishing_score attribute using night_loitering instead of nnet_score
+  # for squid jiggers
+  fishing_filtered AS (
+  SELECT
+    *,
+  IF
+    (gear = 'squid_jigger', night_loitering, nnet_score) AS fishing_score
+  FROM
+    fishing
+    # Join on the fishing vessels list to filter out other vessels
+  JOIN
+    fishing_vessels
+  USING
+    (ssvid,
+      year)
+    # Add engine power
+  JOIN
+    fishing_vessel_engine_power
+  USING
+    (ssvid,
+      year) ),
+  ########################################################################
+  # Calculate fishing hours using combined fishing score metric
+  fishing_hours_filtered AS (
+  SELECT
+    *,
+  IF
+    (fishing_score > 0.5, hours, 0) AS fishing_hours
+  FROM
+    fishing_filtered )
+  #####################################################################
+  # This sums fishing hours and converts coordinates back to
+  # decimal degrees
+SELECT
+  COUNT(DISTINCT ssvid) number_unique_vessels
+FROM
+  fishing_hours_filtered
+WHERE
+  fishing_hours >0"
+
+n_unique_vessels <- bq_project_query(billing_project,sql) %>%
+  bq_table_download(n_max = Inf)
+
+n_unique_vessels  %>%
+  write_csv(here::here("data/raw/n_unique_vessels_gfw.csv"))
+```
+

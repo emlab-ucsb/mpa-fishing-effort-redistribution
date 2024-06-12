@@ -1,0 +1,121 @@
+forecast_horizon,.metric,.estimator,.estimate,region,testing_ocean
+1,precision,binary,0.9741891274554592,Global,Southern Ocean
+1,recall,binary,0.9957973383142658,Global,Southern Ocean
+1,f_meas,binary,0.9848747257822422,Global,Southern Ocean
+1,roc_auc,binary,0.670271616468208,Global,Southern Ocean
+1,precision,binary,0.8222667429879794,Global,South Pacific Ocean
+1,recall,binary,0.9327922077922078,Global,South Pacific Ocean
+1,f_meas,binary,0.8740492850623669,Global,South Pacific Ocean
+1,roc_auc,binary,0.9547603291051676,Global,South Pacific Ocean
+1,precision,binary,0.8269831355402874,Global,South Atlantic Ocean
+1,recall,binary,0.8745046235138706,Global,South Atlantic Ocean
+1,f_meas,binary,0.85008025682183,Global,South Atlantic Ocean
+1,roc_auc,binary,0.9453021026103015,Global,South Atlantic Ocean
+1,precision,binary,0.8250688705234159,Global,Indian Ocean
+1,recall,binary,0.9365228267667292,Global,Indian Ocean
+1,f_meas,binary,0.8772700644405389,Global,Indian Ocean
+1,roc_auc,binary,0.9551998437366106,Global,Indian Ocean
+1,precision,binary,0.6704980842911877,Global,South China and Easter Archipelagic Seas
+1,recall,binary,0.9536784741144414,Global,South China and Easter Archipelagic Seas
+1,f_meas,binary,0.7874015748031497,Global,South China and Easter Archipelagic Seas
+1,roc_auc,binary,0.8044916817574054,Global,South China and Easter Archipelagic Seas
+1,precision,binary,0.7410526315789474,Global,North Atlantic Ocean
+1,recall,binary,0.6353790613718412,Global,North Atlantic Ocean
+1,f_meas,binary,0.6841593780369292,Global,North Atlantic Ocean
+1,roc_auc,binary,0.9101733965423457,Global,North Atlantic Ocean
+1,precision,binary,0.6616541353383458,Global,North Pacific Ocean
+1,recall,binary,0.5023786869647955,Global,North Pacific Ocean
+1,f_meas,binary,0.5711195240670632,Global,North Pacific Ocean
+1,roc_auc,binary,0.8768908776830021,Global,North Pacific Ocean
+1,precision,binary,0.8,Global,Mediterranean Region
+1,recall,binary,0.6829268292682927,Global,Mediterranean Region
+1,f_meas,binary,0.736842105263158,Global,Mediterranean Region
+1,roc_auc,binary,0.9627892432770481,Global,Mediterranean Region
+1,precision,binary,0.962738930558916,Global,Arctic Ocean
+1,recall,binary,0.9279384328358209,Global,Arctic Ocean
+1,f_meas,binary,0.9450184063650399,Global,Arctic Ocean
+1,roc_auc,binary,0.9217717036421182,Global,Arctic Ocean
+1,precision,binary,0.7272727272727273,Global,Baltic Sea
+1,recall,binary,0.5333333333333333,Global,Baltic Sea
+1,f_meas,binary,0.6153846153846153,Global,Baltic Sea
+1,roc_auc,binary,0.962820512820513,Global,Baltic Sea
+2,precision,binary,0.9696214010428474,Global,Southern Ocean
+2,recall,binary,0.9985991127714219,Global,Southern Ocean
+2,f_meas,binary,0.9838969404186795,Global,Southern Ocean
+2,roc_auc,binary,0.653604171530857,Global,Southern Ocean
+2,precision,binary,0.8339253996447602,Global,South Pacific Ocean
+2,recall,binary,0.9146103896103897,Global,South Pacific Ocean
+2,f_meas,binary,0.872406317745432,Global,South Pacific Ocean
+2,roc_auc,binary,0.950690407761955,Global,South Pacific Ocean
+2,precision,binary,0.8763636363636363,Global,South Atlantic Ocean
+2,recall,binary,0.7959048877146632,Global,South Atlantic Ocean
+2,f_meas,binary,0.8341986846659745,Global,South Atlantic Ocean
+2,roc_auc,binary,0.9389695182896698,Global,South Atlantic Ocean
+2,precision,binary,0.8073196986006459,Global,Indian Ocean
+2,recall,binary,0.9380863039399625,Global,Indian Ocean
+2,f_meas,binary,0.8678044547295344,Global,Indian Ocean
+2,roc_auc,binary,0.9505221377482043,Global,Indian Ocean
+2,precision,binary,0.6312056737588653,Global,South China and Easter Archipelagic Seas
+2,recall,binary,0.9700272479564033,Global,South China and Easter Archipelagic Seas
+2,f_meas,binary,0.7647690655209453,Global,South China and Easter Archipelagic Seas
+2,roc_auc,binary,0.7817624858259832,Global,South China and Easter Archipelagic Seas
+2,precision,binary,0.8030942334739803,Global,North Atlantic Ocean
+2,recall,binary,0.5153429602888087,Global,North Atlantic Ocean
+2,f_meas,binary,0.6278174821330401,Global,North Atlantic Ocean
+2,roc_auc,binary,0.8984943428789219,Global,North Atlantic Ocean
+2,precision,binary,0.6456494325346784,Global,North Pacific Ocean
+2,recall,binary,0.4871550903901047,Global,North Pacific Ocean
+2,f_meas,binary,0.5553145336225597,Global,North Pacific Ocean
+2,roc_auc,binary,0.8513595676122339,Global,North Pacific Ocean
+2,precision,binary,0.8367346938775511,Global,Mediterranean Region
+2,recall,binary,0.5,Global,Mediterranean Region
+2,f_meas,binary,0.6259541984732825,Global,Mediterranean Region
+2,roc_auc,binary,0.9487526926551316,Global,Mediterranean Region
+2,precision,binary,0.9475492441594137,Global,Arctic Ocean
+2,recall,binary,0.964785447761194,Global,Arctic Ocean
+2,f_meas,binary,0.9560896695169864,Global,Arctic Ocean
+2,roc_auc,binary,0.9372640449248426,Global,Arctic Ocean
+2,precision,binary,0.7692307692307693,Global,Baltic Sea
+2,recall,binary,0.6666666666666666,Global,Baltic Sea
+2,f_meas,binary,0.7142857142857142,Global,Baltic Sea
+2,roc_auc,binary,0.9525641025641027,Global,Baltic Sea
+3,precision,binary,0.9694085656016316,Global,Southern Ocean
+3,recall,binary,0.998832593976185,Global,Southern Ocean
+3,f_meas,binary,0.983900643974241,Global,Southern Ocean
+3,roc_auc,binary,0.6842306794303079,Global,Southern Ocean
+3,precision,binary,0.7561544441565172,Global,South Pacific Ocean
+3,recall,binary,0.9474025974025974,Global,South Pacific Ocean
+3,f_meas,binary,0.8410433780083585,Global,South Pacific Ocean
+3,roc_auc,binary,0.9463655676686019,Global,South Pacific Ocean
+3,precision,binary,0.8332264271969211,Global,South Atlantic Ocean
+3,recall,binary,0.8579920739762219,Global,South Atlantic Ocean
+3,f_meas,binary,0.8454279205987633,Global,South Atlantic Ocean
+3,roc_auc,binary,0.9390262243201818,Global,South Atlantic Ocean
+3,precision,binary,0.7845592070944184,Global,Indian Ocean
+3,recall,binary,0.9405878674171357,Global,Indian Ocean
+3,f_meas,binary,0.8555176336746304,Global,Indian Ocean
+3,roc_auc,binary,0.947327646094082,Global,Indian Ocean
+3,precision,binary,0.6232394366197183,Global,South China and Easter Archipelagic Seas
+3,recall,binary,0.9645776566757494,Global,South China and Easter Archipelagic Seas
+3,f_meas,binary,0.7572192513368984,Global,South China and Easter Archipelagic Seas
+3,roc_auc,binary,0.7782337908507768,Global,South China and Easter Archipelagic Seas
+3,precision,binary,0.7306818181818182,Global,North Atlantic Ocean
+3,recall,binary,0.58032490974729245,Global,North Atlantic Ocean
+3,f_meas,binary,0.6468812877263581,Global,North Atlantic Ocean
+3,roc_auc,binary,0.8880207998766646,Global,North Atlantic Ocean
+3,precision,binary,0.7303149606299213,Global,North Pacific Ocean
+3,recall,binary,0.35299714557564227,Global,North Pacific Ocean
+3,f_meas,binary,0.47594611930724823,Global,North Pacific Ocean
+3,roc_auc,binary,0.8624067105425572,Global,North Pacific Ocean
+3,precision,binary,0.7692307692307693,Global,Mediterranean Region
+3,recall,binary,0.6097560975609756,Global,Mediterranean Region
+3,f_meas,binary,0.6802721088435374,Global,Mediterranean Region
+3,roc_auc,binary,0.9474671669793622,Global,Mediterranean Region
+3,precision,binary,0.9573283858998145,Global,Arctic Ocean
+3,recall,binary,0.9626865671641791,Global,Arctic Ocean
+3,f_meas,binary,0.9600000000000001,Global,Arctic Ocean
+3,roc_auc,binary,0.9317088555186115,Global,Arctic Ocean
+3,precision,binary,0.5,Global,Baltic Sea
+3,recall,binary,0.5333333333333333,Global,Baltic Sea
+3,f_meas,binary,0.5161290322580646,Global,Baltic Sea
+3,roc_auc,binary,0.8884615384615387,Global,Baltic Sea

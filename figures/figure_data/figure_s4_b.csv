@@ -1,0 +1,49 @@
+forecast_horizon,.metric,.estimator,.estimate,region
+1,rsq_trad,standard,0.8324559398726621,Global
+1,rsq,standard,0.8982396866252672,Global
+1,rmse,standard,6.095881506423226e-7,Global
+1,nrmse,standard,0.4093127036867064,Global
+1,rsq_trad,standard,0.24817267430523338,Inside MPAs
+1,rsq_trad,standard,0.832272529504587,Outside MPAs
+1,rsq_trad,standard,0.8604703990226323,Partial MPA overlap
+1,rsq,standard,0.2690120637552137,Inside MPAs
+1,rsq,standard,0.8986792296850185,Outside MPAs
+1,rsq,standard,0.8622565272639519,Partial MPA overlap
+1,rmse,standard,7.908186086617425e-10,Inside MPAs
+1,rmse,standard,6.207032164878422e-7,Outside MPAs
+1,rmse,standard,2.0989936585106987e-7,Partial MPA overlap
+1,nrmse,standard,0.86038407205928,Inside MPAs
+1,nrmse,standard,0.4095363170828799,Outside MPAs
+1,nrmse,standard,0.37332013239890327,Partial MPA overlap
+2,rsq_trad,standard,0.7800821498914097,Global
+2,rsq,standard,0.8527870906732665,Global
+2,rmse,standard,6.983967975920867e-7,Global
+2,nrmse,standard,0.46894396022518015,Global
+2,rsq_trad,standard,0.5283768330116245,Inside MPAs
+2,rsq_trad,standard,0.779600005359176,Outside MPAs
+2,rsq_trad,standard,0.8639321906253183,Partial MPA overlap
+2,rsq,standard,0.5470351894737152,Inside MPAs
+2,rsq,standard,0.8529031794631389,Outside MPAs
+2,rsq,standard,0.864693851051089,Partial MPA overlap
+2,rmse,standard,6.530212776972878e-10,Inside MPAs
+2,rmse,standard,7.107133924789002e-7,Outside MPAs
+2,rmse,standard,2.1246154286595627e-7,Partial MPA overlap
+2,nrmse,standard,0.6806974925320766,Inside MPAs
+2,nrmse,standard,0.46945734022829555,Outside MPAs
+2,nrmse,standard,0.3686484374214764,Partial MPA overlap
+3,rsq_trad,standard,0.8207593107737015,Global
+3,rsq,standard,0.8606446901474739,Global
+3,rmse,standard,6.305075643687981e-7,Global
+3,nrmse,standard,0.42335920669517546,Global
+3,rsq_trad,standard,0.016737580716858824,Inside MPAs
+3,rsq_trad,standard,0.8206294902267839,Outside MPAs
+3,rsq_trad,standard,0.839398356963617,Partial MPA overlap
+3,rsq,standard,0.3574448255326946,Inside MPAs
+3,rsq,standard,0.8609336418493194,Outside MPAs
+3,rsq,standard,0.8437889024834253,Partial MPA overlap
+3,rmse,standard,9.428975069745567e-10,Inside MPAs
+3,rmse,standard,6.408208677198213e-7,Outside MPAs
+3,rmse,standard,2.3397708200421644e-7,Partial MPA overlap
+3,nrmse,standard,0.9828591971391327,Inside MPAs
+3,nrmse,standard,0.42351215136517373,Outside MPAs
+3,nrmse,standard,0.40049922395811743,Partial MPA overlap

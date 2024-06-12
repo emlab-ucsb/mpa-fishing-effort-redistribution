@@ -1,0 +1,25 @@
+forecast_horizon,id,name,year,type
+1,Slice1,analysis,2018,Model features
+1,Slice1,assessement,2019,Model features
+1,Slice2,analysis,2017,Model features
+1,Slice2,assessement,2018,Model features
+1,Slice3,analysis,2016,Model features
+1,Slice3,assessement,2017,Model features
+2,Slice1,analysis,2017,Model features
+2,Slice1,assessement,2018,Model features
+2,Slice2,analysis,2016,Model features
+2,Slice2,assessement,2017,Model features
+3,Slice1,analysis,2016,Model features
+3,Slice1,assessement,2017,Model features
+1,Slice1,analysis,2019,Outcome variable
+1,Slice1,assessement,2020,Outcome variable
+1,Slice2,analysis,2018,Outcome variable
+1,Slice2,assessement,2019,Outcome variable
+1,Slice3,analysis,2017,Outcome variable
+1,Slice3,assessement,2018,Outcome variable
+2,Slice1,analysis,2019,Outcome variable
+2,Slice1,assessement,2020,Outcome variable
+2,Slice2,analysis,2018,Outcome variable
+2,Slice2,assessement,2019,Outcome variable
+3,Slice1,analysis,2019,Outcome variable
+3,Slice1,assessement,2020,Outcome variable

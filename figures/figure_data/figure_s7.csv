@@ -1,0 +1,87 @@
+variable_name,stage,contribution,mpa_feature_label,variable_name_code
+AIS reception: Type A transponders (pings/day),Stage 1,0.06493972653086154,All other features,ais_reception_positions_per_day_class_A
+AIS reception: Type A transponders (pings/day),Stage 2,0.09027041931060235,All other features,ais_reception_positions_per_day_class_A
+AIS reception: Type Type B transponders (pings/day),Stage 1,0.049347231773082,All other features,ais_reception_positions_per_day_class_B
+AIS reception: Type Type B transponders (pings/day),Stage 2,0.05184107124969702,All other features,ais_reception_positions_per_day_class_B
+"Sea surface temperature anomaly, mean (degree C)",Stage 1,0.005677986384784927,All other features,anom_sst_c_mean
+"Sea surface temperature anomaly, mean (degree C)",Stage 2,0.03354945176880283,All other features,anom_sst_c_mean
+"Sea surface temperature anomaly, SD (degree C)",Stage 1,0.006212876466724871,All other features,anom_sst_c_sd
+"Sea surface temperature anomaly, SD (degree C)",Stage 2,0.02307375072466196,All other features,anom_sst_c_sd
+"Chlorophyll-A, mean (mg/m^3)",Stage 1,0.01014616235753562,All other features,chl_mg_per_m3_mean
+"Chlorophyll-A, mean (mg/m^3)",Stage 2,0.05941212237468252,All other features,chl_mg_per_m3_mean
+"Chlorophyll-A, SD (mg/m^3)",Stage 1,0.005712127375039273,All other features,chl_mg_per_m3_sd
+"Chlorophyll-A, SD (mg/m^3)",Stage 2,0.03322555038783641,All other features,chl_mg_per_m3_sd
+Distance from port (m),Stage 1,0.016983415066937003,All other features,distance_from_port_m
+Distance from port (m),Stage 2,0.062024337933235626,All other features,distance_from_port_m
+Shore: nearest distance (m),Stage 1,0.018482936215947286,All other features,distance_from_shore_m
+Shore: nearest distance (m),Stage 2,0.08369290691402487,All other features,distance_from_shore_m
+World Bank Development Indicators region,Stage 1,0.005565335323680943,All other features,eez_region_world_bank_7
+World Bank Development Indicators region,Stage 2,0.021428877181483535,All other features,eez_region_world_bank_7
+Exclusive economic zone: sovereign state,Stage 1,0.007189707738863278,All other features,eez_sovereign
+Exclusive economic zone: sovereign state,Stage 2,0.020809452363656878,All other features,eez_sovereign
+Bathymetry: depth (m),Stage 1,0.010716920531508183,All other features,elevation_m
+Bathymetry: depth (m),Stage 2,0.10356598808165379,All other features,elevation_m
+"El Niño Southern Oscillation index, mean",Stage 1,0.006693454634001649,All other features,enso_index_mean
+"El Niño Southern Oscillation index, mean",Stage 2,0.019726802454837468,All other features,enso_index_mean
+"El Niño Southern Oscillation index, SD",Stage 1,0.006844237557650202,All other features,enso_index_sd
+"El Niño Southern Oscillation index, SD",Stage 2,0.018074830185123677,All other features,enso_index_sd
+"AIS fishing effort: 1, 2, or 3 year lag (log(hour/m^2))",Stage 1,0.1555076133296492,All other features,fishing_hours_per_m2_lag_log
+"AIS fishing effort: 1, 2, or 3 year lag (log(hour/m^2))",Stage 2,1.2340513780930245,All other features,fishing_hours_per_m2_lag_log
+Exclusive economic zone: fraction of pixel coverage,Stage 1,0.005881461808088689,All other features,fraction_eez_overlap
+Exclusive economic zone: fraction of pixel coverage,Stage 2,0.034809863445751016,All other features,fraction_eez_overlap
+MPA Spatial coverage: fraction of pixel,Stage 1,0.007969246500167192,MPA implementation feature,fraction_mpa_overlap
+MPA Spatial coverage: fraction of pixel,Stage 2,0.023906138914496455,MPA implementation feature,fraction_mpa_overlap
+"MPA Spatial coverage: fraction of pixels, 1st neighbor",Stage 1,0.007523219292653983,MPA implementation feature,fraction_mpa_overlap_neighbor_1
+"MPA Spatial coverage: fraction of pixels, 1st neighbor",Stage 2,0.022698858298360602,MPA implementation feature,fraction_mpa_overlap_neighbor_1
+"MPA Spatial coverage: fraction of pixels, 2nd neighbor",Stage 1,0.006899248146245126,MPA implementation feature,fraction_mpa_overlap_neighbor_2
+"MPA Spatial coverage: fraction of pixels, 2nd neighbor",Stage 2,0.02219174014495943,MPA implementation feature,fraction_mpa_overlap_neighbor_2
+Temporal coverage: fraction of year with MPA,Stage 1,0.007972275540895524,MPA implementation feature,fraction_year_with_mpa
+Temporal coverage: fraction of year with MPA,Stage 2,0.02183034805402584,MPA implementation feature,fraction_year_with_mpa
+"IFO 380 fuel price, mean (USD/MT)",Stage 1,0.006879428110809802,All other features,fuel_price_usd_mt_mean
+"IFO 380 fuel price, mean (USD/MT)",Stage 2,0.016413955191069442,All other features,fuel_price_usd_mt_mean
+"IFO 380 fuel price, SD (USD/MT)",Stage 1,0.0070002477194561,All other features,fuel_price_usd_mt_sd
+"IFO 380 fuel price, SD (USD/MT)",Stage 2,0.016554154352064775,All other features,fuel_price_usd_mt_sd
+Global Fishing Index governance capacity,Stage 1,0.005165571455018017,All other features,gfi_fisheries_governance_capacity
+Global Fishing Index governance capacity,Stage 2,0.020272388768986505,All other features,gfi_fisheries_governance_capacity
+Latitude,Stage 1,0.04696434782202874,All other features,lat
+Latitude,Stage 2,0.09126350712991128,All other features,lat
+Longitude,Stage 1,0.01643090477851465,All other features,lon
+Longitude,Stage 2,0.15568900300346777,All other features,lon
+Mesopelagic zone,Stage 1,0.02592380482273107,All other features,mesopelagic_zone
+Mesopelagic zone,Stage 2,0.02554409514088259,All other features,mesopelagic_zone
+Exclusive economic zone: nearest distance (m),Stage 1,0.008386042668370657,All other features,nearest_eez_distance_m
+Exclusive economic zone: nearest distance (m),Stage 2,0.022811201490423864,All other features,nearest_eez_distance_m
+Exclusive economic zone: nearest sovereign state,Stage 1,0.004677253119160437,All other features,nearest_eez_sovereign
+Exclusive economic zone: nearest sovereign state,Stage 2,0.023456999901562994,All other features,nearest_eez_sovereign
+Nearest MPA: distance (m),Stage 1,0.00740198673860594,MPA implementation feature,nearest_mpa_distance_m
+Nearest MPA: distance (m),Stage 2,0.025942470463600563,MPA implementation feature,nearest_mpa_distance_m
+Seamount: nearest distance (m),Stage 1,0.005621957956730418,All other features,nearest_seamount_distance_m
+Seamount: nearest distance (m),Stage 2,0.024264449057179737,All other features,nearest_seamount_distance_m
+Nearest MPA: years since designation (years),Stage 1,0.0054069290653254295,MPA implementation feature,nearest_years_since_mpa_designation
+Nearest MPA: years since designation (years),Stage 2,0.025422338554545294,MPA implementation feature,nearest_years_since_mpa_designation
+Ocean,Stage 1,0.007108082094154091,All other features,ocean
+Ocean,Stage 2,0.022333705003793485,All other features,ocean
+"MPA future coverage: inside, 1 year lead",Stage 1,0.008145632793860534,MPA implementation feature,one_year_before_full_mpa
+"MPA future coverage: inside, 1 year lead",Stage 2,0.021962673887340012,MPA implementation feature,one_year_before_full_mpa
+"MPA future coverage: partial, 1 year lead",Stage 1,0.008140286464169373,MPA implementation feature,one_year_before_partial_mpa
+"MPA future coverage: partial, 1 year lead",Stage 2,0.022024995829733482,MPA implementation feature,one_year_before_partial_mpa
+"Pacific Decadal Oscillation index, mean",Stage 1,0.006671510752548699,All other features,pdo_index_mean
+"Pacific Decadal Oscillation index, mean",Stage 2,0.018199057896075718,All other features,pdo_index_mean
+"Pacific Decadal Oscillation index, SD",Stage 1,0.007031409274367678,All other features,pdo_index_sd
+"Pacific Decadal Oscillation index, SD",Stage 2,0.016414888320363318,All other features,pdo_index_sd
+"MPA spatial coverage: inside, outside, or partial",Stage 1,0.007787185767273658,All other features,region
+"MPA spatial coverage: inside, outside, or partial",Stage 2,0.021834783861190532,All other features,region
+"Sea surface temperature, mean (degree C)",Stage 1,0.1013521769541323,All other features,sst_c_mean
+"Sea surface temperature, mean (degree C)",Stage 2,0.14194291916979068,All other features,sst_c_mean
+"Sea surface temperature, SD (degree C)",Stage 1,0.02104152851483753,All other features,sst_c_sd
+"Sea surface temperature, SD (degree C)",Stage 2,0.03653349112003978,All other features,sst_c_sd
+"MPA future coverage: inside, 2 year lead",Stage 1,0.008147115164628004,MPA implementation feature,two_years_before_full_mpa
+"MPA future coverage: inside, 2 year lead",Stage 2,0.021960697134503337,MPA implementation feature,two_years_before_full_mpa
+"MPA future coverage: partial, 2 year lead",Stage 1,0.008151191376193849,MPA implementation feature,two_years_before_partial_mpa
+"MPA future coverage: partial, 2 year lead",Stage 2,0.021968868352079094,MPA implementation feature,two_years_before_partial_mpa
+"Wind speed, mean (m/s)",Stage 1,0.01582384292789338,All other features,wind_speed_ms_mean
+"Wind speed, mean (m/s)",Stage 2,0.04146185573155525,All other features,wind_speed_ms_mean
+"Wind speed, SD (m/s)",Stage 1,0.010276462933468568,All other features,wind_speed_ms_sd
+"Wind speed, SD (m/s)",Stage 2,0.036587301949510646,All other features,wind_speed_ms_sd
+Year,Stage 1,0.006790409135280494,All other features,year
+Year,Stage 2,0.02723201380928861,All other features,year

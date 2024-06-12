@@ -1,0 +1,268 @@
+---
+title: "Arnhold BWMPA Project - Spatial measures"
+author: "Gavin McDonald (emLab)"
+date: '`r format(Sys.time(), "%m/%d/%Y")`'
+output: 
+  pdf_document: 
+    number_sections: yes
+    toc: true
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+params:
+     process_data: FALSE
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports",
+                         "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports")) })
+---
+
+```{r echo = FALSE}
+# This chunk sets up default settings for all chunks below
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,fig.width = 7.5,fig.height = 5,dev = 'png',dpi=300)
+```
+
+```{r include=FALSE}
+# Load all necessary packages
+library(tidyverse)
+library(sf)
+library(glue)
+library(rnaturalearth)
+# Set up BigQuery access
+library(bigrquery)
+library(furrr)
+library(countrycode)
+library(terra)
+library(data.table)
+library(googlesheets4)
+library(tictoc)
+library(here)
+library(furrr)
+setDTthreads(parallelly::availableCores())
+# Running this script requires special permissions to access GFW data
+billing_project <- "emlab-gcp"
+options(scipen = 20)
+# How many cores should we leave free on the system when we start running things in parallel?
+free_cores <- 0
+n_cores <- parallelly::availableCores() - free_cores
+
+# This helps with st_join
+#sf_use_s2(FALSE)
+# Set the data directory. This specifies the folder in Team Drive where the data can be found. This code automatically detects the system type and assigns the correct directory
+#data_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data",
+#                         "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data")
+
+data_directory <- "/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/Projects/current-projects/arnhold-bwmpa-redistribution/data"
+
+# emlab_data_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/data",
+#                                "/Volumes/GoogleDrive/Shared\ drives/emLab/data")
+emlab_data_directory <- "/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/data"
+
+figure_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/figures",
+                           "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/figures")
+
+# Set ggplot theme for all plots
+theme_set(theme_minimal() +
+            theme(axis.title.y = element_text(angle = 0,vjust=0.5),
+                  strip.background = element_blank(),
+                  strip.text.y = element_text(angle=0),
+                  strip.text.y.right = element_text(angle=0),
+                  strip.text.y.left = element_text(angle=0),
+                  panel.grid = element_blank(),
+                  panel.background = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  panel.grid.major = element_blank()))
+
+# Create global land sf object for mapping
+world_plotting <- ne_countries(scale = "small", returnclass = "sf")  %>%
+  dplyr::select(geometry)
+```
+
+# Defining our global grid
+
+```{r}
+pixel_size <- 1
+
+mollweide_projection <- "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+
+# Read in data_grid, generated in data_wrangling.Rmd
+# We will do spatial joining in Mollweide, for proper calculations
+# Note that data grid still retains lat and lon columns, for joining with non-spatial tibbles
+# For Mollweide, always wrap around dateline, then transform, then calculate areas at end
+data_grid <- data.table::fread(glue("{data_directory}/clean/global_grid.csv"))%>%
+  st_as_sf(wkt = "geometry_wkt",
+           crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")%>% 
+  st_wrap_dateline(options = c("WRAPDATELINE=YES", "DATELINEOFFSET=180"), quiet = TRUE) %>% 
+  st_transform(mollweide_projection) %>%
+  mutate(pixel_area_m2 = st_area(geometry_wkt)%>%
+           units::drop_units()) 
+```
+
+# Bathymetry, distance from shore, and distance to port (static)
+
+GFW has spatial static measures at 0.01x0.01 degree resolution for bathymetry, distance from shore, and distance to port, all in meters (m). Distance to port is the distance to the closest port as defined by [GFW's port database and algorithm](https://globalfishingwatch.org/datasets-and-code-anchorages/). For each of our `r pixel_size`x`r pixel_size` degree pixels, we will take the average value for these static measures.
+
+```{r eval = params$process_data}
+sql <- glue("
+#standardSQL
+CREATE TEMPORARY FUNCTION
+  pixel_size() AS ({pixel_size});
+WITH
+  bathymetry AS(
+  SELECT
+    FLOOR(lat / pixel_size()) * pixel_size() lat,
+    FLOOR(lon / pixel_size()) * pixel_size() lon,
+    AVG(elevation_m) elevation_m
+  FROM
+    `world-fishing-827.pipe_static.bathymetry`
+  WHERE elevation_m <= 0
+  GROUP BY
+    lat,
+    lon),
+  distance_from_port AS(
+  SELECT
+    FLOOR(lat / pixel_size()) * pixel_size() lat,
+    FLOOR(lon / pixel_size()) * pixel_size() lon,
+    AVG(distance_from_port_m) distance_from_port_m
+  FROM
+    `world-fishing-827.pipe_static.distance_from_port_20201105`
+  GROUP BY
+    lat,
+    lon),
+  distance_from_shore AS(
+  SELECT
+    FLOOR(lat / pixel_size()) * pixel_size() lat,
+    FLOOR(lon / pixel_size()) * pixel_size() lon,
+    AVG(distance_from_shore_m) distance_from_shore_m
+  FROM
+    `world-fishing-827.pipe_static.distance_from_shore`
+  GROUP BY
+    lat,
+    lon)
+SELECT
+  *
+FROM
+  bathymetry
+FULL JOIN
+  distance_from_port
+USING
+  ( lat,
+    lon)
+FULL JOIN
+  distance_from_shore
+USING
+  ( lat,
+    lon)
+")
+
+bq_project_query(billing_project, sql) %>%
+  bq_table_download(n_max = Inf) %>%
+  data.table::fwrite(glue("{data_directory}/raw/gfw/static_spatial_measures.csv"))
+
+# Read in cached spatial measures data, add data_grid info and make into sf
+static_spatial_measures <- data.table::fread(glue("{data_directory}/raw/gfw/static_spatial_measures.csv")) %>%
+  inner_join(data_grid,
+             by = c("lat","lon")) %>%
+  # For some nearshore areas, replace NA depth with 0
+  mutate(elevation_m = ifelse(is.na(elevation_m),
+                              0,
+                              elevation_m))
+
+static_spatial_measures %>%
+  dplyr::select(-geometry_wkt) %>%
+  data.table::fwrite(here::here("data/model_features/gfw_static_spatial_measures.csv"))
+```
+
+# Determine ocean for each pixel (static)
+
+Use Marine Region's [Global oceans and seas v01](https://www.marineregions.org/downloads.php)
+
+```{r eval = params$process_data}
+oceans <- st_read(glue("{data_directory}/raw/GOaS_v1_20211214/goas_v01.shp")) %>%
+  dplyr::select(ocean = name) %>% 
+  st_wrap_dateline(options = c("WRAPDATELINE=YES", "DATELINEOFFSET=180"), quiet = TRUE) %>% 
+  st_transform(mollweide_projection) %>%
+  st_make_valid()
+
+# Chunk data grid apart number of cores, then do st_join for each chunk in parallel
+plan(multisession, workers = n_cores)
+
+# Split data frame up
+# https://stackoverflow.com/a/60320559
+data_grid_oceans <- data_grid %>% 
+  group_by((row_number()-1) %/% (n()/n_cores)) %>%
+  nest() %>% 
+  pull(data)%>%
+  future_map_dfr(~st_join(.,oceans,largest=TRUE)) %>%
+  st_set_geometry(NULL) %>%
+  dplyr::select(pixel_id,ocean)
+
+data_grid_oceans %>%
+  data.table::fwrite(here::here("data/model_features/oceans.csv"))
+```
+
+
+\pagebreak
+
+
+# Determine MPA for each pixel (dynamic)
+
+MPA data come from [MPA Atlas]( https://mpatlas.org). We use a version of the database downloaded in January 2021. This is the same version of the datbase used in [Sala et al. 2021](https://www.nature.com/articles/s41586-021-03371-z?dom=microsoft&src=syn). We filter to only those protected areas where `no_take = "All"`. For now, we also focus to only those MPAs listed as with a `status` of "Designated" or "Established".
+
+Since MPAs are implemented in different years, we will determine several time-varying measures. For each year, we first filter to just those MPAs that had already been implemented before that year using the `STATUS_YR` column. For each pixel-year, we then determine which MPA it overlaps with (if any) and the year since the MPA was implemented in that pixel. For pixels with multiple MPAs, we assign the MPA with the largest overlap and use its years since implementation. For each pixel-year that does not already overlap with an MPA, we also determine which MPA is nearest to the pixel, the distance to that MPA, and the years since that nearest MPA was implemented.  For determining distances, we measure the distance between the centroid of the global grid pixel and the nearest MPA
+
+```{r  eval = params$process_data}
+mpa <- #read_sf("/Volumes/GoogleDrive/Shared\ drives/emlab/data/mpa-atlas/mpatlas_20201223_clean/mpatlas_20201223_clean.shp") %>%
+  read_sf("/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/data/mpa-atlas/mpatlas_20201223_clean/mpatlas_20201223_clean.shp") %>%
+  #filter(STATUS %in% c("Designated", "Established")) %>%
+  dplyr::filter(no_take == "All") %>% 
+  filter(status %in% c("Designated","Established")) %>% 
+  st_wrap_dateline(options = c("WRAPDATELINE=YES", "DATELINEOFFSET=180"), quiet = TRUE) %>% 
+  st_transform(mollweide_projection) %>%
+  st_make_valid() %>%
+  mutate(mpa_area_km2 = st_area(geometry) %>%
+           units::drop_units() / 1e3^2)
+
+# Load in implementation dates from Annanya's google sheet
+# This is a Google Doc containing all full no-take implemented MPAs in MPA Atlas
+# Annanya gathered this information through extensive literature review
+ntz_implementation_dates <- googlesheets4::read_sheet("1F7yaZ-wGoFPi996j71E38c-sI5uMaCDSrDs1XLkHOtA",
+                                                      col_types = "c",
+                                                      sheet = "Sheet1") %>%
+  dplyr::select(mpa_id,ntz_implementation_date_mmddyyyy) %>%
+  filter(!is.na(ntz_implementation_date_mmddyyyy)) %>%
+  mutate(ntz_implementation_date_mmddyyyy = ifelse(str_length(ntz_implementation_date_mmddyyyy) == 4, 
+                                                   glue("01/01/{ntz_implementation_date_mmddyyyy}"),
+                                                   ntz_implementation_date_mmddyyyy)) %>%
+  mutate(ntz_implementation_date_mmddyyyy = lubridate::mdy(ntz_implementation_date_mmddyyyy)) %>%
+  filter(!is.na(ntz_implementation_date_mmddyyyy)) %>%
+  mutate( status_yea = lubridate::year(ntz_implementation_date_mmddyyyy),
+          mpa_id = as.double(mpa_id))%>%
+  # Add column for how much of the year is covered by the new MPA
+  mutate(fraction_year_with_mpa = (365 - lubridate::yday(ntz_implementation_date_mmddyyyy)+1)/365)
+
+# Add correct NTZ dates to MPAs
+mpa <- mpa %>%
+  dplyr::select(-status_yea) %>%
+  inner_join(ntz_implementation_dates,
+             by = "mpa_id")%>%
+  mutate(mpa_id = glue("mpa_id_{mpa_id}")) %>%
+  dplyr::select(mpa_id,
+                status_yea,
+                ntz_implementation_date_mmddyyyy,
+                mpa_name = name,
+                fraction_year_with_mpa)
+
+# Save geopackage of MPA data
+mpa %>%
+  sf::st_write(here::here("data/raw/current_2020_no_take_mpa_geopackage.gpkg"))
+
+
+# Save some MPA metadata info that will be used in the model
+mpa %>%
+  st_set_geometry(NULL) %>%
+  data.table::fwrite(glue("{data_directory}/clean/mpa_atlas/mpa_info.csv"))
+
+# Save filtered MPA shapefile for Ben
+#mpa %>%
+#  st_write(glue("{data_directory}/clean/mpa_atlas/full_ntz_mpas.shp"))
+```
