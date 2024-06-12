@@ -58,6 +58,8 @@ mpa-fishing-effort-redistribution
   |__ tables
 ```
 
+`data/raw` contains all raw data files that are used directly in the `targets` pipeline, other than bunker fuel price data (see note above). `data/model_features` contains all pre-processed model feature data (which are generated in `01_data_wrangling_erddap.Rmd`, `02_data_wrangling_spatial_measures.Rmd`, and `03_data_wrangling_gfw.Rmd`).
+
 All R code can be found in the `r` directory. The files in this directory are described as follows:
 
 -   `_functions_data_wrangling_erddap.R`: This contains functions for wrangling the spatial ERDDAP environmental data from NOAA (these eunfctions are used in `01_data_wrangling_erddap.Rmd`)
