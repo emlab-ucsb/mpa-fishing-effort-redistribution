@@ -156,7 +156,7 @@ spatially_aggregate_errdap_data_wrapper <- function(dataset_name,
   # Create tibble of all files in raw directory
   list.files(glue("{data_directory}/raw/erddap/{dataset_name}")) %>%
     future_map_dfr(function(file_temp){
-      
+
       date_tmp <- file_temp %>%
         # Extract date
         stringr::str_replace(glue::glue("{dataset_name}_"),"") %>% 
@@ -185,7 +185,9 @@ spatially_aggregate_errdap_data_wrapper <- function(dataset_name,
         # Don't save data that are just NAs
         dplyr::filter(!dplyr::if_all(-c(pixel_id),is.na))%>%
         # If there's only one layer of data, give mean value column a meaningful name
-        dplyr::rename_with(~glue::glue("mean.{dataset_name}"), matches("^mean$")) %>%
+        # This needed to be updated to align with the new help documentation for dplyr::rename_with
+        # This previously read  dplyr::rename_with(~glue::glue("mean.{dataset_name}"), matches("^mean$")) %>%
+        dplyr::rename_with(.fn = ~paste0("mean.",dataset_name,.x,recycle0 = TRUE), .cols = matches("^mean$"))  %>%
         dplyr::mutate(date = date_tmp) %>%
         # Write aggregated data to clean data folder
         data.table::fwrite(processed_file_name)

@@ -11,10 +11,10 @@ editor_options:
   chunk_output_type: console
 params:
      download_data: FALSE
-     aggregate_data: FALSE
+     aggregate_data: TRUE
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_dir = ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports",
-                         "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports")) })
+                         "/Users/Shared/nextcloud/emlab/projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports")) })
 ---
 
 ```{r echo = FALSE}
@@ -40,7 +40,7 @@ source(here::here("r/_functions_data_wrangling_erddap.R"))
 # 
 # figure_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/figures",
 #                            "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/figures")
-data_directory <- "/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/Projects/current-projects/arnhold-bwmpa-redistribution/data"
+data_directory <- "/Users/Shared/nextcloud/emlab/projects/current-projects/arnhold-bwmpa-redistribution/data"
 # Set ggplot theme for all plots
 theme_set(theme_minimal() +
             theme(axis.title.y = element_text(angle = 0,vjust=0.5),
@@ -202,7 +202,7 @@ knitr::kable(missing_dates$missing_dates_summary)
 # Spatially aggregate chl data
 spatially_aggregate_errdap_data_wrapper(dataset_name = "erdMH1chlamday",
                                         spatial_aggregation = data_grid,
-                                        run_parallel = FALSE)
+                                        run_parallel = TRUE)
 ```
 
 ```{r eval = params$aggregate_data}

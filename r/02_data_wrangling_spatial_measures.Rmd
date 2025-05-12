@@ -11,9 +11,11 @@ editor_options:
   chunk_output_type: console
 params:
      process_data: FALSE
+     process_gfw_data: FALSE
+     download_google_doc_data: FALSE
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_dir = ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports",
-                         "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports")) })
+                         "/Users/Shared/nextcloud/emlab/projects/current-projects/arnhold-bwmpa-redistribution/project-materials/markdown-reports")) })
 ---
 
 ```{r echo = FALSE}
@@ -45,20 +47,8 @@ options(scipen = 20)
 free_cores <- 0
 n_cores <- parallelly::availableCores() - free_cores
 
-# This helps with st_join
-#sf_use_s2(FALSE)
-# Set the data directory. This specifies the folder in Team Drive where the data can be found. This code automatically detects the system type and assigns the correct directory
-#data_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data",
-#                         "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/data")
-
-data_directory <- "/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/Projects/current-projects/arnhold-bwmpa-redistribution/data"
-
-# emlab_data_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/data",
-#                                "/Volumes/GoogleDrive/Shared\ drives/emLab/data")
-emlab_data_directory <- "/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/data"
-
-figure_directory <- ifelse(Sys.info()["sysname"]=="Windows","G:/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/figures",
-                           "/Volumes/GoogleDrive/Shared\ drives/emLab/Projects/current-projects/arnhold-bwmpa-redistribution/project-materials/figures")
+# Users will need to change this directory to their own local directory
+data_directory <- "/Users/Shared/nextcloud/emlab/projects/current-projects/arnhold-bwmpa-redistribution/data"
 
 # Set ggplot theme for all plots
 theme_set(theme_minimal() +
@@ -101,7 +91,7 @@ data_grid <- data.table::fread(glue("{data_directory}/clean/global_grid.csv"))%>
 
 GFW has spatial static measures at 0.01x0.01 degree resolution for bathymetry, distance from shore, and distance to port, all in meters (m). Distance to port is the distance to the closest port as defined by [GFW's port database and algorithm](https://globalfishingwatch.org/datasets-and-code-anchorages/). For each of our `r pixel_size`x`r pixel_size` degree pixels, we will take the average value for these static measures.
 
-```{r eval = params$process_data}
+```{r eval = params$process_gfw_data}
 sql <- glue("
 #standardSQL
 CREATE TEMPORARY FUNCTION
@@ -210,6 +200,20 @@ MPA data come from [MPA Atlas]( https://mpatlas.org). We use a version of the da
 
 Since MPAs are implemented in different years, we will determine several time-varying measures. For each year, we first filter to just those MPAs that had already been implemented before that year using the `STATUS_YR` column. For each pixel-year, we then determine which MPA it overlaps with (if any) and the year since the MPA was implemented in that pixel. For pixels with multiple MPAs, we assign the MPA with the largest overlap and use its years since implementation. For each pixel-year that does not already overlap with an MPA, we also determine which MPA is nearest to the pixel, the distance to that MPA, and the years since that nearest MPA was implemented.  For determining distances, we measure the distance between the centroid of the global grid pixel and the nearest MPA
 
+```{r eval = params$download_google_doc_data}
+# Load in implementation dates from Annanya's google sheet
+# This is a Google Doc containing all full no-take implemented MPAs in MPA Atlas
+# Annanya gathered this information through extensive literature review
+# This requires special permisisons to access, which is why we separate this out as its own chunk
+ntz_implementation_dates <- googlesheets4::read_sheet("1F7yaZ-wGoFPi996j71E38c-sI5uMaCDSrDs1XLkHOtA",
+                                                      col_types = "c",
+                                                      sheet = "Sheet1") 
+
+readr::write_csv(ntz_implementation_dates,
+                 here::here("data/raw/ntz_implementation_dates.csv"))
+```
+
+
 ```{r  eval = params$process_data}
 mpa <- #read_sf("/Volumes/GoogleDrive/Shared\ drives/emlab/data/mpa-atlas/mpatlas_20201223_clean/mpatlas_20201223_clean.shp") %>%
   read_sf("/Users/gmcdonald/Library/CloudStorage/GoogleDrive-gmcdonald@ucsb.edu/Shared\ drives/emlab/data/mpa-atlas/mpatlas_20201223_clean/mpatlas_20201223_clean.shp") %>%
@@ -223,11 +227,8 @@ mpa <- #read_sf("/Volumes/GoogleDrive/Shared\ drives/emlab/data/mpa-atlas/mpatla
            units::drop_units() / 1e3^2)
 
 # Load in implementation dates from Annanya's google sheet
-# This is a Google Doc containing all full no-take implemented MPAs in MPA Atlas
-# Annanya gathered this information through extensive literature review
-ntz_implementation_dates <- googlesheets4::read_sheet("1F7yaZ-wGoFPi996j71E38c-sI5uMaCDSrDs1XLkHOtA",
-                                                      col_types = "c",
-                                                      sheet = "Sheet1") %>%
+# This was downloaded in the chunk above, since it requires special permissions
+ntz_implementation_dates <- readr::read_csv(here::here("data/raw/ntz_implementation_dates.csv")) %>%
   dplyr::select(mpa_id,ntz_implementation_date_mmddyyyy) %>%
   filter(!is.na(ntz_implementation_date_mmddyyyy)) %>%
   mutate(ntz_implementation_date_mmddyyyy = ifelse(str_length(ntz_implementation_date_mmddyyyy) == 4, 
